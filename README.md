@@ -1,4 +1,4 @@
 # ns-website-WIP
-Live @: https://ns-portfolio-wip.vercel.app/ 
+Live @: nikhilsav.xyz
 
 This is a website to display all my passions and experience. Currently a work in progress.
