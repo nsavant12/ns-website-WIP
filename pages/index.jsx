@@ -307,7 +307,7 @@ export default function Home() {
             </h3>
           </div>
 
-          <div className="scrollbar scrollbar-track-stone-400/40 scrollbar-thin scrollbar-thumb-amber-500 flex w-full space-x-5 overflow-x-scroll p-10 snap-x snap-mandatory">
+          <div className=" flex w-full space-x-5 overflow-x-scroll p-10 snap-x snap-mandatory">
             <ExperienceCards />
             <ExperienceCards />
             <ExperienceCards />
@@ -325,7 +325,7 @@ export default function Home() {
           </div>
         </section>
 
-        <Projects className="scrollbar"/>
+        <Projects/>
         <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
       </main>
     </div>
