@@ -36,7 +36,7 @@ export default function Home() {
   
 
   return (
-    <div>
+    <div >
       <Head>
         <title>NS Portfolio</title>
         <meta name="description" content="Nikhil's Portfolio" />
@@ -52,15 +52,15 @@ export default function Home() {
         ></link>
       </Head>
 
-      <main className=" text-gray-300 sm:w-screen overflow-hidden md:w-full px-10 bg-gradient-to-r from-red-200 to-orange-300 font-victor-mono ">
-        <section className="relative min-h-screen">
+      <main className="text-gray-300 sm:w-screen overflow-hidden md:w-full px-10 bg-gradient-to-r from-red-200 to-orange-300 font-victor-mono ">
+        <section className="relative min-h-screen ">
           <div className="animated absolute w-4/5 h-4/5 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             <div className="absolute top-0 left-1/2 translate-x-[-50%] w-3/5 h-3/5 bg-blue-400 rounded-full mix-blend-multiply filter blur-[30px] opacity-25" />
             <div className="absolute top-1/2 left-0 translate-y-[-50%] w-3/5 h-3/5 bg-sky-300  rounded-full mix-blend-multiply filter blur-[30px] opacity-25" />
             <div className="absolute top-1/2 right-0 translate-y-[-50%] w-3/5 h-3/5 bg-pink-400 rounded-full mix-blend-multiply filter blur-[30px] opacity-25" />
             <div className="absolute bottom-0 left-1/2 translate-x-[-50%] w-3/5 h-3/5  bg-rose-400 rounded-full mix-blend-multiply filter blur-[30px] opacity-25 " />
           </div>
-          <nav className="border-black backdrop-blur-xl pt-5 pb-5 mb-12 flex justify-between navbar navbar-expand-md items-center w-full fixed top-0 right-0 left-0 opacity-[.98] z-40">
+          <nav  className=" border-black backdrop-blur-xl pt-5 pb-5 mb-12 flex justify-between navbar navbar-expand-md items-center w-full fixed top-0 right-0 left-0 opacity-[.98] z-40">
   <div className="flex items-center justify-center w-full text-black text-2xl pl-8">
     <motion.div whileHover={{ scale: 1.25 }} className="text-center absolute left-0">
       <button
@@ -74,7 +74,6 @@ export default function Home() {
         <SlMenu />
       </button>
     </motion.div>
-
     <motion.div whileHover={{ scale: 1.05 }} className="cursor-pointer text-2xl font-victor-mono italic font-bold text-white">
       <Link to="home" offset={0} className="cursor-pointer">
         builtbyNS
@@ -223,7 +222,7 @@ export default function Home() {
             </div>
             <div className="gap-2 flex flex-col lg:flex-row">
               <a
-                href="http://localhost:3000/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FIMG_20210707_170928.aa45ae01.jpg&w=3840&q=75"
+                href="https://www.nikhilsav.xyz/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FIMG_20210707_170928.aa45ae01.jpg&w=3840&q=75"
                 target="_blank"
               >
                 <Image
@@ -234,7 +233,7 @@ export default function Home() {
               </a>
 
               <a
-                href="http://localhost:3000/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FIMG_20210629_202206.0baf3be0.jpg&w=3840&q=75"
+                href="https://www.nikhilsav.xyz/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FIMG_20210629_202206.0baf3be0.jpg&w=3840&q=75"
                 target="_blank"
               >
                 <Image
@@ -247,7 +246,7 @@ export default function Home() {
             <div className="flex pt-2 gap-2 flex-col lg:flex-row">
               <div className="flex-col gap-2">
                 <a
-                  href="http://localhost:3000/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fdesert.cdfa47ce.jpg&w=3840&q=75"
+                  href="https://www.nikhilsav.xyz/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fdesert.cdfa47ce.jpg&w=3840&q=75"
                   target="_blank"
                 >
                   <Image
@@ -257,7 +256,7 @@ export default function Home() {
                   />
                 </a>
                 <a
-                  href="http://localhost:3000/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fsunset.8ac33900.jpg&w=3840&q=75"
+                  href="https://www.nikhilsav.xyz/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fsunset.8ac33900.jpg&w=3840&q=75"
                   target="_blank"
                 >
                   <Image
@@ -268,7 +267,7 @@ export default function Home() {
                 </a>
               </div>
               <a
-                href="http://localhost:3000/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fsummer.aec7ac1d.jpg&w=3840&q=75"
+                href="https://www.nikhilsav.xyz/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fsummer.aec7ac1d.jpg&w=3840&q=75"
                 target="_blank"
               >
                 <Image
@@ -308,7 +307,7 @@ export default function Home() {
             </h3>
           </div>
 
-          <div className="  flex w-full space-x-5 overflow-x-scroll p-10 snap-x snap-mandatory">
+          <div className="scrollbar scrollbar-track-stone-400/40 scrollbar-thin scrollbar-thumb-amber-500 flex w-full space-x-5 overflow-x-scroll p-10 snap-x snap-mandatory">
             <ExperienceCards />
             <ExperienceCards />
             <ExperienceCards />
@@ -326,7 +325,7 @@ export default function Home() {
           </div>
         </section>
 
-        <Projects />
+        <Projects className="scrollbar"/>
         <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
       </main>
     </div>
