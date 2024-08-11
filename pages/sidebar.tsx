@@ -123,20 +123,6 @@ function sidebar({ isOpen, setIsOpen }) {
                 </Link>
               </button>
             </li>
-            <li>
-              <button className="pt-10" type="button">
-                <Link
-                  onClick={() => setIsOpen(false)}
-                  to="projects"
-                  offset={0}
-                  className="text-2xl flex items-center p-2 rounded-lg text-white"
-                >
-                  <i className="bi bi-clipboard-check "></i>
-                  <span className="ml-3">Projects</span>
-                  <span className="sr-only">Close menu</span>
-                </Link>
-              </button>
-            </li>
             </ul>
             <div
                 
