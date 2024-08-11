@@ -162,7 +162,7 @@ export default function Home() {
               </h3>
 
               <Image
-                src={me}
+                src={me_2}
                 alt="me"
                 className="rounded-full w-64 h-64 mx-auto z-40"
               />
