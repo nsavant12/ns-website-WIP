@@ -21,7 +21,7 @@ import ExperienceCards from "./ExperienceCards";
 import Sidebar from "./sidebar";
 import Projects from "./Projects";
 import { motion, useScroll } from "framer-motion";
-import me from "../public/me.jpg";
+import me_2 from "../public/me_2.jpg";
 import SkillsSection from "./SkillsSection";
 import Skills from "./Skills";
 import Stock from "./Stocks";
