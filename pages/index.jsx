@@ -96,7 +96,7 @@ export default function Home() {
                 <div className="h-[90px]  overflow-hidden">
                   <Stock
                     settings={{
-                      symbol: "NASDAQ:SEDG",
+                      symbol: "NASDAQ:AMZN",
                       width: "100%",
                       colorTheme: "light",
                       isTransparent: true,
@@ -180,8 +180,8 @@ export default function Home() {
             <div className="flex items-center justify-center px-16 pt-10">
               <motion.div className=" relative w-full max-w-2xl bg-contain">
                 <p className=" text-md py-5 leading-8 text-white font-extrabold font-victor-mono z-10 opacity-100 ">
-                  I am a senior at Jones College Prep looking to major in
-                  Computer Science. Some things I enjoy are finance, sports, tech, cars,
+                  I am a freshman at UIUC majoring in Computer Science & Economics. 
+                  Some things I enjoy are finance, sports, tech, cars,
                   and photography. This website is a display of all my passions
                   and projects that I have built along the way.
                 </p>
@@ -314,18 +314,6 @@ export default function Home() {
             <ExperienceCards />
           </div>
         </section>
-        <section>
-          <div className="text-center">
-            <h3
-              id="projects"
-              className=" pt-40 pb-12 tracking-[10px] md:tracking-[20px] text-4xl md:text-5xl bg-gradient-to-r from-red-400 to-red-500 font-medium inline-block text-transparent bg-clip-text animate-pulse"
-            >
-              Projects
-            </h3>
-          </div>
-        </section>
-
-        <Projects/>
         <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
       </main>
     </div>
