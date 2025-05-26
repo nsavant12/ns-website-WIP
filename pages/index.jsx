@@ -17,7 +17,7 @@ import { Cursor, useTypewriter } from "react-simple-typewriter";
 import image7 from "../public/desert.jpg";
 import { Link } from "react-scroll";
 import image8 from "../public/summer.jpg";
-import ExperienceCards from "./ExperienceCards";
+import ExperienceCards from "./ExperienceCards"; // Your ExperienceCards component
 import Sidebar from "./sidebar";
 import Projects from "./Projects";
 import { motion, useScroll } from "framer-motion";
@@ -26,6 +26,51 @@ import SkillsSection from "./SkillsSection";
 import Skills from "./Skills";
 import Stock from "./Stocks";
 
+// Define work experience data directly in this file
+const workExperiences = [
+  {
+    companyName: "AlgoAnalytics",
+    jobTitle: "Incoming Full Stack Intern",
+    dates: "Summer 2025",
+    responsibilities: [
+      "Will be interning as a Full Stack Engineer during Summer 2025.", // [cite: 3]
+    ],
+  },
+  {
+    companyName: "UIUC Startup",
+    jobTitle: "Founding Technical Backend Lead",
+    dates: "Mar 2025 - Present", // Assuming ongoing based on resume date [cite: 3]
+    technologies: "Python, Node.JS, TensorFlow, Docker, ML", // [cite: 3]
+    responsibilities: [
+      "Led backend development for the recommendation system for our startup's new approach to online shopping, through a focus on shoppers behaviors.", // [cite: 3]
+      "Managed cross-team workflows and mentored supporting engineers to help build a cohesive user-experience and a collaborative workspace.", // [cite: 3]
+      "Improved our recommendation system using basic matrix factorization, achieving a 0.04 improvement in NDCG@10 score.", // [cite: 3]
+    ],
+  },
+  {
+    companyName: "Illinois Medical District Guesthouse",
+    jobTitle: "Software Engineering Intern",
+    dates: "Aug - Dec 2023", // [cite: 3]
+    technologies: "HTML, CSS, API's", // [cite: 3]
+    responsibilities: [
+      "Developed a website that helped 40+ veterans and terminally ill patient's at the IMD Guesthouse connect with each other.", // [cite: 3, 4]
+      "Pitched my idea to the program manager and target audience, incorporating their feedback into my solution.", // [cite: 3]
+      "Connected individuals using QR codes generated from user-responses to a questionnaire, allowing other people to easily view the user's social media handles through a simple scan.", // [cite: 3]
+    ],
+  },
+  {
+    companyName: "Calculated Genius",
+    jobTitle: "Engineering Internship",
+    dates: "Jun - Jul 2023", // [cite: 5]
+    technologies: "C++, Bread boarding, Engineering", // [cite: 5]
+    responsibilities: [
+      "Selected from a competitive pool of 60 classmates to build skills in cybersecurity, front-end development, and engineering through structured workshops.", // [cite: 5]
+      "Implemented a traffic light system, utilizing C++ and bread boarding, enabling user-controlled light timing via button input.", // [cite: 5]
+      "Engaged in professional development experiences with companies like KPMG, Burns and McDonnell, KDM Engineering, LinkedIn, Motorola, Unity, and ComEd.", // [cite: 5]
+    ],
+  },
+];
+
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
   const [text, count] = useTypewriter({
@@ -33,10 +78,9 @@ export default function Home() {
     loop: true,
     delaySpeed: 2500,
   });
-  
 
   return (
-    <div >
+    <div>
       <Head>
         <title>NS Portfolio</title>
         <meta name="description" content="Nikhil's Portfolio" />
@@ -60,84 +104,87 @@ export default function Home() {
             <div className="absolute top-1/2 right-0 translate-y-[-50%] w-3/5 h-3/5 bg-pink-400 rounded-full mix-blend-multiply filter blur-[30px] opacity-25" />
             <div className="absolute bottom-0 left-1/2 translate-x-[-50%] w-3/5 h-3/5  bg-rose-400 rounded-full mix-blend-multiply filter blur-[30px] opacity-25 " />
           </div>
-          <nav  className=" border-black backdrop-blur-xl pt-5 pb-5 mb-12 flex justify-between navbar navbar-expand-md items-center w-full fixed top-0 right-0 left-0 opacity-[.98] z-40">
-  <div className="flex items-center justify-center w-full text-black text-2xl pl-8">
-    <motion.div whileHover={{ scale: 1.25 }} className="text-center absolute left-0">
-      <button
-        className="visible text-red-500 pl-5 py-2.5"
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        data-drawer-target="drawer-navigation"
-        data-drawer-show="drawer-navigation"
-        aria-controls="drawer-navigation"
-      >
-        <SlMenu />
-      </button>
-    </motion.div>
-    <motion.div whileHover={{ scale: 1.05 }} className="cursor-pointer text-2xl font-victor-mono italic font-bold text-white">
-      <Link to="home" offset={0} className="cursor-pointer">
-        builtbyNS
-      </Link>
-    </motion.div>
-  </div>
-</nav>
-          <div className="z-40 fixed bottom-0 right-0 left-0 justify-center flex flex-row items-center gap-10 backdrop-blur-xl ">
-                <div className=" h-[90px] overflow-hidden ">
-                  <Stock
-                    settings={{
-                      symbol: "NYSE:S",
-                      width: "100%",
-                      colorTheme: "light",
-                      isTransparent: true,
-                      locale: "en",
-                    }}
-                  />
-                </div>
-                <div className="h-[90px]  overflow-hidden">
-                  <Stock
-                    settings={{
-                      symbol: "NASDAQ:AMZN",
-                      width: "100%",
-                      colorTheme: "light",
-                      isTransparent: true,
-                      locale: "en",
-                    }}
-                  />
-                </div>
-                <div className="h-[90px] overflow-hidden">
-                  <Stock
-                    settings={{
-                      symbol: "NASDAQ:AAPL",
-                      width: "100%",
-                      colorTheme: "light",
-                      isTransparent: true,
-                      locale: "en",
-                    }}
-                  />
-                </div>
-              </div>
-              <div
-                
-                className="invisible lg:visible z-40 fixed top-52 right-5 text-4xl flex flex-col justify-center gap-16 py-3 pb-16 pt-10"
+          <nav className=" border-black backdrop-blur-xl pt-5 pb-5 mb-12 flex justify-between navbar navbar-expand-md items-center w-full fixed top-0 right-0 left-0 opacity-[.98] z-40">
+            <div className="flex items-center justify-center w-full text-black text-2xl pl-8">
+              <motion.div
+                whileHover={{ scale: 1.25 }}
+                className="text-center absolute left-0"
               >
-                <motion>
-                  <a href="https://github.com/nsavant12" target="_blank">
-                    <SlSocialGithub className="hover:animate-bounce text-white" />
-                  </a>
-                </motion>
-                <a
-                  href="https://www.instagram.com/nikhilsavant1/"
-                  target="_blank"
+                <button
+                  className="visible text-red-500 pl-5 py-2.5"
+                  type="button"
+                  onClick={() => setIsOpen(!isOpen)}
+                  data-drawer-target="drawer-navigation"
+                  data-drawer-show="drawer-navigation"
+                  aria-controls="drawer-navigation"
                 >
-                  <SlSocialInstagram className="hover:animate-bounce text-white" />
-                </a>
-                <a href="https://linkedin.com/in/nikhil-savant" target="_blank">
-                  <SlSocialLinkedin
-                    className="hover:animate-bounce text-white"
-                    id="photos"
-                  />
-                </a>
-              </div>
+                  <SlMenu />
+                </button>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className="cursor-pointer text-2xl font-victor-mono italic font-bold text-white"
+              >
+                <Link to="home" offset={0} className="cursor-pointer">
+                  builtbyNS
+                </Link>
+              </motion.div>
+            </div>
+          </nav>
+          <div className="z-40 fixed bottom-0 right-0 left-0 justify-center flex flex-row items-center gap-10 backdrop-blur-xl ">
+            <div className=" h-[90px] overflow-hidden ">
+              <Stock
+                settings={{
+                  symbol: "NYSE:S",
+                  width: "100%",
+                  colorTheme: "light",
+                  isTransparent: true,
+                  locale: "en",
+                }}
+              />
+            </div>
+            <div className="h-[90px]  overflow-hidden">
+              <Stock
+                settings={{
+                  symbol: "NASDAQ:AMZN",
+                  width: "100%",
+                  colorTheme: "light",
+                  isTransparent: true,
+                  locale: "en",
+                }}
+              />
+            </div>
+            <div className="h-[90px] overflow-hidden">
+              <Stock
+                settings={{
+                  symbol: "NASDAQ:AAPL",
+                  width: "100%",
+                  colorTheme: "light",
+                  isTransparent: true,
+                  locale: "en",
+                }}
+              />
+            </div>
+          </div>
+          <div className="invisible lg:visible z-40 fixed top-52 right-5 text-4xl flex flex-col justify-center gap-16 py-3 pb-16 pt-10">
+            <motion>
+              <a href="https://github.com/nsavant12" target="_blank">
+                <SlSocialGithub className="hover:animate-bounce text-white" />
+              </a>
+            </motion>
+            <a
+              href="https://www.instagram.com/nikhilsavant1/"
+              target="_blank"
+            >
+              <SlSocialInstagram className="hover:animate-bounce text-white" />
+            </a>
+            <a href="https://linkedin.com/in/nikhil-savant" target="_blank">
+              <SlSocialLinkedin
+                className="hover:animate-bounce text-white"
+                id="photos"
+              />
+            </a>
+          </div>
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -152,7 +199,7 @@ export default function Home() {
 
               <div className="glitch-wrapper pb-5">
                 <div className="glitch" data-glitch="Nikhil Savant">
-                  Nikhil Savant
+                  Nikhil Savant {/* [cite: 1] */}
                 </div>
               </div>
 
@@ -166,13 +213,9 @@ export default function Home() {
                 alt="me"
                 className="rounded-full w-64 h-64 mx-auto z-40"
               />
-              
-            
             </div>
-            
 
             <section id="about">
-               
               <h2 className="tracking-[20px] animate-pulse text-4xl md:text-5xl py-2 bg-gradient-to-r from-red-400 to-red-500 font-medium inline-block text-transparent bg-clip-text ">
                 About Me
               </h2>
@@ -180,7 +223,10 @@ export default function Home() {
             <div className="flex items-center justify-center px-16 pt-10">
               <motion.div className=" relative w-full max-w-2xl bg-contain">
                 <p className=" text-md py-5 leading-8 text-white font-extrabold font-victor-mono z-10 opacity-100 ">
-                  I am a Sophomore at UIUC majoring in Computer Science and Economics. I enjoy finance, news, tech, cars, and photography and love finding solutions to issues that intersect with my passions
+                  I am a Sophomore at UIUC majoring in Computer Science and
+                  Economics. I enjoy finance, news, tech, cars, and
+                  photography and love finding solutions to issues that
+                  intersect with my passions
                 </p>
               </motion.div>
             </div>
@@ -294,6 +340,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* MODIFIED WORK EXPERIENCE SECTION */}
         <section>
           <div className="text-center">
             <h3
@@ -304,11 +351,17 @@ export default function Home() {
             </h3>
           </div>
 
-          <div className=" flex w-full space-x-5 overflow-x-scroll p-10 snap-x snap-mandatory">
-            <ExperienceCards />
-            <ExperienceCards />
-            <ExperienceCards />
-            <ExperienceCards />
+          <div className="flex w-full space-x-5 overflow-x-scroll p-10 snap-x snap-mandatory scrollbar-thin scrollbar-track-gray-400/20 scrollbar-thumb-red-500/80">
+            {workExperiences.map((exp, index) => (
+              <ExperienceCards
+                key={index}
+                companyName={exp.companyName}
+                jobTitle={exp.jobTitle}
+                dates={exp.dates}
+                responsibilities={exp.responsibilities}
+                technologies={exp.technologies}
+              />
+            ))}
           </div>
         </section>
         <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
