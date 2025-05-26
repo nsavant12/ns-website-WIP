@@ -180,10 +180,7 @@ export default function Home() {
             <div className="flex items-center justify-center px-16 pt-10">
               <motion.div className=" relative w-full max-w-2xl bg-contain">
                 <p className=" text-md py-5 leading-8 text-white font-extrabold font-victor-mono z-10 opacity-100 ">
-                  I am a freshman at UIUC majoring in Computer Science & Economics. 
-                  Some things I enjoy are finance, sports, tech, cars,
-                  and photography. This website is a display of all my passions
-                  and projects that I have built along the way.
+  I am a Sophomore at UIUC majoring in Computer Science and Economics. I enjoy finance, news, tech, cars, and photography and love finding solutions to issues that intersect with my passions.
                 </p>
               </motion.div>
             </div>
