@@ -1,12 +1,12 @@
 import React from 'react';
-import { AiFillGithub } from 'react-icons/ai'; // Default icon
+import { AiFillGithub } from 'react-icons/ai';
 import { motion } from "framer-motion";
 
 type Props = {
   companyName: string;
   jobTitle: string;
   dates: string;
-  responsibilities: string[];
+  responsibilities: string[]; // This should always be an array
   technologies?: string;
 }
 
@@ -35,11 +35,14 @@ function ExperienceCards({ companyName, jobTitle, dates, responsibilities, techn
             </p>
           )}
           
-          <ul className="space-y-2 ml-5 list-disc mb-3 font-normal text-sm md:text-base dark:text-gray-300 opacity-90 text-left">
-            {responsibilities.map((point, index) => (
-              <li key={index} className='pb-1'>{point}</li>
-            ))}
-          </ul>
+          {/* Check if responsibilities is an array and has items before mapping */}
+          {Array.isArray(responsibilities) && responsibilities.length > 0 && (
+            <ul className="space-y-2 ml-5 list-disc mb-3 font-normal text-sm md:text-base dark:text-gray-300 opacity-90 text-left">
+              {responsibilities.map((point, index) => (
+                <li key={index} className='pb-1'>{point}</li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </article>
