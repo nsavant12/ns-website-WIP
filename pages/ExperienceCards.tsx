@@ -6,7 +6,7 @@ type Props = {
   companyName: string;
   jobTitle: string;
   dates: string;
-  responsibilities: string[]; // This should always be an array
+  responsibilities: string[];
   technologies?: string;
 }
 
@@ -21,7 +21,6 @@ function ExperienceCards({ companyName, jobTitle, dates, responsibilities, techn
           viewport={{ once: true }}
           className="text-center"
         >
-          <AiFillGithub className='dark:text-white w-14 h-14 md:w-16 md:h-16 mb-2 mx-auto hover:opacity-75 transition-opacity duration-300'/>
         </motion.div>
 
         <div className="flex-grow text-center md:text-left">
@@ -31,7 +30,7 @@ function ExperienceCards({ companyName, jobTitle, dates, responsibilities, techn
           
           {technologies && (
             <p className="text-xs md:text-sm text-gray-700 dark:text-gray-400 mb-3 italic text-center md:text-left">
-              Key Technologies: {technologies}
+              Technologies: {technologies}
             </p>
           )}
           
