@@ -17,7 +17,7 @@ import { Cursor, useTypewriter } from "react-simple-typewriter";
 import image7 from "../public/desert.jpg";
 import { Link } from "react-scroll";
 import image8 from "../public/summer.jpg";
-import ExperienceCards from "./ExperienceCards"; // Your ExperienceCards component
+import ExperienceCards from "./ExperienceCards"; 
 import Sidebar from "./sidebar";
 import Projects from "./Projects";
 import { motion, useScroll } from "framer-motion";
@@ -26,47 +26,46 @@ import SkillsSection from "./SkillsSection";
 import Skills from "./Skills";
 import Stock from "./Stocks";
 
-// Define work experience data directly in this file
 const workExperiences = [
   {
-    companyName: "AlgoAnalytics",
+    companyName: "Algo Analytics",
     jobTitle: "Incoming Full Stack Intern",
     dates: "Summer 2025",
     responsibilities: [
-      "Will be interning as a Full Stack Engineer during Summer 2025.", // [cite: 3]
+      "Will be interning as a Full Stack Engineer during Summer 2025.", 
     ],
   },
   {
     companyName: "UIUC Startup",
     jobTitle: "Founding Technical Backend Lead",
-    dates: "Mar 2025 - Present", // Assuming ongoing based on resume date [cite: 3]
-    technologies: "Python, Node.JS, TensorFlow, Docker, ML", // [cite: 3]
+    dates: "Mar 2025 - Present", 
+    technologies: "Python, Node.JS, TensorFlow, Docker, ML", 
     responsibilities: [
-      "Led backend development for the recommendation system for our startup's new approach to online shopping, through a focus on shoppers behaviors.", // [cite: 3]
-      "Managed cross-team workflows and mentored supporting engineers to help build a cohesive user-experience and a collaborative workspace.", // [cite: 3]
-      "Improved our recommendation system using basic matrix factorization, achieving a 0.04 improvement in NDCG@10 score.", // [cite: 3]
+      "Led backend development for the recommendation system for our startup's new approach to online shopping, through a focus on shoppers behaviors.", 
+      "Managed cross-team workflows and mentored supporting engineers to help build a cohesive user-experience and a collaborative workspace.", 
+      "Improved our recommendation system using basic matrix factorization, achieving a 0.04 improvement in NDCG@10 score.", 
     ],
   },
   {
     companyName: "Illinois Medical District Guesthouse",
     jobTitle: "Software Engineering Intern",
-    dates: "Aug - Dec 2023", // [cite: 3]
-    technologies: "HTML, CSS, API's", // [cite: 3]
+    dates: "Aug - Dec 2023", 
+    technologies: "HTML, CSS, API's", 
     responsibilities: [
-      "Developed a website that helped 40+ veterans and terminally ill patient's at the IMD Guesthouse connect with each other.", // [cite: 3, 4]
-      "Pitched my idea to the program manager and target audience, incorporating their feedback into my solution.", // [cite: 3]
-      "Connected individuals using QR codes generated from user-responses to a questionnaire, allowing other people to easily view the user's social media handles through a simple scan.", // [cite: 3]
+      "Developed a website that helped 40+ veterans and terminally ill patient's at the IMD Guesthouse connect with each other.", 
+      "Pitched my idea to the program manager and target audience, incorporating their feedback into my solution.", 
+      "Connected individuals using QR codes generated from user-responses to a questionnaire, allowing other people to easily view the user's social media handles through a simple scan.", 
     ],
   },
   {
     companyName: "Calculated Genius",
     jobTitle: "Engineering Internship",
-    dates: "Jun - Jul 2023", // [cite: 5]
-    technologies: "C++, Bread boarding, Engineering", // [cite: 5]
+    dates: "Jun - Jul 2023", 
+    technologies: "C++, Bread boarding, Engineering", 
     responsibilities: [
-      "Selected from a competitive pool of 60 classmates to build skills in cybersecurity, front-end development, and engineering through structured workshops.", // [cite: 5]
-      "Implemented a traffic light system, utilizing C++ and bread boarding, enabling user-controlled light timing via button input.", // [cite: 5]
-      "Engaged in professional development experiences with companies like KPMG, Burns and McDonnell, KDM Engineering, LinkedIn, Motorola, Unity, and ComEd.", // [cite: 5]
+      "Selected from a competitive pool of 60 classmates to build skills in cybersecurity, front-end development, and engineering through structured workshops.", 
+      "Implemented a traffic light system, utilizing C++ and bread boarding, enabling user-controlled light timing via button input.", 
+      "Engaged in professional development experiences with companies like KPMG, Burns and McDonnell, KDM Engineering, LinkedIn, Motorola, Unity, and ComEd.",
     ],
   },
 ];
@@ -340,7 +339,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* MODIFIED WORK EXPERIENCE SECTION */}
+        {/* WORK EXPERIENCE SECTION */}
         <section>
           <div className="text-center">
             <h3
