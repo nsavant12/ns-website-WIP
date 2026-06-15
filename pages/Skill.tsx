@@ -10,6 +10,7 @@ type Props = {
 };
 
 const Skill = ({ directionLeft, icon: Icon, color, proficiency }: Props) => {
+  if (!Icon) return null;
   return (
     <div className='group relative flex cursor-pointer'>
       <motion.div

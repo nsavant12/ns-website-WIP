@@ -39,6 +39,7 @@ type Props = {
 }
 
 function ExperienceCards({ companyName, jobTitle, dates, responsibilities, technologies }: Props) {
+  if (!companyName) return null;
   return (
     <article className='opacity-80 hover:opacity-100 cursor-pointer transition-opacity duration-200 snap-center flex flex-col flex-shrink-0 w-[330px] md:w-[420px] xl:w-[580px] overflow-hidden my-4'>
       <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-700 dark:border-gray-600 h-full flex flex-col">
