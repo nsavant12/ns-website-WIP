@@ -283,5 +283,23 @@
 }
 }
 
+.experience-cards-hide::-webkit-scrollbar {
+  display: none;
+}
 
+.experience-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+.experience-scroll::-webkit-scrollbar-track {
+  background: rgba(156, 163, 175, 0.2);
+  border-radius: 3px;
+  margin: 0 40px;
+}
+.experience-scroll::-webkit-scrollbar-thumb {
+  background: rgba(239, 68, 68, 0.8);
+  border-radius: 3px;
+}
+.experience-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(239, 68, 68, 1);
+}
 

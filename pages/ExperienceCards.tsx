@@ -1,13 +1,41 @@
 import React from 'react';
-import { AiFillGithub } from 'react-icons/ai';
+import {
+  SiPython,
+  SiTypescript,
+  SiReact,
+  SiDocker,
+  SiTensorflow,
+  SiNodedotjs,
+  SiAmazonaws,
+  SiLit,
+} from "react-icons/si";
+import { IconType } from "react-icons";
 import { motion } from "framer-motion";
+
+type TechEntry = {
+  icon: IconType;
+  color: string;
+  label: string;
+};
+
+const techIconMap: Record<string, TechEntry> = {
+  "Python":       { icon: SiPython,     color: "#3776AB", label: "Python" },
+  "TypeScript":   { icon: SiTypescript, color: "#3178C6", label: "TypeScript" },
+  "React":        { icon: SiReact,      color: "#61DAFB", label: "React" },
+  "React Native": { icon: SiReact,      color: "#61DAFB", label: "React Native" },
+  "Docker":       { icon: SiDocker,     color: "#2496ED", label: "Docker" },
+  "TensorFlow":   { icon: SiTensorflow, color: "#FF6F00", label: "TensorFlow" },
+  "Node.js":      { icon: SiNodedotjs,  color: "#339933", label: "Node.js" },
+  "AWS":          { icon: SiAmazonaws,  color: "#FF9900", label: "AWS" },
+  "LitJS":        { icon: SiLit,        color: "#324FFF", label: "Lit" },
+};
 
 type Props = {
   companyName: string;
   jobTitle: string;
   dates: string;
   responsibilities: string[];
-  technologies?: string;
+  technologies?: string[];
 }
 
 function ExperienceCards({ companyName, jobTitle, dates, responsibilities, technologies }: Props) {
@@ -27,14 +55,22 @@ function ExperienceCards({ companyName, jobTitle, dates, responsibilities, techn
           <h5 className="mb-1 text-xl md:text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{companyName}</h5>
           <h1 className='dark:text-white text-lg md:text-xl opacity-80'>{jobTitle}</h1>
           <h2 className='uppercase text-xs md:text-sm dark:text-white opacity-60 pb-3'>{dates}</h2>
-          
-          {technologies && (
-            <p className="text-xs md:text-sm text-gray-700 dark:text-gray-400 mb-3 italic text-center md:text-left">
-              Technologies: {technologies}
-            </p>
+
+          {technologies && technologies.length > 0 && (
+            <div className="flex flex-wrap gap-3 mb-3 justify-center md:justify-start">
+              {technologies.map((tech) => {
+                const entry = techIconMap[tech];
+                if (!entry) return null;
+                const Icon = entry.icon;
+                return (
+                  <div key={tech} title={entry.label}>
+                    <Icon size={28} style={{ color: entry.color }} />
+                  </div>
+                );
+              })}
+            </div>
           )}
-          
-          {/* Check if responsibilities is an array and has items before mapping */}
+
           {Array.isArray(responsibilities) && responsibilities.length > 0 && (
             <ul className="space-y-2 ml-5 list-disc mb-3 font-normal text-sm md:text-base dark:text-gray-300 opacity-90 text-left">
               {responsibilities.map((point, index) => (

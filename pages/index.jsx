@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 import { BsFillMoonStarsFill } from "react-icons/bs";
 import {
@@ -25,53 +25,72 @@ import me_2 from "../public/me_2.jpg";
 import SkillsSection from "./SkillsSection";
 import Skills from "./Skills";
 import Stock from "./Stocks";
+import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 
 const workExperiences = [
   {
-    companyName: "Algo Analytics",
-    jobTitle: "Incoming Full Stack Intern",
-    dates: "Summer 2025",
+    companyName: "Cisco",
+    jobTitle: "Software Engineering Intern",
+    dates: "May - Aug 2026",
+    technologies: ["TypeScript", "Python", "LitJS"],
     responsibilities: [
-      "Will be interning as a Full Stack Engineer during Summer 2025.", 
+      "Designed and implemented scalable, user-focused features for Cisco's infrastructure management platform, Intersight.",
+      "Developed AI automation tools for the auto-generation of web UI components based on user prompts and to streamline testing and deployment cycles.",
+    ],
+  },
+  {
+    companyName: "Algo Analytics",
+    jobTitle: "Full Stack Engineer Intern",
+    dates: "Jun - Oct 2025",
+    technologies: ["TypeScript", "React Native", "Node.js"],
+    responsibilities: [
+      "Developed a TypeScript based backend integration layer to connect the React Native client with financial API's, aggregating real-time stock data and reducing client-side parsing times by 30%.",
+      "Implemented RESTful API controllers to serialize and sanitize high-throughput financial data streams, successfully processing 100,000+ data points daily while achieving a 300ms API response time.",
+      "Developed scalable backend services that utilized JWT authentication and Axios interceptors for secure session management, optimizing JSON payload sizes by 20% and ensuring zero-downtime token refresh cycles.",
+    ],
+  },
+  {
+    companyName: "StellarPay",
+    jobTitle: "Software Engineering Intern",
+    dates: "Jun - Aug 2025",
+    technologies: ["TypeScript", "Node.js", "AWS"],
+    responsibilities: [
+      "Built a GPT-powered financial assistant in TypeScript/Node.js, leveraging a Retrieval-Augmented Generation (RAG) system with engineered prompts to deliver precise, context-aware insights.",
+      "Refactored front-end codebase and components improving component reusability and load times, reducing code duplication by 25% and load times by 20%.",
+      "Enhanced retrieval precision by 40% using AWS Textract for document ingestion and OpenAI Embeddings with Pinecone for high-performance semantic search.",
+      "Implemented end-to-end security protocols across AWS services, including IAM role-based access control, encrypted data storage with AWS KMS (AES-256), and API Gateway authorization layers using JWTs.",
     ],
   },
   {
     companyName: "UIUC Startup",
-    jobTitle: "Founding Technical Backend Lead",
-    dates: "Mar 2025 - Present", 
-    technologies: "Python, Node.JS, TensorFlow, Docker, ML", 
+    jobTitle: "Technical Backend Lead",
+    dates: "Mar - Nov 2025",
+    technologies: ["Python", "Docker", "TensorFlow", "Node.js"],
     responsibilities: [
-      "Led backend development for the recommendation system for our startup's new approach to online shopping, through a focus on shoppers behaviors.", 
-      "Managed cross-team workflows and mentored supporting engineers to help build a cohesive user-experience and a collaborative workspace.", 
-      "Improved our recommendation system using basic matrix factorization, achieving a 0.04 improvement in NDCG@10 score.", 
-    ],
-  },
-  {
-    companyName: "Illinois Medical District Guesthouse",
-    jobTitle: "Software Engineering Intern",
-    dates: "Aug - Dec 2023", 
-    technologies: "HTML, CSS, API's", 
-    responsibilities: [
-      "Developed a website that helped 40+ veterans and terminally ill patient's at the IMD Guesthouse connect with each other.", 
-      "Pitched my idea to the program manager and target audience, incorporating their feedback into my solution.", 
-      "Connected individuals using QR codes generated from user-responses to a questionnaire, allowing other people to easily view the user's social media handles through a simple scan.", 
-    ],
-  },
-  {
-    companyName: "Calculated Genius",
-    jobTitle: "Engineering Internship",
-    dates: "Jun - Jul 2023", 
-    technologies: "C++, Bread boarding, Engineering", 
-    responsibilities: [
-      "Selected from a competitive pool of 60 classmates to build skills in cybersecurity, front-end development, and engineering through structured workshops.", 
-      "Implemented a traffic light system, utilizing C++ and bread boarding, enabling user-controlled light timing via button input.", 
-      "Engaged in professional development experiences with companies like KPMG, Burns and McDonnell, KDM Engineering, LinkedIn, Motorola, Unity, and ComEd.",
+      "Led backend development for the recommendation system for our startup's new approach to online shopping, through a focus on shoppers behaviors.",
+      "Developed and deployed containerized microservices using Docker for our ML inference API, integrating with CI/CD pipelines to ensure robust and automated model updates.",
+      "Optimized the ALS matrix factorization algorithm using clickstream data for implicit feedback, boosting model convergence and achieving a 0.04 improvement in NDCG@10.",
     ],
   },
 ];
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
+  const expScrollRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const updateScrollState = () => {
+    const el = expScrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 0);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+  };
+
+  const scrollExp = (dir) => {
+    if (!expScrollRef.current) return;
+    expScrollRef.current.scrollBy({ left: dir * 620, behavior: "smooth" });
+  };
   const [text, count] = useTypewriter({
     words: ["<Student>", "<Programmer>", "<Engineer>"],
     loop: true,
@@ -350,17 +369,47 @@ export default function Home() {
             </h3>
           </div>
 
-          <div className="flex w-full space-x-5 overflow-x-scroll p-10 snap-x snap-mandatory scrollbar-thin scrollbar-track-gray-400/20 scrollbar-thumb-red-500/80">
-            {workExperiences.map((exp, index) => (
-              <ExperienceCards
-                key={index}
-                companyName={exp.companyName}
-                jobTitle={exp.jobTitle}
-                dates={exp.dates}
-                responsibilities={exp.responsibilities}
-                technologies={exp.technologies}
-              />
-            ))}
+          <div className="relative">
+            {/* Left arrow */}
+            {canScrollLeft && (
+              <button
+                onClick={() => scrollExp(-1)}
+                className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full flex items-center justify-center text-white shadow-xl transition-all duration-200 hover:scale-110 active:scale-95"
+                style={{ background: "rgba(255,255,255,0.15)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.25)" }}
+              >
+                <HiChevronLeft size={22} />
+              </button>
+            )}
+
+            {/* Scrollable cards */}
+            <div
+              ref={expScrollRef}
+              onScroll={updateScrollState}
+              className="flex w-full space-x-5 overflow-x-scroll px-16 pt-10 pb-4 snap-x snap-mandatory"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
+              {workExperiences.map((exp, index) => (
+                <ExperienceCards
+                  key={index}
+                  companyName={exp.companyName}
+                  jobTitle={exp.jobTitle}
+                  dates={exp.dates}
+                  responsibilities={exp.responsibilities}
+                  technologies={exp.technologies}
+                />
+              ))}
+            </div>
+
+            {/* Right arrow */}
+            {canScrollRight && (
+              <button
+                onClick={() => scrollExp(1)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full flex items-center justify-center text-white shadow-xl transition-all duration-200 hover:scale-110 active:scale-95"
+                style={{ background: "rgba(255,255,255,0.15)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.25)" }}
+              >
+                <HiChevronRight size={22} />
+              </button>
+            )}
           </div>
         </section>
         <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
