@@ -3425,16 +3425,16 @@ button {
 .mii-plaza-make-icon {
   display: grid;
   flex: 0 0 auto;
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   place-items: center;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, #ffffff, #b9c4c6);
 }
 
 .mii-add-icon {
-  width: 27px;
-  height: 20px;
+  width: 24px;
+  height: 21px;
 }
 
 /* Collapsed to nothing by default; the button's own hover/focus state

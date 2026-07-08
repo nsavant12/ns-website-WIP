@@ -598,23 +598,25 @@ function DancingNotes({ reduceMotion }) {
 }
 
 // Pixel "add person" glyph for the Make a Mii button: a small blocky
-// head-and-shoulders silhouette with a plus badge set off to its right.
+// head-and-shoulders silhouette with a badge notched into its bottom-right
+// corner, like a standard "add" avatar affordance.
 const PERSON_RECTS = [
   { x: 4, y: 1, width: 4, height: 4 },
   { x: 3, y: 6, width: 6, height: 1 },
   { x: 2, y: 7, width: 8, height: 1 },
   { x: 1, y: 8, width: 10, height: 1 },
 ];
+const BADGE_BACKDROP = { x: 8, y: 6, width: 6, height: 6 };
 const PLUS_RECTS = [
-  { x: 14, y: 5, width: 1, height: 5 },
-  { x: 12, y: 7, width: 4, height: 1 },
+  { x: 10, y: 7, width: 2, height: 4 },
+  { x: 9, y: 8, width: 4, height: 2 },
 ];
 
 function PixelAddPersonIcon() {
   return (
     <svg
       className="mii-add-icon"
-      viewBox="0 0 16 12"
+      viewBox="0 0 16 14"
       shapeRendering="crispEdges"
       role="presentation"
       aria-hidden="true"
@@ -622,6 +624,13 @@ function PixelAddPersonIcon() {
       {PERSON_RECTS.map((rect, index) => (
         <rect key={"p" + index} x={rect.x} y={rect.y} width={rect.width} height={rect.height} fill="#55666d" />
       ))}
+      <rect
+        x={BADGE_BACKDROP.x}
+        y={BADGE_BACKDROP.y}
+        width={BADGE_BACKDROP.width}
+        height={BADGE_BACKDROP.height}
+        fill="#f2f6f6"
+      />
       {PLUS_RECTS.map((rect, index) => (
         <rect key={"b" + index} x={rect.x} y={rect.y} width={rect.width} height={rect.height} fill="#18b7ed" />
       ))}
