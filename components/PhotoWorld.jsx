@@ -12,6 +12,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Grid2X2,
+  Pause,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -88,6 +89,8 @@ const ALBUM_COVERS = [
     x: 32,
     y: 16,
     src: "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/58/17/c6/5817c6c7-d5ba-bec6-f98d-2910748c17f5/4250101407932_cover.jpg/600x600bb.jpg",
+    track: "Utility",
+    previewUrl: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/b9/6c/43/b96c43d6-99b0-5717-6e32-62faab3d7fd5/mzaf_1706470681253136801.plus.aac.p.m4a",
   },
   {
     title: "Walking Wounded",
@@ -96,6 +99,8 @@ const ALBUM_COVERS = [
     x: 68,
     y: 16,
     src: "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/bb/26/57/bb265719-c6c7-d4bd-16ca-08946eff894d/5060516091058.png/600x600bb.jpg",
+    track: "Walking Wounded",
+    previewUrl: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview122/v4/35/87/51/3587516a-27de-5508-521c-9a05ee0b1939/mzaf_9878866461840107767.plus.aac.p.m4a",
   },
   {
     title: "Producer 01",
@@ -104,6 +109,8 @@ const ALBUM_COVERS = [
     x: 50,
     y: 15,
     src: "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/d1/57/13/d15713db-09fd-d905-a7ed-9abc248bb85e/7640152970504_Cover.jpg/600x600bb.jpg",
+    track: "Demons Theme",
+    previewUrl: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/21/e4/f8/21e4f8f3-a637-2a5c-6a59-4d4b6385f8a0/mzaf_16202025237066280301.plus.aac.p.m4a",
   },
   {
     title: "The Best of Sade",
@@ -112,6 +119,36 @@ const ALBUM_COVERS = [
     x: 50,
     y: 15,
     src: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/5f/ad/2a/5fad2aca-d998-701d-7b27-c074339d5fd0/886972262628.jpg/600x600bb.jpg",
+    track: "Smooth Operator",
+    previewUrl: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview116/v4/7d/9a/50/7d9a50b9-75bd-c4c8-5c72-ac200a333474/mzaf_10550216675185697487.plus.aac.p.m4a",
+  },
+];
+
+// Poster art hotlinked from Wikipedia's film pages.
+const MOVIE_POSTERS = [
+  {
+    title: "Memento",
+    year: "2000",
+    wall: "back",
+    x: 50,
+    y: 16,
+    src: "https://upload.wikimedia.org/wikipedia/en/c/c7/Memento_poster.jpg",
+  },
+  {
+    title: "Memories of Murder",
+    year: "2003",
+    wall: "left",
+    x: 76,
+    y: 14,
+    src: "https://upload.wikimedia.org/wikipedia/en/0/01/Salinui-chueok-south-korean-movie-poster-md.jpg",
+  },
+  {
+    title: "Nausicaä of the Valley of the Wind",
+    year: "1984",
+    wall: "right",
+    x: 24,
+    y: 15,
+    src: "https://upload.wikimedia.org/wikipedia/en/b/bc/Nausicaaposter.jpg",
   },
 ];
 
@@ -361,6 +398,8 @@ export default function PhotoWorld() {
   });
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [capturePhase, setCapturePhase] = useState(null);
+  const [playingAlbum, setPlayingAlbum] = useState(null);
+  const previewAudio = useRef(null);
   const pointerStart = useRef(null);
   const globePointerStart = useRef(null);
   const didDrag = useRef(false);
@@ -381,14 +420,40 @@ export default function PhotoWorld() {
   useEffect(() => () => {
     clearCaptureTimers();
     audioContext.current?.close?.();
+    previewAudio.current?.pause();
   }, [clearCaptureTimers]);
+
+  const toggleAlbumPreview = useCallback((album) => {
+    if (didDrag.current) return;
+
+    if (!previewAudio.current) {
+      previewAudio.current = new Audio();
+      previewAudio.current.preload = "none";
+    }
+    const audio = previewAudio.current;
+
+    if (playingAlbum === album.title) {
+      audio.pause();
+      setPlayingAlbum(null);
+      return;
+    }
+
+    audio.onended = () => setPlayingAlbum(null);
+    audio.onerror = () => setPlayingAlbum(null);
+    audio.src = album.previewUrl;
+    audio.currentTime = 0;
+    audio.play().then(
+      () => setPlayingAlbum(album.title),
+      () => setPlayingAlbum(null),
+    );
+  }, [playingAlbum]);
 
   useEffect(() => {
     const canvas = globeCanvasRef.current;
     if (!canvas) return undefined;
 
-    const size = 160;
-    const radius = 72;
+    const size = 220;
+    const radius = 100;
     const center = size / 2;
     const textureCanvas = document.createElement("canvas");
     const textureContext = textureCanvas.getContext("2d", { willReadFrequently: true });
@@ -410,6 +475,11 @@ export default function PhotoWorld() {
       const sinePitch = Math.sin(pitchRadians);
       const output = canvasContext.createImageData(size, size);
 
+      // Light arrives from the upper left, in front of the globe.
+      const lightX = -0.42;
+      const lightY = 0.55;
+      const lightZ = 0.72;
+
       for (let y = 0; y < size; y += 1) {
         for (let x = 0; x < size; x += 1) {
           const xView = (x - center) / radius;
@@ -425,8 +495,17 @@ export default function PhotoWorld() {
           const latitude = Math.asin(yBeforePitch);
           const longitude = Math.atan2(xWorld, zWorld);
           const target = (y * size + x) * 4;
-          const lighting = 0.66 + zView * 0.34;
 
+          const diffuse = Math.max(
+            0,
+            xView * lightX + yView * lightY + zView * lightZ,
+          );
+          const lighting = 0.42 + diffuse * 0.68;
+          const specular = diffuse ** 12 * 70;
+
+          let baseRed = 63;
+          let baseGreen = 156;
+          let baseBlue = 212;
           if (textureData) {
             const sourceX = Math.min(
               textureData.width - 1,
@@ -437,18 +516,22 @@ export default function PhotoWorld() {
               Math.max(0, Math.floor((0.5 - latitude / Math.PI) * textureData.height)),
             );
             const source = (sourceY * textureData.width + sourceX) * 4;
-            const red = textureData.data[source];
-            const green = textureData.data[source + 1];
-            const blue = textureData.data[source + 2];
-            const pale = red > 210 && green > 210 && blue > 210;
-            output.data[target] = Math.round((pale ? 50 : red) * lighting);
-            output.data[target + 1] = Math.round((pale ? 137 : green) * lighting);
-            output.data[target + 2] = Math.round((pale ? 178 : blue) * lighting);
-          } else {
-            output.data[target] = Math.round(38 * lighting);
-            output.data[target + 1] = Math.round(132 * lighting);
-            output.data[target + 2] = Math.round(177 * lighting);
+            const luminance = (
+              textureData.data[source]
+              + textureData.data[source + 1]
+              + textureData.data[source + 2]
+            ) / 3;
+            const isLand = textureData.data[source + 3] > 60 && luminance < 210;
+            if (isLand) {
+              baseRed = 104;
+              baseGreen = 186;
+              baseBlue = 96;
+            }
           }
+
+          output.data[target] = Math.min(255, Math.round(baseRed * lighting + specular));
+          output.data[target + 1] = Math.min(255, Math.round(baseGreen * lighting + specular));
+          output.data[target + 2] = Math.min(255, Math.round(baseBlue * lighting + specular));
           output.data[target + 3] = 255;
         }
       }
@@ -458,6 +541,22 @@ export default function PhotoWorld() {
       canvasContext.beginPath();
       canvasContext.arc(center, center, radius, 0, Math.PI * 2);
       canvasContext.clip();
+
+      // Glassy highlight and shaded rim sell the sphere as a 3D object.
+      const gloss = canvasContext.createRadialGradient(
+        center - radius * 0.42,
+        center - radius * 0.48,
+        radius * 0.08,
+        center,
+        center,
+        radius,
+      );
+      gloss.addColorStop(0, "rgba(255, 255, 255, 0.34)");
+      gloss.addColorStop(0.32, "rgba(255, 255, 255, 0.08)");
+      gloss.addColorStop(0.78, "rgba(9, 26, 43, 0)");
+      gloss.addColorStop(1, "rgba(9, 26, 43, 0.34)");
+      canvasContext.fillStyle = gloss;
+      canvasContext.fillRect(0, 0, size, size);
 
       GLOBE_PINS.forEach((pin) => {
         const latitude = (pin.latitude * Math.PI) / 180;
@@ -473,20 +572,21 @@ export default function PhotoWorld() {
 
         const pinX = center + xAfterYaw * radius;
         const pinY = center - yAfterPitch * radius;
+        const pinScale = 0.72 + zAfterPitch * 0.28;
         canvasContext.fillStyle = "#f04a42";
         canvasContext.strokeStyle = "#fff4dc";
-        canvasContext.lineWidth = 2;
+        canvasContext.lineWidth = 2.4;
         canvasContext.beginPath();
-        canvasContext.arc(pinX, pinY, 3.8, 0, Math.PI * 2);
+        canvasContext.arc(pinX, pinY, 5.2 * pinScale, 0, Math.PI * 2);
         canvasContext.fill();
         canvasContext.stroke();
       });
       canvasContext.restore();
 
       canvasContext.strokeStyle = "#183a57";
-      canvasContext.lineWidth = 5;
+      canvasContext.lineWidth = 6;
       canvasContext.beginPath();
-      canvasContext.arc(center, center, radius + 1.5, 0, Math.PI * 2);
+      canvasContext.arc(center, center, radius + 2, 0, Math.PI * 2);
       canvasContext.stroke();
     };
 
@@ -496,6 +596,10 @@ export default function PhotoWorld() {
       if (destroyed || !textureContext) return;
       textureCanvas.width = 720;
       textureCanvas.height = 360;
+      // The map SVG has a transparent ocean; without an opaque fill the
+      // sampled pixels read as black and the whole globe renders dark.
+      textureContext.fillStyle = "#ffffff";
+      textureContext.fillRect(0, 0, textureCanvas.width, textureCanvas.height);
       textureContext.drawImage(texture, 0, 0, textureCanvas.width, textureCanvas.height);
       try {
         textureData = textureContext.getImageData(0, 0, textureCanvas.width, textureCanvas.height);
@@ -645,6 +749,7 @@ export default function PhotoWorld() {
       y: event.clientY,
       yaw: globeYaw.get(),
       pitch: globePitch.get(),
+      moved: false,
     };
     event.currentTarget.setPointerCapture?.(event.pointerId);
   };
@@ -655,6 +760,14 @@ export default function PhotoWorld() {
       || globePointerStart.current.id !== event.pointerId
     ) return;
     event.stopPropagation();
+    if (
+      Math.hypot(
+        event.clientX - globePointerStart.current.x,
+        event.clientY - globePointerStart.current.y,
+      ) > 5
+    ) {
+      globePointerStart.current.moved = true;
+    }
     globeYaw.set(globePointerStart.current.yaw + (
       event.clientX - globePointerStart.current.x
     ) * 0.7);
@@ -675,6 +788,14 @@ export default function PhotoWorld() {
     event.stopPropagation();
     if (event.currentTarget.hasPointerCapture?.(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+
+    // A tap (no drag) on either side of the globe gives it a push, spinning
+    // it the way you would swat a desk globe.
+    if (!globePointerStart.current.moved) {
+      const bounds = event.currentTarget.getBoundingClientRect();
+      const clickedLeftSide = event.clientX < bounds.left + bounds.width / 2;
+      globeYaw.set(globeYaw.get() + (clickedLeftSide ? -55 : 55));
     }
     globePointerStart.current = null;
   };
@@ -784,14 +905,57 @@ export default function PhotoWorld() {
                                 top: album.y + "%",
                               }}
                             >
-                              <img
-                                src={album.src}
-                                alt={album.title + " by " + album.artist + " album cover"}
-                                loading="lazy"
-                              />
+                              <button
+                                type="button"
+                                className="album-preview-button"
+                                onClick={() => toggleAlbumPreview(album)}
+                                aria-pressed={playingAlbum === album.title}
+                                aria-label={(playingAlbum === album.title
+                                  ? "Pause the preview of "
+                                  : "Play a preview of ")
+                                  + album.track + " by " + album.artist}
+                              >
+                                <img
+                                  src={album.src}
+                                  alt={album.title + " by " + album.artist + " album cover"}
+                                  loading="lazy"
+                                  draggable={false}
+                                />
+                                {playingAlbum === album.title ? (
+                                  <span className="album-playing-overlay" aria-hidden="true">
+                                    <span className="album-pause-chip">
+                                      <Pause />
+                                    </span>
+                                  </span>
+                                ) : null}
+                              </button>
                               <figcaption>
                                 <strong>{album.title}</strong>
                                 <span>{album.artist}</span>
+                              </figcaption>
+                            </figure>
+                          ) : null
+                        ))}
+
+                        {MOVIE_POSTERS.map((movie) => (
+                          movie.wall === wall ? (
+                            <figure
+                              key={movie.title}
+                              className="pixel-album-cover movie-poster"
+                              style={{
+                                left: movie.x + "%",
+                                top: movie.y + "%",
+                              }}
+                            >
+                              <img
+                                src={movie.src}
+                                alt={movie.title + " movie poster"}
+                                loading="lazy"
+                                draggable={false}
+                              />
+                              <figcaption>
+                                <strong>{movie.title}</strong>
+                                <span>{movie.year}</span>
                               </figcaption>
                             </figure>
                           ) : null
@@ -801,10 +965,12 @@ export default function PhotoWorld() {
 
                     <div className="photo-room-table" aria-hidden="true">
                       <div className="pixel-table-top" />
-                      <div className="pixel-table-front" />
-                      <div className="pixel-table-side" />
-                      <span className="pixel-table-leg pixel-table-leg-left" />
-                      <span className="pixel-table-leg pixel-table-leg-right" />
+                      <div className="pixel-table-edge" />
+                      <div className="pixel-table-edge-side pixel-table-edge-left" />
+                      <div className="pixel-table-edge-side pixel-table-edge-right" />
+                      <div className="pixel-table-apron" />
+                      <span className="pixel-table-leg pixel-table-leg-front-left" />
+                      <span className="pixel-table-leg pixel-table-leg-front-right" />
                       <span className="pixel-table-leg pixel-table-leg-back-left" />
                       <span className="pixel-table-leg pixel-table-leg-back-right" />
                     </div>
@@ -813,7 +979,7 @@ export default function PhotoWorld() {
                       className="pixel-globe-control"
                       tabIndex={0}
                       role="group"
-                      aria-label="Interactive globe. Drag or use left and right arrow keys to spin it. Red pins mark the United States, Canada, Switzerland, Austria, Spain, Morocco, Portugal, India, and Mexico."
+                      aria-label="Interactive globe. Drag it, click either side of it, or use the left and right arrow keys to spin it. Red pins mark the United States, Canada, Switzerland, Austria, Spain, Morocco, Portugal, India, and Mexico."
                       onPointerDown={handleGlobePointerDown}
                       onPointerMove={handleGlobePointerMove}
                       onPointerUp={handleGlobePointerUp}
@@ -825,7 +991,8 @@ export default function PhotoWorld() {
                         className="pixel-globe"
                         aria-hidden="true"
                       />
-                      <span className="pixel-globe-label" aria-hidden="true">DRAG TO SPIN</span>
+                      <span className="pixel-globe-stand" aria-hidden="true" />
+                      <span className="pixel-globe-label" aria-hidden="true">DRAG OR CLICK TO SPIN</span>
                     </div>
                   </div>
                 </motion.div>

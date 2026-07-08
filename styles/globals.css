@@ -916,33 +916,36 @@ button {
 .wii-cursor {
   position: fixed;
   z-index: 9999;
-  top: -2px;
-  left: -21px;
-  width: 48px;
-  height: 64px;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
   pointer-events: none;
-  filter: drop-shadow(2px 3px 1px rgba(0, 0, 0, 0.34));
 }
 
-.wii-cursor svg {
+.wii-cursor-img {
+  position: absolute;
+  display: none;
+  width: 96px;
+  height: 96px;
+  max-width: none;
+  filter: drop-shadow(2px 4px 2px rgba(0, 0, 0, 0.3));
+}
+
+.wii-cursor-img.is-active {
   display: block;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
 }
 
-.wii-cursor-hand {
-  fill: #fff;
-  stroke: #171c20;
-  stroke-linejoin: round;
-  stroke-width: 2.2;
+/* Hotspots: the fingertip of the 96px tilted pointer art sits at (40, 34),
+   the fist grab is centered. */
+.wii-cursor-img-point {
+  top: -34px;
+  left: -40px;
 }
 
-.wii-cursor text {
-  fill: #159be0;
-  font-family: "Arial Rounded MT Bold", sans-serif;
-  font-size: 16px;
-  font-weight: 800;
+.wii-cursor-img-grab {
+  top: -48px;
+  left: -48px;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -1371,6 +1374,9 @@ button {
 .photo-room-stage {
   position: absolute;
   inset: 0;
+  /* Like .photo-room, the stage's flat plane sits in front of the 3D scene
+     for hit-testing; clicks must fall through to the frames and globe. */
+  pointer-events: none;
   perspective: var(--room-perspective);
   perspective-origin: 50% 50%;
   transform-style: preserve-3d;
@@ -1404,6 +1410,10 @@ button {
   left: 0;
   width: var(--room-width);
   height: var(--room-height);
+  /* The room shell is a huge plane sitting near the camera; without this it
+     hit-tests in front of everything and eats clicks meant for the photo
+     frames and the globe. */
+  pointer-events: none;
   transform: translate(-50%, -50%);
   transform-style: preserve-3d;
 }
@@ -1413,28 +1423,13 @@ button {
   top: 0;
   height: 100%;
   border: 2px solid #bac7c2;
-  background:
-    repeating-linear-gradient(90deg, transparent 0 39px, rgba(79, 99, 94, .055) 39px 40px),
-    repeating-linear-gradient(0deg, transparent 0 39px, rgba(79, 99, 94, .045) 39px 40px),
-    linear-gradient(135deg, #ffffff 0%, #f2f5ef 56%, #e4e9e1 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #f2f5ef 56%, #e4e9e1 100%);
   box-shadow:
     inset 0 0 70px rgba(85, 107, 100, .14),
     inset 0 2px rgba(255,255,255,.96);
   transform-style: preserve-3d;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-}
-
-.photo-room-wall::before {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: .52;
-  background:
-    linear-gradient(90deg, transparent 48%, rgba(126, 148, 141, .11) 48% 52%, transparent 52%),
-    linear-gradient(0deg, transparent 48%, rgba(126, 148, 141, .1) 48% 52%, transparent 52%);
-  background-size: 16px 16px;
-  content: "";
 }
 
 .photo-room-wall::after {
@@ -1489,7 +1484,6 @@ button {
   top: 100%;
   background:
     repeating-linear-gradient(90deg, rgba(69, 36, 17, .22) 0 4px, transparent 4px 104px),
-    repeating-linear-gradient(0deg, rgba(255, 223, 169, .13) 0 2px, transparent 2px 29px),
     repeating-linear-gradient(90deg, #a55d31 0 99px, #7a3d20 99px 104px, #bd7540 104px 198px, #743719 198px 203px),
     linear-gradient(#b66f3e, #713618);
   box-shadow: inset 0 30px 90px rgba(47, 20, 8, .34);
@@ -1499,10 +1493,7 @@ button {
 
 .photo-room-ceiling {
   top: 0;
-  background:
-    repeating-linear-gradient(90deg, transparent 0 78px, rgba(107, 127, 119, .22) 78px 80px),
-    repeating-linear-gradient(0deg, transparent 0 78px, rgba(107, 127, 119, .2) 78px 80px),
-    linear-gradient(#fbfffb, #e4ece5);
+  background: linear-gradient(#fbfffb, #e4ece5);
   transform: translateZ(calc(0px - var(--room-near))) rotateX(-90deg);
   transform-origin: center top;
 }
@@ -1531,6 +1522,7 @@ button {
 .photo-room-frame {
   position: absolute;
   z-index: 2;
+  pointer-events: auto;
   width: var(--room-photo-width);
   aspect-ratio: 4 / 3;
   overflow: hidden;
@@ -1588,19 +1580,6 @@ button {
   outline-offset: 5px;
 }
 
-.photo-room-frame::after {
-  position: absolute;
-  z-index: 1;
-  inset: 0;
-  pointer-events: none;
-  opacity: .27;
-  background:
-    linear-gradient(90deg, transparent 49%, rgba(255,255,255,.48) 49% 51%, transparent 51%),
-    linear-gradient(0deg, transparent 49%, rgba(255,255,255,.34) 49% 51%, transparent 51%);
-  background-size: 9px 9px;
-  content: "";
-}
-
 .photo-room-frame > span {
   position: absolute;
   z-index: 2;
@@ -1646,16 +1625,60 @@ button {
   filter: saturate(1.2) contrast(1.12);
 }
 
-.pixel-album-cover::after {
+/* The room shell swallows pointer events; re-enable them so the album
+   covers can start and stop song previews. */
+.album-preview-button {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  pointer-events: auto;
+}
+
+.album-preview-button:focus-visible {
+  outline: 5px solid var(--wii-blue);
+  outline-offset: 8px;
+}
+
+.album-playing-overlay {
   position: absolute;
   inset: 0;
-  pointer-events: none;
-  opacity: .2;
-  background:
-    linear-gradient(90deg, transparent 48%, rgba(255,255,255,.54) 48% 52%, transparent 52%),
-    linear-gradient(0deg, transparent 48%, rgba(255,255,255,.36) 48% 52%, transparent 52%);
-  background-size: 8px 8px;
-  content: "";
+  display: grid;
+  place-items: center;
+  background: rgba(13, 26, 36, 0.32);
+}
+
+.album-pause-chip {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  place-items: center;
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(2px);
+  box-shadow: 0 4px 14px rgba(10, 22, 32, 0.35);
+}
+
+.album-pause-chip svg {
+  width: 26px;
+  height: 26px;
+  fill: currentColor;
+}
+
+.movie-poster {
+  width: 118px;
+  aspect-ratio: 27 / 40;
+  outline-color: #d8e4e8;
+}
+
+.movie-poster img {
+  image-rendering: auto;
+  filter: saturate(1.12) contrast(1.06);
 }
 
 .pixel-album-cover figcaption {
@@ -1693,109 +1716,155 @@ button {
 }
 
 .photo-room-table {
+  --table-depth: 150px;
+  --table-top-thickness: 16px;
   position: absolute;
   right: 56px;
   bottom: 0;
   z-index: 4;
-  width: 228px;
-  height: 180px;
+  width: 250px;
+  height: 112px;
   pointer-events: none;
-  transform: translateZ(calc(28px - var(--room-depth)));
+  transform: translateZ(calc(16px - var(--room-depth)));
   transform-style: preserve-3d;
 }
 
-.pixel-table-top {
+/* Soft contact shadow cast onto the floor beneath the table. */
+.photo-room-table::before {
   position: absolute;
-  right: 10px;
-  bottom: 80px;
-  left: 10px;
-  height: 92px;
-  border: 7px solid #552d15;
-  background:
-    repeating-linear-gradient(90deg, rgba(61, 28, 11, .35) 0 4px, transparent 4px 31px),
-    repeating-linear-gradient(0deg, #bd7440 0 11px, #8e4c26 11px 14px);
-  box-shadow: 8px 8px 0 rgba(50, 26, 11, .42);
-  transform: rotateX(68deg) translateZ(23px);
+  right: -18px;
+  bottom: 0;
+  left: -14px;
+  height: calc(var(--table-depth) + 26px);
+  background: radial-gradient(ellipse at 50% 45%, rgba(31, 15, 5, .3), transparent 68%);
+  content: "";
+  transform: translateY(-2px) rotateX(-90deg);
   transform-origin: center bottom;
 }
 
-.pixel-table-front {
+/* The tabletop is a real horizontal plane extending toward the camera. */
+.pixel-table-top {
   position: absolute;
-  right: 15px;
-  bottom: 21px;
-  left: 15px;
-  height: 62px;
-  border: 7px solid #552d15;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: var(--table-depth);
+  border: 5px solid #552d15;
   background:
-    repeating-linear-gradient(90deg, transparent 0 27px, rgba(59, 26, 11, .34) 27px 31px),
-    #a45c2e;
-  box-shadow: 6px 6px 0 rgba(47, 24, 10, .36);
+    repeating-linear-gradient(90deg, rgba(61, 28, 11, .3) 0 4px, transparent 4px 42px),
+    linear-gradient(180deg, #c07a45, #9a5527);
+  transform: rotateX(90deg);
+  transform-origin: center top;
 }
 
-.pixel-table-side {
+/* Front face of the tabletop slab (its thickness). */
+.pixel-table-edge {
   position: absolute;
-  right: -9px;
-  bottom: 21px;
-  width: 63px;
-  height: 62px;
-  border: 7px solid #552d15;
-  border-left: 0;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: var(--table-top-thickness);
+  border: 3px solid #47240f;
+  background: linear-gradient(180deg, #a05a2c, #7c3f1d);
+  transform: translateZ(var(--table-depth));
+}
+
+/* Left/right faces of the tabletop slab, seen when the room is rotated. */
+.pixel-table-edge-side {
+  position: absolute;
+  top: 0;
+  width: var(--table-depth);
+  height: var(--table-top-thickness);
+  border: 3px solid #47240f;
+  background: #8a4a22;
+}
+
+.pixel-table-edge-left {
+  left: 0;
+  transform: translateZ(var(--table-depth)) rotateY(90deg);
+  transform-origin: left center;
+}
+
+.pixel-table-edge-right {
+  right: 0;
+  transform: translateZ(var(--table-depth)) rotateY(-90deg);
+  transform-origin: right center;
+}
+
+/* Apron board tucked under the front of the tabletop. */
+.pixel-table-apron {
+  position: absolute;
+  top: var(--table-top-thickness);
+  right: 22px;
+  left: 22px;
+  height: 26px;
+  border: 3px solid #47240f;
   background:
-    repeating-linear-gradient(0deg, transparent 0 15px, rgba(59, 26, 11, .32) 15px 19px),
-    #7d3d1c;
-  box-shadow: 6px 5px 0 rgba(47, 24, 10, .3);
-  transform: skewY(-28deg);
-  transform-origin: left bottom;
+    repeating-linear-gradient(90deg, transparent 0 30px, rgba(59, 26, 11, .3) 30px 34px),
+    #a45c2e;
+  transform: translateZ(calc(var(--table-depth) - 26px));
 }
 
 .pixel-table-leg {
   position: absolute;
-  bottom: 0;
+  top: var(--table-top-thickness);
   width: 20px;
-  height: 32px;
-  background: #552d15;
-  box-shadow: inset 5px 0 #89451f;
+  height: calc(100% - var(--table-top-thickness));
+  border: 3px solid #47240f;
+  background: linear-gradient(90deg, #8a4a22, #6b3517);
+  transform-style: preserve-3d;
 }
 
-.pixel-table-leg-left {
-  left: 25px;
+/* Each leg gets a darker side face for depth. */
+.pixel-table-leg::before {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  left: -3px;
+  width: 20px;
+  background: #4a2610;
+  content: "";
+  transform: rotateY(90deg);
+  transform-origin: left center;
 }
 
-.pixel-table-leg-right {
-  right: 25px;
+.pixel-table-leg-front-left {
+  left: 12px;
+  transform: translateZ(calc(var(--table-depth) - 30px));
 }
 
-.pixel-table-leg-back-left,
-.pixel-table-leg-back-right {
-  z-index: -1;
-  bottom: 18px;
-  height: 39px;
-  background: #3f210f;
-  transform: translateY(-17px) skewY(-28deg);
+.pixel-table-leg-front-right {
+  right: 12px;
+  transform: translateZ(calc(var(--table-depth) - 30px));
 }
 
 .pixel-table-leg-back-left {
-  left: 49px;
+  left: 12px;
+  background: #59290f;
+  transform: translateZ(16px);
 }
 
 .pixel-table-leg-back-right {
-  right: 7px;
+  right: 12px;
+  background: #59290f;
+  transform: translateZ(16px);
 }
 
 .pixel-globe-control {
   position: absolute;
-  right: 96px;
-  bottom: 88px;
+  right: 115px;
+  bottom: 102px;
   z-index: 5;
-  display: grid;
+  pointer-events: auto;
+  display: flex;
   width: 132px;
-  height: 160px;
-  place-items: start center;
+  flex-direction: column;
+  align-items: center;
   cursor: grab;
   outline: none;
   touch-action: none;
   user-select: none;
-  transform: translateZ(calc(54px - var(--room-depth)));
+  transform: translateZ(calc(84px - var(--room-depth)));
   transform-style: preserve-3d;
 }
 
@@ -1813,13 +1882,38 @@ button {
   width: 126px;
   height: 126px;
   border-radius: 50%;
-  outline: 4px solid #d8f1e7;
-  box-shadow: 7px 7px 0 #112b40;
-  image-rendering: pixelated;
+  box-shadow:
+    10px 16px 20px rgba(13, 27, 43, .38),
+    0 4px 12px rgba(13, 27, 43, .22);
+}
+
+/* Wooden pedestal that seats the globe on the table. */
+.pixel-globe-stand {
+  position: relative;
+  z-index: -1;
+  width: 60px;
+  height: 18px;
+  margin-top: -8px;
+  border: 3px solid #2f1608;
+  border-radius: 50% / 58%;
+  background: linear-gradient(180deg, #8a4a24, #59290f);
+}
+
+.pixel-globe-stand::before {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  background: #47240f;
+  content: "";
+  transform: translateX(-50%);
 }
 
 .pixel-globe-label {
-  margin-top: 11px;
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
   padding: 4px 6px;
   color: #f8f5df;
   border: 3px solid #183a57;
@@ -1829,6 +1923,9 @@ button {
   font-weight: 900;
   letter-spacing: .08em;
   white-space: nowrap;
+  /* Pushed forward so the plate hangs in front of the 3D tabletop
+     instead of being swallowed by it. */
+  transform: translateX(-50%) translateZ(96px);
 }
 
 .photo-world-controls {
@@ -2983,6 +3080,28 @@ button {
   border-width: 2px;
 }
 
+.resume-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.resume-actions a {
+  gap: 8px;
+  border-width: 2px;
+  text-decoration: none;
+}
+
+.resume-coursework {
+  margin-top: 8px !important;
+  font-size: 0.8rem !important;
+}
+
+.resume-experience > .mini-label:not(:first-child) {
+  margin-top: 40px;
+}
+
 .resume-sheet > .h-px {
   margin-bottom: 40px;
 }
@@ -3063,6 +3182,474 @@ button {
   color: #657179;
   font-size: 0.9rem;
   line-height: 1.55;
+}
+
+/* ---------- Mii Channel plaza ---------- */
+
+.mii-plaza-shell {
+  display: grid;
+  gap: 18px;
+}
+
+.mii-plaza-heading h2 {
+  margin: 10px 0 6px;
+}
+
+.mii-plaza-heading p {
+  margin: 0;
+  color: #6f7b81;
+}
+
+.mii-plaza {
+  position: relative;
+  height: clamp(500px, 64vh, 660px);
+  overflow: hidden;
+  touch-action: manipulation;
+  user-select: none;
+  border: 2px solid rgba(255, 255, 255, .92);
+  border-radius: 26px;
+  outline: 1px solid #9ca9a8;
+  background: #f4f3ee url("/mii-plaza-bg.png") center 42% / cover no-repeat;
+  box-shadow:
+    0 20px 55px rgba(35, 50, 59, .18),
+    inset 0 1px 0 rgba(255, 255, 255, .6);
+}
+
+.mii-actor {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background: none;
+  translate: -50% -100%;
+}
+
+.mii-actor:focus-visible {
+  border-radius: 16px;
+  outline: 4px solid var(--wii-blue);
+  outline-offset: 4px;
+}
+
+.mii-actor-depth {
+  display: grid;
+  justify-items: center;
+  padding: 0 6px 8px;
+  transform-origin: bottom center;
+}
+
+.mii-actor-inner {
+  position: relative;
+  z-index: 1;
+  display: block;
+}
+
+.mii-actor-walking .mii-figure-svg {
+  animation: mii-walk .32s ease-in-out infinite alternate;
+}
+
+@keyframes mii-walk {
+  from { transform: translateY(0) rotate(-1.6deg); }
+  to { transform: translateY(-4px) rotate(1.6deg); }
+}
+
+.mii-actor-shadow {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  width: 76%;
+  height: 13px;
+  background: radial-gradient(ellipse, rgba(40, 45, 60, .3), transparent 68%);
+  transform: translateX(-50%);
+}
+
+.mii-actor-tag {
+  z-index: 1;
+  margin-top: 5px;
+  padding: 2px 11px;
+  color: #3c4a52;
+  border: 2px solid #9fb0ba;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .94);
+  box-shadow: 0 2px 6px rgba(35, 50, 59, .18);
+  font-size: .62rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+
+.mii-plaza-make {
+  position: absolute;
+  bottom: 18px;
+  left: 18px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 20px 9px 9px;
+  color: #46555c;
+  border: 2px solid #cfd8d8;
+  border-radius: 999px;
+  background: linear-gradient(#ffffff, #dfe6e6);
+  box-shadow: 0 6px 16px rgba(35, 50, 59, .2), inset 0 1px 0 #fff;
+  font-size: .84rem;
+  font-weight: 800;
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.mii-plaza-make:hover,
+.mii-plaza-make:focus-visible {
+  border-color: var(--wii-blue);
+  box-shadow: 0 8px 20px rgba(21, 155, 224, .32), inset 0 1px 0 #fff;
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.mii-plaza-make-icon {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  color: #55666d;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffffff, #b9c4c6);
+}
+
+.mii-plaza-make-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.mii-plaza-count {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  z-index: 60;
+  padding: 6px 13px;
+  color: #7b878d;
+  border: 1px solid #d5dcdc;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .8);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+.mii-about {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  /* Above every wandering Mii — their z-index tracks plaza depth (max ~85). */
+  z-index: 130;
+  width: min(370px, calc(100% - 36px));
+  padding: 16px 18px 20px;
+  border: 2px solid #fff;
+  border-radius: 22px;
+  outline: 1px solid #a6b3b3;
+  background: rgba(250, 252, 252, .97);
+  box-shadow: 0 18px 40px rgba(35, 50, 59, .24);
+}
+
+.mii-about p {
+  margin: 0 0 12px;
+  color: #57646b;
+  font-size: .9rem;
+  line-height: 1.6;
+}
+
+.mii-about-plate {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 9px 7px 15px;
+  margin-bottom: 13px;
+  border: 2px solid #c3cfd0;
+  border-radius: 999px;
+  background: linear-gradient(#eef3f4, #d9e2e3);
+}
+
+.mii-about-plate strong {
+  color: #2d3a41;
+  font-size: .98rem;
+}
+
+.mii-about-plate span {
+  color: #8a969b;
+  font-size: .62rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+
+.mii-about-plate button {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  margin-left: auto;
+  place-items: center;
+  color: #5a676d;
+  border: 2px solid #b6c2c4;
+  border-radius: 50%;
+  background: linear-gradient(#ffffff, #dde4e4);
+}
+
+.mii-about-plate button:hover,
+.mii-about-plate button:focus-visible {
+  color: #b03d31;
+  border-color: #b03d31;
+  outline: none;
+}
+
+.mii-about-meta {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 14px;
+}
+
+.mii-about-meta span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #5a676d;
+  font-size: .84rem;
+  font-weight: 600;
+}
+
+.mii-about-meta svg {
+  flex: 0 0 auto;
+  color: var(--wii-blue);
+}
+
+.mii-about-label {
+  margin: 0 0 8px !important;
+  color: #8a969b !important;
+  font-size: .64rem !important;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
+
+.mii-about-interests {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mii-about-remove {
+  gap: 8px;
+  border-width: 2px;
+}
+
+/* ---------- Mii maker ---------- */
+
+.mii-maker {
+  position: absolute;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #eef1f1, #dde3e3);
+}
+
+.mii-maker-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 14px 10px;
+  border-bottom: 2px solid #c2cccd;
+  background: rgba(198, 207, 208, .5);
+}
+
+.mii-maker-tab {
+  padding: 8px 15px;
+  color: #55646b;
+  border: 2px solid #b9c4c5;
+  border-radius: 12px;
+  background: linear-gradient(#fbfdfd, #dbe2e2);
+  font-size: .74rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+.mii-maker-tab:hover {
+  border-color: #8fa2ad;
+}
+
+.mii-maker-tab.is-active {
+  color: #fff;
+  border-color: #1f8750;
+  background: linear-gradient(#4ec284, #27995d);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .45);
+}
+
+.mii-maker-shuffle {
+  display: grid;
+  margin-left: auto;
+  place-items: center;
+  width: 36px;
+  height: 34px;
+  padding: 0;
+}
+
+.mii-maker-body {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(230px, .9fr) 1.4fr;
+  gap: 16px;
+  min-height: 0;
+  padding: 16px;
+}
+
+.mii-maker-preview {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 2px solid #ccd5d6;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, .74);
+}
+
+.mii-maker-stage {
+  display: grid;
+  flex: 1;
+  min-height: 0;
+  align-items: end;
+  justify-items: center;
+  overflow: hidden;
+}
+
+.mii-maker-name {
+  display: grid;
+  width: 100%;
+  max-width: 230px;
+  gap: 4px;
+  color: #7c888e;
+  font-size: .66rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.mii-maker-name input {
+  padding: 9px 13px;
+  color: #333f45;
+  border: 2px solid #c2cccd;
+  border-radius: 12px;
+  background: #fff;
+  outline: none;
+  font-size: .9rem;
+  font-weight: 600;
+}
+
+.mii-maker-name input:focus {
+  border-color: var(--wii-blue);
+}
+
+.mii-maker-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.mii-maker-actions button {
+  border-width: 2px;
+  font-weight: 700;
+}
+
+.mii-maker-save {
+  color: #fff;
+  border: 2px solid #1f8750;
+  background: linear-gradient(#4ec284, #27995d);
+}
+
+.mii-maker-save:hover {
+  background: linear-gradient(#43b478, #218a52);
+}
+
+.mii-maker-options {
+  min-height: 0;
+  padding: 18px;
+  overflow: auto;
+  border: 2px solid #ccd5d6;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, .74);
+}
+
+.mii-slider-stack {
+  display: grid;
+  max-width: 420px;
+  gap: 26px;
+}
+
+.mii-slider-stack label {
+  display: grid;
+  gap: 10px;
+  color: #55646b;
+  font-size: .74rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.mii-slider-stack input[type="range"] {
+  width: 100%;
+  height: 26px;
+  accent-color: #27995d;
+}
+
+.mii-swatch-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 13px;
+  margin-top: 6px;
+}
+
+.mii-swatch {
+  width: 46px;
+  height: 46px;
+  border: 3px solid rgba(255, 255, 255, .92);
+  border-radius: 14px;
+  outline: 2px solid #c2cccd;
+  box-shadow: 0 3px 8px rgba(35, 50, 59, .18);
+  transition: transform 120ms ease, outline-color 120ms ease;
+}
+
+.mii-swatch:hover {
+  transform: scale(1.05);
+}
+
+.mii-swatch.is-selected {
+  outline: 3px solid #27995d;
+  transform: scale(1.07);
+}
+
+.mii-part-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(94px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.mii-part-option {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 12px 8px 10px;
+  color: #5b686e;
+  border: 2px solid #c8d1d2;
+  border-radius: 16px;
+  background: linear-gradient(#ffffff, #eef2f2);
+  font-size: .68rem;
+  font-weight: 800;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+.mii-part-option:hover {
+  border-color: #8fa2ad;
+}
+
+.mii-part-option.is-selected {
+  border-color: #27995d;
+  background: linear-gradient(#e8f8ef, #cdeeda);
 }
 
 @media (max-width: 900px) {
@@ -3504,29 +4091,50 @@ button {
     font-size: .3rem;
   }
 
+  .movie-poster {
+    width: 82px;
+  }
+
+  .album-pause-chip {
+    width: 40px;
+    height: 40px;
+  }
+
+  .album-pause-chip svg {
+    width: 19px;
+    height: 19px;
+  }
+
   .photo-room-table {
+    --table-depth: 116px;
+    --table-top-thickness: 13px;
     right: 22px;
-    width: 188px;
-    height: 150px;
+    width: 200px;
+    height: 92px;
   }
 
   .pixel-globe-control {
-    right: 50px;
-    bottom: 74px;
+    right: 66px;
+    bottom: 84px;
     width: 112px;
-    height: 138px;
+    transform: translateZ(calc(70px - var(--room-depth)));
   }
 
   .pixel-globe {
     width: 106px;
     height: 106px;
-    border-width: 5px;
-    outline-width: 3px;
-    box-shadow: 5px 5px 0 #112b40;
+    box-shadow:
+      8px 12px 16px rgba(13, 27, 43, .38),
+      0 3px 9px rgba(13, 27, 43, .22);
+  }
+
+  .pixel-globe-stand {
+    width: 52px;
+    height: 15px;
+    margin-top: -7px;
   }
 
   .pixel-globe-label {
-    margin-top: 8px;
     padding: 3px 4px;
     border-width: 2px;
     box-shadow: 2px 2px 0 #112b40;
@@ -3770,5 +4378,39 @@ button {
 
   .resume-experience > section {
     break-inside: avoid;
+  }
+}
+
+@media (max-width: 760px) {
+  .mii-plaza {
+    height: clamp(440px, 66vh, 560px);
+  }
+
+  .mii-maker-body {
+    grid-template-columns: 1fr;
+    overflow: auto;
+  }
+
+  .mii-maker-preview {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .mii-maker-stage {
+    min-height: 160px;
+    flex-basis: 100%;
+  }
+
+  .mii-about {
+    top: 12px;
+    left: 12px;
+    width: min(340px, calc(100% - 24px));
+  }
+
+  .mii-plaza-make {
+    bottom: 12px;
+    left: 12px;
+    font-size: .76rem;
   }
 }

@@ -7,20 +7,16 @@ import {
 } from "framer-motion";
 import {
   ArrowUpRight,
-  BriefcaseBusiness,
   Camera,
   ChevronLeft,
   CircleUserRound,
-  Code2,
   FileText,
   Github,
-  GraduationCap,
   Instagram,
   LineChart,
   Linkedin,
   Link2,
   Mail,
-  MapPin,
   Printer,
   TriangleAlert,
   Wrench,
@@ -30,6 +26,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import WiiCursor from "@/components/WiiCursor";
 import Skills2048 from "@/components/Skills2048";
 import PhotoWorld from "@/components/PhotoWorld";
+import MiiPlaza from "@/components/MiiPlaza";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -46,10 +43,11 @@ const WORK_EXPERIENCES = [
     company: "Cisco",
     role: "Software Engineering Intern",
     dates: "May – Aug 2026",
-    technologies: ["TypeScript", "Python", "Lit"],
+    technologies: ["MCP", "API Gateway", "JSON Schema"],
     points: [
-      "Designed and implemented scalable, user-focused features for Cisco Intersight.",
-      "Built AI-assisted automation for generating web UI components and streamlining test and deployment cycles.",
+      "Designed MCP tools for inventory lookup, fault analysis, object search, and account-aware summaries, targeting a 40% cut in time spent navigating operational data.",
+      "Built MCP server registration and catalog workflows supporting 50+ tools, with a gateway entry point handling 10K+ projected daily AI-assisted requests.",
+      "Designed a centralized MCP integration layer aggregating tool discovery and execution across 8+ downstream MCP servers.",
     ],
   },
   {
@@ -58,31 +56,39 @@ const WORK_EXPERIENCES = [
     dates: "Jun – Oct 2025",
     technologies: ["TypeScript", "React Native", "Node.js"],
     points: [
-      "Built a backend integration layer for high-throughput financial data and reduced client-side parsing time.",
-      "Implemented secure session management with JWT authentication and resilient token refresh flows.",
+      "Developed a TypeScript backend integration layer aggregating real-time stock data, cutting client-side parsing times by 30%.",
+      "Implemented RESTful controllers processing 100,000+ data points daily at 300ms response times, with JWT authentication and zero-downtime token refresh.",
     ],
   },
   {
     company: "StellarPay",
     role: "Software Engineering Intern",
     dates: "Jun – Aug 2025",
-    technologies: ["TypeScript", "Node.js", "AWS"],
+    technologies: ["TypeScript", "Node.js", "AWS", "Pinecone"],
     points: [
-      "Built a GPT-powered financial assistant using retrieval-augmented generation.",
-      "Improved retrieval quality with Textract, embeddings, Pinecone, and secure AWS infrastructure.",
-    ],
-  },
-  {
-    company: "UIUC Startup",
-    role: "Technical Backend Lead",
-    dates: "Mar – Nov 2025",
-    technologies: ["Python", "Docker", "TensorFlow", "Node.js"],
-    points: [
-      "Led backend development for a behavior-driven shopping recommendation system.",
-      "Deployed containerized ML services and improved recommendation quality with implicit-feedback modeling.",
+      "Built a GPT-powered financial assistant in TypeScript/Node.js on a retrieval-augmented generation pipeline, improving retrieval precision by 40% with AWS Textract, OpenAI embeddings, and Pinecone.",
+      "Implemented end-to-end security across AWS with IAM role-based access, KMS-encrypted storage, and JWT-authorized API Gateway layers.",
     ],
   },
 ];
+
+const RESUME_PROJECTS = [
+  {
+    name: "Custom Git Server",
+    technologies: ["Go", "SSH", "JWT"],
+    summary: "Git server in Go speaking Smart HTTP and SSH, with EdDSA key validation, JWT auth, and a streaming pack parser that caps buffer memory under 30MB on large transfers.",
+  },
+  {
+    name: "Container Runtime",
+    technologies: ["Go", "Linux", "OverlayFS"],
+    summary: "Go container runtime isolating workloads with Linux namespaces and cgroups — 50+ concurrent workloads, sub-100ms startups via shared OverlayFS image layers.",
+  },
+];
+
+const RESUME_SKILLS = {
+  Languages: ["Java", "Python", "C++", "C", "Go", "TypeScript", "JavaScript", "R", "Swift", "SQL"],
+  "Frameworks & tools": ["React", "Next.js", "Node.js", "Spring Boot", "Angular", "React Native", "AWS", "Docker", "MongoDB", "Linux"],
+};
 
 const CHANNELS = [
   {
@@ -94,16 +100,8 @@ const CHANNELS = [
     icon: CircleUserRound,
   },
   {
-    id: "experience",
-    number: "02",
-    title: "News Channel",
-    eyebrow: "Experience",
-    description: "The latest from my career",
-    icon: BriefcaseBusiness,
-  },
-  {
     id: "photos",
-    number: "03",
+    number: "02",
     title: "Photo Channel",
     eyebrow: "Photography",
     description: "Scenes worth keeping",
@@ -111,23 +109,15 @@ const CHANNELS = [
   },
   {
     id: "skills",
-    number: "04",
+    number: "03",
     title: "Skills Channel",
     eyebrow: "Toolkit",
     description: "Play skill-stack 2048",
     icon: Wrench,
   },
   {
-    id: "projects",
-    number: "05",
-    title: "Project Channel",
-    eyebrow: "Selected work",
-    description: "One project, in focus",
-    icon: Code2,
-  },
-  {
     id: "market",
-    number: "06",
+    number: "04",
     title: "Forecast Channel",
     eyebrow: "Markets",
     description: "A small personal watchlist",
@@ -135,7 +125,7 @@ const CHANNELS = [
   },
   {
     id: "links",
-    number: "07",
+    number: "05",
     title: "Internet Channel",
     eyebrow: "Find me",
     description: "A few useful links",
@@ -143,7 +133,7 @@ const CHANNELS = [
   },
   {
     id: "resume",
-    number: "08",
+    number: "06",
     title: "Resume Channel",
     eyebrow: "Resume",
     description: "The condensed version",
@@ -237,17 +227,6 @@ function ChannelArtwork({ channelId }) {
     );
   }
 
-  if (channelId === "experience") {
-    return (
-      <div className="channel-art channel-art-news">
-        <div className="news-map" aria-hidden="true" />
-        <span className="news-kicker">CAREER DESK</span>
-        <strong>Four stops.<br />Still building.</strong>
-        <span className="news-ticker">CISCO · ALGO ANALYTICS · STELLARPAY · UIUC</span>
-      </div>
-    );
-  }
-
   if (channelId === "photos") {
     return (
       <div className="channel-art channel-art-photos">
@@ -270,17 +249,6 @@ function ChannelArtwork({ channelId }) {
         <div className="skill-cube">GO</div>
         <div className="skill-cube">JS</div>
         <span>2048</span>
-      </div>
-    );
-  }
-
-  if (channelId === "projects") {
-    return (
-      <div className="channel-art channel-art-project">
-        <div className="project-reticle" aria-hidden="true" />
-        <Code2 size={34} />
-        <strong>ATTENDANCE_01</strong>
-        <span>Python · OpenCV</span>
       </div>
     );
   }
@@ -369,84 +337,7 @@ function EmptyChannel({ index }) {
 }
 
 function ProfileContent() {
-  return (
-    <div className="profile-layout">
-      <Card className="profile-card">
-        <div className="profile-image">
-          <Image
-            src="/me_2.jpg"
-            alt="Nikhil Savant smiling in a suit."
-            fill
-            sizes="(max-width: 800px) 86vw, 360px"
-            priority
-          />
-        </div>
-        <CardContent>
-          <p>PLAYER 01</p>
-          <strong>Nikhil Savant</strong>
-        </CardContent>
-      </Card>
-
-      <div className="profile-copy">
-        <Badge variant="outline">Student · Programmer · Engineer</Badge>
-        <h2>Hi, I&apos;m Nikhil.</h2>
-        <p className="channel-lead">
-          I&apos;m a sophomore at UIUC majoring in Computer Science and Economics.
-          I enjoy finding practical solutions where software meets the things I care about.
-        </p>
-        <div className="profile-meta">
-          <span><GraduationCap size={18} /> Computer Science + Economics</span>
-          <span><MapPin size={18} /> University of Illinois Urbana-Champaign</span>
-        </div>
-        <Separator />
-        <div>
-          <p className="mini-label">OFF THE CLOCK</p>
-          <div className="interest-list">
-            {["Finance", "News", "Tech", "Cars", "Photography"].map((interest) => (
-              <Badge key={interest} variant="secondary">{interest}</Badge>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ExperienceContent() {
-  return (
-    <div>
-      <div className="content-heading">
-        <Badge variant="outline">Career desk</Badge>
-        <h2>Work experience, without the corporate wallpaper.</h2>
-        <p>Four roles across infrastructure, financial software, AI, and recommendation systems.</p>
-      </div>
-
-      <div className="experience-list">
-        {WORK_EXPERIENCES.map((experience, index) => (
-          <Card key={experience.company} className="experience-card">
-            <CardHeader>
-              <div className="experience-number">0{index + 1}</div>
-              <div>
-                <CardTitle>{experience.company}</CardTitle>
-                <CardDescription>{experience.role}</CardDescription>
-              </div>
-              <Badge variant="secondary">{experience.dates}</Badge>
-            </CardHeader>
-            <CardContent>
-              <ul>
-                {experience.points.map((point) => <li key={point}>{point}</li>)}
-              </ul>
-              <div className="tech-list">
-                {experience.technologies.map((technology) => (
-                  <Badge key={technology} variant="outline">{technology}</Badge>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </div>
-  );
+  return <MiiPlaza />;
 }
 
 function PhotosContent() {
@@ -455,45 +346,6 @@ function PhotosContent() {
 
 function SkillsContent() {
   return <Skills2048 />;
-}
-
-function ProjectsContent() {
-  return (
-    <div>
-      <div className="content-heading">
-        <Badge variant="outline">Selected work · 01</Badge>
-        <h2>Attendance, recognized automatically.</h2>
-        <p>One focused computer-vision project from the current archive.</p>
-      </div>
-
-      <Card className="project-feature">
-        <div className="project-visual">
-          <div className="project-window">
-            <div className="project-window-bar"><span /><span /><span /></div>
-            <div className="face-frame">
-              <div className="face-bracket face-bracket-one" />
-              <div className="face-bracket face-bracket-two" />
-              <CircleUserRound size={82} />
-              <span>FACE MATCH · FOUND</span>
-            </div>
-          </div>
-        </div>
-        <div className="project-copy">
-          <p className="mini-label">ATTENDANCE PROJECT</p>
-          <h3>A webcam-based check-in system.</h3>
-          <p>
-            The application accepts reference photos, recognizes matching faces from a webcam
-            feed, and records the identified person with the time they were present.
-          </p>
-          <div className="tech-list">
-            {["Python", "OpenCV", "Face Recognition", "Tkinter"].map((technology) => (
-              <Badge key={technology} variant="outline">{technology}</Badge>
-            ))}
-          </div>
-        </div>
-      </Card>
-    </div>
-  );
 }
 
 function MarketContent() {
@@ -599,10 +451,18 @@ function ResumeContent() {
           <h2>Nikhil Savant</h2>
           <p>Software engineer studying Computer Science + Economics at UIUC.</p>
         </div>
-        <Button variant="outline" onClick={() => window.print()}>
-          <Printer size={16} />
-          Print / save
-        </Button>
+        <div className="resume-actions">
+          <Button variant="outline" asChild>
+            <a href="/resume.pdf" target="_blank" rel="noreferrer">
+              <FileText size={16} />
+              Download PDF
+            </a>
+          </Button>
+          <Button variant="outline" onClick={() => window.print()}>
+            <Printer size={16} />
+            Print / save
+          </Button>
+        </div>
       </div>
 
       <Separator />
@@ -612,26 +472,34 @@ function ResumeContent() {
           <section>
             <p className="mini-label">EDUCATION</p>
             <h3>University of Illinois Urbana-Champaign</h3>
-            <p>Computer Science + Economics</p>
+            <p>B.S. Computer Science + Economics</p>
+            <p>Expected graduation 2028</p>
+            <p className="resume-coursework">
+              Coursework: Database Systems, Algorithms &amp; Models of Computation,
+              Computer Systems, Data Structures
+            </p>
           </section>
-          <section>
-            <p className="mini-label">FOCUS</p>
-            <div className="interest-list">
-              {["Software engineering", "AI systems", "Financial technology", "Product interfaces"].map((item) => (
-                <Badge key={item} variant="secondary">{item}</Badge>
-              ))}
-            </div>
-          </section>
+          {Object.entries(RESUME_SKILLS).map(([group, skills]) => (
+            <section key={group}>
+              <p className="mini-label">{group.toUpperCase()}</p>
+              <div className="interest-list">
+                {skills.map((item) => (
+                  <Badge key={item} variant="secondary">{item}</Badge>
+                ))}
+              </div>
+            </section>
+          ))}
           <section>
             <p className="mini-label">ONLINE</p>
             <a href="https://github.com/nsavant12" target="_blank" rel="noreferrer">github.com/nsavant12</a>
             <a href="https://linkedin.com/in/nikhil-savant" target="_blank" rel="noreferrer">linkedin.com/in/nikhil-savant</a>
+            <a href="mailto:nsavant033@gmail.com">nsavant033@gmail.com</a>
           </section>
         </aside>
 
         <div className="resume-experience">
           <p className="mini-label">EXPERIENCE</p>
-          {WORK_EXPERIENCES.map((experience) => (
+          {WORK_EXPERIENCES.filter((experience) => experience.resume !== false).map((experience) => (
             <section key={experience.company}>
               <div>
                 <h3>{experience.company}</h3>
@@ -646,6 +514,21 @@ function ResumeContent() {
               </div>
             </section>
           ))}
+
+          <p className="mini-label">PROJECTS</p>
+          {RESUME_PROJECTS.map((project) => (
+            <section key={project.name}>
+              <div>
+                <h3>{project.name}</h3>
+              </div>
+              <p>{project.summary}</p>
+              <div className="tech-list">
+                {project.technologies.map((technology) => (
+                  <Badge key={technology} variant="outline">{technology}</Badge>
+                ))}
+              </div>
+            </section>
+          ))}
         </div>
       </div>
     </article>
@@ -654,10 +537,8 @@ function ResumeContent() {
 
 function ChannelContent({ channelId }) {
   if (channelId === "profile") return <ProfileContent />;
-  if (channelId === "experience") return <ExperienceContent />;
   if (channelId === "photos") return <PhotosContent />;
   if (channelId === "skills") return <SkillsContent />;
-  if (channelId === "projects") return <ProjectsContent />;
   if (channelId === "market") return <MarketContent />;
   if (channelId === "links") return <LinksContent />;
   return <ResumeContent />;
@@ -826,7 +707,7 @@ function HomeMenu({ activeChannel, onOpen, onClose }) {
               onGridKeyDown={handleGridKeyDown}
             />
           ))}
-          {[0, 1, 2, 3].map((index) => <EmptyChannel key={index} index={index} />)}
+          {[0, 1, 2, 3, 4, 5].map((index) => <EmptyChannel key={index} index={index} />)}
         </div>
         <p className="channel-help">Point and click a channel · Arrow keys also work</p>
       </section>
