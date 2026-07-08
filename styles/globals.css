@@ -2,6 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Wii-style rounded gothic typeface. FOT-RodinBokutoh Pro / FOT-NewRodin Pro
+ * (the fonts actually used on Wii system menus) are paid commercial fonts
+ * with no free-to-use distribution, so this self-hosts M PLUS Rounded 1c —
+ * the standard open-license (SIL OFL) lookalike for the Rodin family, sharing
+ * the same rounded Japanese-gothic letterforms.
+ */
+@font-face {
+  font-family: "Wii Rodin";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/mplus-rounded-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Wii Rodin";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/mplus-rounded-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Wii Rodin";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/mplus-rounded-700.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Wii Rodin";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("/fonts/mplus-rounded-800.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Wii Rodin";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("/fonts/mplus-rounded-900.woff2") format("woff2");
+}
+
 :root {
   --background: 210 18% 97%;
   --foreground: 215 22% 18%;
@@ -48,7 +91,8 @@ html {
 body {
   color: hsl(var(--foreground));
   background: hsl(var(--background));
-  font-family: "Avenir Next", Avenir, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-family: "Wii Rodin", "Avenir Next", Avenir, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-weight: 500;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
@@ -123,9 +167,9 @@ button {
 
 .boot-heading h1 {
   margin: 0;
-  font-family: "Arial Rounded MT Bold", "Avenir Next", sans-serif;
-  font-size: clamp(2rem, 4.4vw, 4.6rem);
+  font-family: "Wii Rodin", "Arial Rounded MT Bold", "Avenir Next", sans-serif;
   font-weight: 800;
+  font-size: clamp(2rem, 4.4vw, 4.6rem);
   letter-spacing: 0.035em;
   line-height: 1;
   text-transform: uppercase;
@@ -133,7 +177,8 @@ button {
 
 .boot-primary {
   margin: 0;
-  font-family: "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-family: "Wii Rodin", "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-weight: 800;
   font-size: clamp(1.1rem, 2.2vw, 2rem);
   font-weight: 700;
   letter-spacing: 0.045em;
@@ -175,7 +220,8 @@ button {
   color: #f4f4f4;
   border: 0;
   background: transparent;
-  font-family: "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-family: "Wii Rodin", "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-weight: 800;
   font-size: clamp(1.1rem, 2.1vw, 1.85rem);
   font-weight: 700;
   letter-spacing: 0.03em;
@@ -894,9 +940,9 @@ button {
 }
 
 .dock-clock strong {
-  font-family: "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-family: "Wii Rodin", "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-weight: 800;
   font-size: clamp(1.8rem, 3.2vw, 2.8rem);
-  font-weight: 500;
   letter-spacing: 0.06em;
 }
 
@@ -1017,7 +1063,8 @@ button {
 .channel-window-header h1 {
   margin: 5px 0 0;
   color: #353d42;
-  font-family: "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-family: "Wii Rodin", "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-weight: 800;
   font-size: clamp(1.35rem, 2.4vw, 2rem);
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -1074,7 +1121,8 @@ button {
 .resume-header h2 {
   margin: 14px 0 12px;
   color: #252c31;
-  font-family: "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-family: "Wii Rodin", "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-weight: 800;
   font-size: clamp(2rem, 4.6vw, 4.4rem);
   font-weight: 700;
   letter-spacing: -0.045em;
@@ -1308,7 +1356,8 @@ button {
 .photo-world-heading h2 {
   margin: 14px 0 12px;
   color: #252c31;
-  font-family: "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-family: "Wii Rodin", "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-weight: 800;
   font-size: clamp(2rem, 4.6vw, 4.2rem);
   font-weight: 700;
   letter-spacing: -0.045em;
@@ -1506,10 +1555,7 @@ button {
   height: 330px;
   border: 10px solid #183f5c;
   outline: 6px solid #f2d35b;
-  background:
-    repeating-linear-gradient(90deg, transparent 0 26px, rgba(255,255,255,.2) 26px 32px),
-    repeating-linear-gradient(0deg, transparent 0 26px, rgba(255,255,255,.18) 26px 32px),
-    linear-gradient(45deg, #de4b4b 25%, #f4cf56 25% 50%, #2f7ab0 50% 75%, #54a769 75%);
+  background: linear-gradient(45deg, #de4b4b 25%, #f4cf56 25% 50%, #2f7ab0 50% 75%, #54a769 75%);
   box-shadow: 0 0 0 8px #0f2638;
   transform:
     translateX(-50%)
@@ -1692,7 +1738,8 @@ button {
   border: 3px solid #1d3543;
   background: #2d6f83;
   box-shadow: 4px 4px 0 #162a35;
-  font-family: "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-family: "Wii Rodin", "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-weight: 800;
   line-height: 1.05;
   text-align: center;
 }
@@ -2142,7 +2189,8 @@ button {
 
 .digital-camera-caption strong {
   overflow: hidden;
-  font-family: "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-family: "Wii Rodin", "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-weight: 800;
   font-size: clamp(.78rem, 1.4vw, 1.06rem);
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -2357,7 +2405,8 @@ button {
 .skills-game-heading h2 {
   margin: 12px 0 10px;
   color: #252c31;
-  font-family: "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-family: "Wii Rodin", "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-weight: 800;
   font-size: clamp(2rem, 4.4vw, 4rem);
   font-weight: 700;
   letter-spacing: -0.045em;
@@ -2401,7 +2450,8 @@ button {
 
 .skills-game-score strong {
   margin-top: 2px;
-  font-family: "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-family: "Wii Rodin", "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-weight: 800;
   font-size: 1.7rem;
   line-height: 1;
 }
@@ -2573,7 +2623,8 @@ button {
 }
 
 .skill-game-over strong {
-  font-family: "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-family: "Wii Rodin", "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-weight: 800;
   font-size: clamp(1.6rem, 3.4vw, 2.7rem);
 }
 
@@ -2735,7 +2786,8 @@ button {
 .skills-catalog-header h3 {
   margin: 0 0 7px;
   color: #2c353a;
-  font-family: "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-family: "Wii Rodin", "Arial Rounded MT Bold", "Avenir Next", sans-serif;
+  font-weight: 800;
   font-size: clamp(1.35rem, 2.5vw, 2rem);
 }
 
@@ -3242,13 +3294,81 @@ button {
   display: block;
 }
 
-.mii-actor-walking .mii-figure-svg {
-  animation: mii-walk .32s ease-in-out infinite alternate;
+.mii-thought-bubble {
+  position: absolute;
+  bottom: calc(100% - 2px);
+  left: 60%;
+  z-index: 3;
+  width: 42px;
+  filter: drop-shadow(0 2px 3px rgba(35, 50, 59, .28));
+  animation: mii-bubble-pop 160ms steps(3);
 }
 
-@keyframes mii-walk {
-  from { transform: translateY(0) rotate(-1.6deg); }
-  to { transform: translateY(-4px) rotate(1.6deg); }
+.mii-bubble-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@keyframes mii-bubble-pop {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(.7);
+  }
+}
+
+.mii-note-spawn {
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 66%;
+  z-index: 3;
+  width: 15px;
+  aspect-ratio: 110 / 140;
+  animation: mii-note-rise 1.3s steps(1) forwards;
+}
+
+.mii-note-spawn svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 1px 2px rgba(35, 50, 59, .3));
+}
+
+.mii-note-static {
+  animation: none;
+  opacity: .9;
+}
+
+@keyframes mii-note-rise {
+  0%   { opacity: 0; transform: translate(0, 0); }
+  10%  { opacity: 1; }
+  25%  { transform: translate(var(--note-dx), -7px); }
+  50%  { transform: translate(calc(var(--note-dx) * -1), -14px); }
+  75%  { opacity: .85; transform: translate(var(--note-dx), -21px); }
+  92%  { opacity: 0; }
+  100% { opacity: 0; transform: translate(calc(var(--note-dx) * -1), -28px); }
+}
+
+.mii-cheer-burst {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  z-index: 0;
+  width: 150%;
+  aspect-ratio: 1;
+  pointer-events: none;
+  background: repeating-conic-gradient(
+    rgba(255, 219, 74, .9) 0deg 7deg,
+    rgba(255, 219, 74, 0) 7deg 20deg
+  );
+  -webkit-mask-image: radial-gradient(circle, transparent 33%, #000 34%, #000 66%, transparent 67%);
+  mask-image: radial-gradient(circle, transparent 33%, #000 34%, #000 66%, transparent 67%);
+  transform: translate(-50%, -50%);
+  animation: mii-burst-spin 1.4s linear infinite;
+}
+
+@keyframes mii-burst-spin {
+  to { transform: translate(-50%, -50%) rotate(40deg); }
 }
 
 .mii-actor-shadow {
@@ -3282,8 +3402,7 @@ button {
   z-index: 60;
   display: flex;
   align-items: center;
-  gap: 11px;
-  padding: 9px 20px 9px 9px;
+  padding: 9px;
   color: #46555c;
   border: 2px solid #cfd8d8;
   border-radius: 999px;
@@ -3291,11 +3410,12 @@ button {
   box-shadow: 0 6px 16px rgba(35, 50, 59, .2), inset 0 1px 0 #fff;
   font-size: .84rem;
   font-weight: 800;
-  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease, padding-right 260ms ease;
 }
 
 .mii-plaza-make:hover,
 .mii-plaza-make:focus-visible {
+  padding-right: 20px;
   border-color: var(--wii-blue);
   box-shadow: 0 8px 20px rgba(21, 155, 224, .32), inset 0 1px 0 #fff;
   transform: translateY(-1px);
@@ -3304,17 +3424,35 @@ button {
 
 .mii-plaza-make-icon {
   display: grid;
+  flex: 0 0 auto;
   width: 40px;
   height: 40px;
   place-items: center;
-  color: #55666d;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, #ffffff, #b9c4c6);
 }
 
-.mii-plaza-make-icon svg {
-  width: 20px;
+.mii-add-icon {
+  width: 27px;
   height: 20px;
+}
+
+/* Collapsed to nothing by default; the button's own hover/focus state
+   slides it out to reveal the label, like a Wii-style expanding pill. */
+.mii-plaza-make-label {
+  max-width: 0;
+  margin-left: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+  transition: max-width 260ms ease, opacity 180ms ease, margin-left 260ms ease;
+}
+
+.mii-plaza-make:hover .mii-plaza-make-label,
+.mii-plaza-make:focus-visible .mii-plaza-make-label {
+  max-width: 160px;
+  margin-left: 11px;
+  opacity: 1;
 }
 
 .mii-plaza-count {

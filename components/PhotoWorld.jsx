@@ -106,7 +106,7 @@ const ALBUM_COVERS = [
     title: "Producer 01",
     artist: "LTJ Bukem",
     wall: "left",
-    x: 50,
+    x: 30,
     y: 15,
     src: "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/d1/57/13/d15713db-09fd-d905-a7ed-9abc248bb85e/7640152970504_Cover.jpg/600x600bb.jpg",
     track: "Demons Theme",
@@ -116,7 +116,7 @@ const ALBUM_COVERS = [
     title: "The Best of Sade",
     artist: "Sade",
     wall: "right",
-    x: 50,
+    x: 70,
     y: 15,
     src: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/5f/ad/2a/5fad2aca-d998-701d-7b27-c074339d5fd0/886972262628.jpg/600x600bb.jpg",
     track: "Smooth Operator",
@@ -138,7 +138,7 @@ const MOVIE_POSTERS = [
     title: "Memories of Murder",
     year: "2003",
     wall: "left",
-    x: 76,
+    x: 84,
     y: 14,
     src: "https://upload.wikimedia.org/wikipedia/en/0/01/Salinui-chueok-south-korean-movie-poster-md.jpg",
   },
@@ -146,7 +146,7 @@ const MOVIE_POSTERS = [
     title: "Nausicaä of the Valley of the Wind",
     year: "1984",
     wall: "right",
-    x: 24,
+    x: 16,
     y: 15,
     src: "https://upload.wikimedia.org/wikipedia/en/b/bc/Nausicaaposter.jpg",
   },
@@ -813,9 +813,9 @@ export default function PhotoWorld() {
   return (
     <div className="photo-world-shell">
       <div className="photo-world-heading">
-        <Badge variant="outline">Photo channel · Room view</Badge>
-        <h2>Step inside the photo room.</h2>
-        <p>Drag to look around the room. Select a framed photo to review it on the camera.</p>
+        <Badge variant="outline">Discovery channel · Room view</Badge>
+        <h2>Here&apos;s a glance into my room and interests.</h2>
+        <p>Drag to look around the room. Select a framed photo or song to preview it.</p>
       </div>
 
       <div

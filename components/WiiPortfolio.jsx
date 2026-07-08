@@ -95,15 +95,15 @@ const CHANNELS = [
     id: "profile",
     number: "01",
     title: "Mii Channel",
-    eyebrow: "Profile",
+    eyebrow: "Mii",
     description: "A quick introduction",
     icon: CircleUserRound,
   },
   {
     id: "photos",
     number: "02",
-    title: "Photo Channel",
-    eyebrow: "Photography",
+    title: "Discovery Channel",
+    eyebrow: "Discovery",
     description: "Scenes worth keeping",
     icon: Camera,
   },
@@ -678,16 +678,8 @@ function HomeMenu({ activeChannel, onOpen, onClose }) {
     >
       <div className="wii-grain" aria-hidden="true" />
       <h1 className="sr-only">Nikhil Savant portfolio channels</h1>
-      <header className="wii-topbar" aria-hidden={activeChannel ? "true" : undefined}>
-        <div className="wii-brand">
-          <span>NS</span>
-          <div>
-            <strong>Nikhil Savant</strong>
-            <small>Portfolio system</small>
-          </div>
-        </div>
-        <div className="wii-online"><span /> ONLINE</div>
-      </header>
+      <header className="wii-topbar" aria-hidden={activeChannel ? "true" : undefined} />
+
 
       <section
         className="channel-stage"
