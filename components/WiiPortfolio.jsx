@@ -13,7 +13,6 @@ import {
   FileText,
   Github,
   Instagram,
-  LineChart,
   Linkedin,
   Link2,
   Mail,
@@ -116,16 +115,8 @@ const CHANNELS = [
     icon: Wrench,
   },
   {
-    id: "market",
-    number: "04",
-    title: "Forecast Channel",
-    eyebrow: "Markets",
-    description: "A small personal watchlist",
-    icon: LineChart,
-  },
-  {
     id: "links",
-    number: "05",
+    number: "04",
     title: "Internet Channel",
     eyebrow: "Find me",
     description: "A few useful links",
@@ -133,7 +124,7 @@ const CHANNELS = [
   },
   {
     id: "resume",
-    number: "06",
+    number: "05",
     title: "Resume Channel",
     eyebrow: "Resume",
     description: "The condensed version",
@@ -253,18 +244,6 @@ function ChannelArtwork({ channelId }) {
     );
   }
 
-  if (channelId === "market") {
-    return (
-      <div className="channel-art channel-art-market">
-        <span className="market-sun" aria-hidden="true" />
-        <svg viewBox="0 0 260 90" aria-hidden="true">
-          <path d="M0 78 C34 74, 42 56, 72 61 S120 24, 148 37 S192 17, 220 21 S245 9, 260 4" />
-        </svg>
-        <div><strong>S</strong><strong>AMZN</strong><strong>AAPL</strong></div>
-      </div>
-    );
-  }
-
   if (channelId === "links") {
     return (
       <div className="channel-art channel-art-links">
@@ -346,49 +325,6 @@ function PhotosContent() {
 
 function SkillsContent() {
   return <Skills2048 />;
-}
-
-function MarketContent() {
-  const watchlist = [
-    { symbol: "S", name: "SentinelOne", exchange: "NYSE" },
-    { symbol: "AMZN", name: "Amazon", exchange: "NASDAQ" },
-    { symbol: "AAPL", name: "Apple", exchange: "NASDAQ" },
-  ];
-
-  return (
-    <div>
-      <div className="content-heading">
-        <Badge variant="outline">Personal watchlist</Badge>
-        <h2>Three names on my radar.</h2>
-        <p>Markets are one of the things I follow outside of building software. This is a watchlist, not live pricing.</p>
-      </div>
-
-      <div className="market-grid">
-        {watchlist.map((stock, index) => (
-          <Card key={stock.symbol} className="market-card">
-            <CardHeader>
-              <div>
-                <p>{stock.exchange}</p>
-                <CardTitle>{stock.symbol}</CardTitle>
-                <CardDescription>{stock.name}</CardDescription>
-              </div>
-              <LineChart aria-hidden="true" />
-            </CardHeader>
-            <CardContent>
-              <svg viewBox="0 0 240 72" aria-hidden="true">
-                <path d={index === 0
-                  ? "M0 57 C30 54, 37 33, 70 42 S113 19, 143 31 S181 12, 240 18"
-                  : index === 1
-                    ? "M0 47 C35 57, 54 28, 86 35 S126 50, 157 23 S200 30, 240 10"
-                    : "M0 58 C26 41, 53 52, 79 37 S124 42, 153 24 S200 17, 240 7"} />
-              </svg>
-              <span>WATCHING</span>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </div>
-  );
 }
 
 function LinksContent() {
@@ -539,7 +475,6 @@ function ChannelContent({ channelId }) {
   if (channelId === "profile") return <ProfileContent />;
   if (channelId === "photos") return <PhotosContent />;
   if (channelId === "skills") return <SkillsContent />;
-  if (channelId === "market") return <MarketContent />;
   if (channelId === "links") return <LinksContent />;
   return <ResumeContent />;
 }
@@ -699,12 +634,23 @@ function HomeMenu({ activeChannel, onOpen, onClose }) {
               onGridKeyDown={handleGridKeyDown}
             />
           ))}
-          {[0, 1, 2, 3, 4, 5].map((index) => <EmptyChannel key={index} index={index} />)}
+          {[0, 1, 2, 3, 4, 5, 6].map((index) => <EmptyChannel key={index} index={index} />)}
         </div>
-        <p className="channel-help">Point and click a channel · Arrow keys also work</p>
+        <p className="channel-help">Point and click a channel</p>
       </section>
 
       <footer className="wii-dock" aria-hidden={activeChannel ? "true" : undefined}>
+        <svg
+          className="dock-wave"
+          viewBox="0 0 1000 26"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M0,16 C40,16 90,19 150,20 C210,21 350,2 500,2 C650,2 790,21 850,20 C910,19 960,16 1000,16 L1000,26 L0,26 Z"
+            vectorEffect="non-scaling-stroke"
+          />
+        </svg>
         <Button
           variant="outline"
           className="dock-round dock-profile"

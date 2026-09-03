@@ -5,6 +5,7 @@ import {
   useMotionValue,
   useReducedMotion,
   useSpring,
+  useTransform,
 } from "framer-motion";
 import {
   BatteryFull,
@@ -23,32 +24,32 @@ import { Button } from "@/components/ui/button";
 const PHOTOS = [
   {
     src: "/desert.jpg",
-    title: "Desert light",
+    title: "Nevada",
     alt: "Desert path and mountains under a deep blue sky.",
   },
   {
     src: "/summer.jpg",
-    title: "Summer",
+    title: "Belmont Redline Station",
     alt: "A summer scene photographed by Nikhil.",
   },
   {
     src: "/IMG_20210707_170928.jpg",
-    title: "Interior study",
+    title: "Nobu, Miami",
     alt: "A bright interior with wood columns and colorful artwork.",
   },
   {
     src: "/IMG_20210629_202206.jpg",
-    title: "City evening",
+    title: "View from room pt. 2, 2020",
     alt: "An evening city view photographed by Nikhil.",
   },
   {
     src: "/sunset.jpg",
-    title: "Afterglow",
+    title: "View from my room, 2020",
     alt: "A sunset from Nikhil's photo archive.",
   },
   {
     src: "/chicagoSkyline.jpg",
-    title: "Chicago",
+    title: "A tourist's view of Chicago",
     alt: "The Chicago skyline seen across the water.",
   },
   {
@@ -345,6 +346,50 @@ function DigitalCameraView({
   );
 }
 
+const VINYL_RING_STEP = 360 / VINYL_LIBRARY.length;
+
+// One record floating on the crate's carousel. Its slot on the ellipse, its
+// size and how far back it sits all fall out of the shared rotation value, so
+// the whole ring orbits together when a new song is picked.
+function OrbitVinyl({ album, index, angleSource, isSelected, isPlaying, onPick }) {
+  const angle = useTransform(
+    angleSource,
+    (spin) => ((index * VINYL_RING_STEP + spin) * Math.PI) / 180,
+  );
+  const left = useTransform(angle, (a) => (50 + Math.sin(a) * 50) + "%");
+  const top = useTransform(angle, (a) => (50 + Math.cos(a) * 50) + "%");
+  const depth = useTransform(angle, (a) => (Math.cos(a) + 1) / 2);
+  const scale = useTransform(depth, (d) => 0.52 + d * 0.6);
+  const opacity = useTransform(depth, (d) => 0.58 + d * 0.42);
+  const zIndex = useTransform(depth, (d) => Math.round(d * 100));
+  const filter = useTransform(depth, (d) => "blur(" + ((1 - d) * 2.2).toFixed(2) + "px)");
+
+  return (
+    <motion.div className="vinyl-orbit-slot" style={{ left, top, zIndex }}>
+      <motion.div className="vinyl-orbit-depth" style={{ scale, opacity, filter }}>
+        <div className="vinyl-orbit-float" style={{ animationDelay: index * -1.7 + "s" }}>
+          <button
+            type="button"
+            className={"vinyl-orbit-disc"
+              + (isSelected ? " is-front" : "")
+              + (isPlaying ? " is-playing" : "")}
+            onClick={() => onPick(index, album)}
+            aria-pressed={isPlaying}
+            aria-label={(isSelected
+              ? (isPlaying ? "Pause the preview of " : "Play a preview of ")
+              : "Bring to the front and play ")
+              + album.track + " by " + album.artist}
+          >
+            <span className="vinyl-disc" aria-hidden="true">
+              <img src={album.src} alt="" loading="lazy" draggable={false} />
+            </span>
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 function VinylCrateView({
   playingAlbum,
   onToggle,
@@ -352,6 +397,15 @@ function VinylCrateView({
   backButtonRef,
   reduceMotion,
 }) {
+  const startIndex = Math.max(
+    0,
+    VINYL_LIBRARY.findIndex((album) => album.title === playingAlbum),
+  );
+  const [selectedIndex, setSelectedIndex] = useState(startIndex);
+  const spin = useMotionValue(-startIndex * VINYL_RING_STEP);
+  const smoothSpin = useSpring(spin, { stiffness: 68, damping: 17, mass: 0.9 });
+  const angleSource = reduceMotion ? spin : smoothSpin;
+
   const handleKeyDown = (event) => {
     if (event.key === "Escape") {
       event.preventDefault();
@@ -359,6 +413,19 @@ function VinylCrateView({
       onClose();
     }
   };
+
+  // Spin to the picked record along the shorter way around the circle.
+  const pickRecord = (index, album) => {
+    const current = spin.get();
+    const target = -index * VINYL_RING_STEP;
+    const delta = ((((target - current + 180) % 360) + 360) % 360) - 180;
+
+    spin.set(current + delta);
+    setSelectedIndex(index);
+    onToggle(album);
+  };
+
+  const selectedAlbum = VINYL_LIBRARY[selectedIndex];
 
   return (
     <motion.section
@@ -387,36 +454,73 @@ function VinylCrateView({
         </div>
       </header>
 
-      <div className="vinyl-grid">
-        {VINYL_LIBRARY.map((album) => {
-          const isPlaying = playingAlbum === album.title;
+      <div className="vinyl-crate-body">
+        <nav className="vinyl-sidebar" aria-label="Record crate track list">
+          <div className="vinyl-sidebar-top">
+            <span>TRACK LIST</span>
+            <strong>{VINYL_LIBRARY.length} records</strong>
+          </div>
+          <ul className="vinyl-sidebar-list">
+            {VINYL_LIBRARY.map((album, index) => {
+              const isPlaying = playingAlbum === album.title;
+              const isSelected = selectedIndex === index;
 
-          return (
-            <button
-              key={album.title}
-              type="button"
-              className={"vinyl-card" + (isPlaying ? " is-playing" : "")}
-              onClick={() => onToggle(album)}
-              aria-pressed={isPlaying}
-              aria-label={(isPlaying ? "Pause the preview of " : "Play a preview of ")
-                + album.track + " by " + album.artist}
-            >
-              <span className="vinyl-disc" aria-hidden="true">
-                <img src={album.src} alt="" loading="lazy" draggable={false} />
-              </span>
-              <span className="vinyl-card-info">
-                <strong>{album.track}</strong>
-                <span>{album.artist}</span>
-              </span>
-              <span className="vinyl-card-state" aria-hidden="true">
-                {isPlaying ? <Pause /> : <Play />}
-              </span>
-            </button>
-          );
-        })}
+              return (
+                <li key={album.title}>
+                  <button
+                    type="button"
+                    className={"vinyl-sidebar-item"
+                      + (isSelected ? " is-selected" : "")
+                      + (isPlaying ? " is-playing" : "")}
+                    onClick={() => pickRecord(index, album)}
+                    aria-current={isSelected ? "true" : undefined}
+                    aria-pressed={isPlaying}
+                    aria-label={(isPlaying ? "Pause the preview of " : "Play a preview of ")
+                      + album.track + " by " + album.artist}
+                  >
+                    <span className="vinyl-sidebar-number" aria-hidden="true">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className="vinyl-sidebar-text">
+                      <strong>{album.track}</strong>
+                      <span>{album.artist}</span>
+                    </span>
+                    <span className="vinyl-sidebar-state" aria-hidden="true">
+                      {isPlaying ? <Pause /> : <Play />}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+          <p className="vinyl-hint">30-second previews spin on the turntable back in the room.</p>
+        </nav>
+
+        <div className="vinyl-ring-stage">
+          <div className="vinyl-ring-area">
+            <div className="vinyl-ring-orbit">
+              {VINYL_LIBRARY.map((album, index) => (
+                <OrbitVinyl
+                  key={album.title}
+                  album={album}
+                  index={index}
+                  angleSource={angleSource}
+                  isSelected={selectedIndex === index}
+                  isPlaying={playingAlbum === album.title}
+                  onPick={pickRecord}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="vinyl-ring-caption" aria-live="polite">
+            <strong>{selectedAlbum.track}</strong>
+            <span>{selectedAlbum.artist}</span>
+            <small>
+              {playingAlbum === selectedAlbum.title ? "Now playing" : "Ready to spin"}
+            </small>
+          </div>
+        </div>
       </div>
-
-      <p className="vinyl-hint">30-second previews spin on the turntable back in the room.</p>
     </motion.section>
   );
 }
