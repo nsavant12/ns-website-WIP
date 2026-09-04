@@ -1,5 +1,13 @@
 import { motion, useReducedMotion } from "framer-motion";
-import { GraduationCap, MapPin, Shuffle, Trash2, X } from "lucide-react";
+import {
+  ChevronLeft,
+  GraduationCap,
+  MapPin,
+  RotateCcw,
+  Shuffle,
+  Trash2,
+  X,
+} from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -307,15 +315,22 @@ function applyHairStyle(grid, style, view, offset) {
     return;
   }
   if (style === "long") {
-    for (let r = offset + 9; r <= offset + 12; r += 1) {
-      if (view === "back") {
+    if (view === "back") {
+      for (let r = offset + 9; r <= offset + 12; r += 1) {
         for (let c = 4; c <= 11; c += 1) setCell(grid, r, c, "H");
-      } else if (view === "side") {
-        setCell(grid, r, 3, "H");
-        setCell(grid, r, 4, "H");
-      } else {
-        setCell(grid, r, 3, "H");
-        setCell(grid, r, 12, "H");
+      }
+    } else {
+      // Starts a row higher than the other views' strand span so it
+      // meets the jawline directly instead of leaving a gap of
+      // background between the head and the hanging strand.
+      for (let r = offset + 8; r <= offset + 12; r += 1) {
+        if (view === "side") {
+          setCell(grid, r, 3, "H");
+          setCell(grid, r, 4, "H");
+        } else {
+          setCell(grid, r, 3, "H");
+          setCell(grid, r, 12, "H");
+        }
       }
     }
   }
@@ -334,6 +349,13 @@ function applyFace(grid, config, view, offset, forceCheer) {
   } else if (config.face === "pointed") {
     setCell(grid, chinRow, 4, ".");
     setCell(grid, chinRow, 11, ".");
+  } else if (config.face === "oval") {
+    // Trims the round template's cheek bulge so the face reads as a
+    // narrower, more even-width oval instead of round's wider middle.
+    setCell(grid, eyeRow, 3, ".");
+    setCell(grid, eyeRow, 12, ".");
+    setCell(grid, eyeRow + 1, 3, ".");
+    setCell(grid, eyeRow + 1, 12, ".");
   }
 
   if (view === "back") return;
@@ -390,8 +412,8 @@ function buildGrid(config, pose, view, frame) {
 
   const grid = template.rows.map((row) => row.split(""));
   template.pixels.forEach(([row, col, char]) => setCell(grid, row, col, char));
-  applyHairStyle(grid, config.hair, activeView, template.headOffset);
   applyFace(grid, config, activeView, template.headOffset, pose === "cheer");
+  applyHairStyle(grid, config.hair, activeView, template.headOffset);
 
   const rows = grid.map((row) => row.join(""));
   gridCache.set(key, rows);
@@ -427,7 +449,7 @@ function rowsToRects(rows, gridWidth) {
 }
 
 export function MiiFigure({ config, size = 96, crop, view = "front", pose = "idle", frame = 0 }) {
-  const rows = buildGrid(config, crop === "head" ? "idle" : pose, crop === "head" ? "front" : view, frame);
+  const rows = buildGrid(config, crop === "head" ? "idle" : pose, view, frame);
 
   const colors = {
     ...SPRITE_FIXED_COLORS,
@@ -449,6 +471,7 @@ export function MiiFigure({ config, size = 96, crop, view = "front", pose = "idl
       viewBox={viewBox}
       width={width}
       height={size}
+      preserveAspectRatio={isHead ? undefined : "none"}
       shapeRendering="crispEdges"
       role="presentation"
       aria-hidden="true"
@@ -632,7 +655,7 @@ function PixelAddPersonIcon() {
         fill="#f2f6f6"
       />
       {PLUS_RECTS.map((rect, index) => (
-        <rect key={"b" + index} x={rect.x} y={rect.y} width={rect.width} height={rect.height} fill="#18b7ed" />
+        <rect key={"b" + index} x={rect.x} y={rect.y} width={rect.width} height={rect.height} fill="#55666d" />
       ))}
     </svg>
   );
@@ -838,13 +861,21 @@ function randomGuestConfig() {
 
 const MAKER_TABS = [
   { id: "body", label: "Body" },
-  { id: "skin", label: "Skin" },
-  { id: "face", label: "Face" },
+  { id: "skin", label: "Skin Tone" },
+  { id: "face", label: "Face Shape" },
   { id: "hair", label: "Hair" },
+  { id: "hairColor", label: "Hair Colour" },
   { id: "eyes", label: "Eyes" },
   { id: "mouth", label: "Mouth" },
   { id: "shirt", label: "Shirt" },
 ];
+
+// Tabs that edit a facial feature zoom the stage into a head close-up;
+// everything else (body proportions, shirt) stays zoomed out to the
+// full figure so the change is visible where it actually reads.
+const ZOOM_HEAD_TABS = new Set(["skin", "face", "hair", "hairColor", "eyes", "mouth"]);
+
+const GALLERY_MAX_SLOTS = 12;
 
 function SwatchGrid({ label, colors, value, onChange }) {
   return (
@@ -883,46 +914,60 @@ function PartPicker({ label, options, labels, value, onChange, renderOption }) {
   );
 }
 
-function MiiMaker({ onSave, onClose }) {
-  const [config, setConfig] = useState(randomGuestConfig);
-  const [tab, setTab] = useState("body");
+// Slider position (0-100) for the "Turn" control maps to a view + facing:
+// the middle third stays front-on, the outer thirds turn the Mii to profile.
+function turnToView(turn) {
+  if (turn <= 32) return { view: "side", facing: -1 };
+  if (turn >= 68) return { view: "side", facing: 1 };
+  return { view: "front", facing: 1 };
+}
+
+function MiiMaker({ initialConfig, isNew, onBack, onSave }) {
+  const [config, setConfig] = useState(initialConfig);
+  const [tab, setTab] = useState("face");
+  const [step, setStep] = useState("parts");
+  const [turn, setTurn] = useState(50);
   const nameInputRef = useRef(null);
 
   const update = (patch) => setConfig((current) => ({ ...current, ...patch }));
 
   useEffect(() => {
-    nameInputRef.current?.focus();
-  }, []);
+    if (step === "name") nameInputRef.current?.focus();
+  }, [step]);
 
-  return (
-    <div className="mii-maker" role="dialog" aria-modal="true" aria-label="Mii maker">
-      <div className="mii-maker-tabs" role="tablist" aria-label="Mii features">
-        {MAKER_TABS.map((item) => (
+  const zoomedToHead = ZOOM_HEAD_TABS.has(tab);
+  const { view, facing } = turnToView(turn);
+  const activeLabel = MAKER_TABS.find((item) => item.id === tab)?.label || "";
+
+  const handleSave = () => {
+    onSave({
+      ...config,
+      name: config.name.trim() || "Guest Mii",
+      id: config.id || `guest-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
+    });
+  };
+
+  if (step === "name") {
+    return (
+      <div className="mii-maker" role="dialog" aria-modal="true" aria-label="Name your Mii">
+        <header className="mii-maker-topbar">
           <button
-            key={item.id}
             type="button"
-            role="tab"
-            aria-selected={tab === item.id}
-            className={"mii-maker-tab" + (tab === item.id ? " is-active" : "")}
-            onClick={() => setTab(item.id)}
+            className="mii-maker-back"
+            onClick={() => setStep("parts")}
+            aria-label="Back to parts"
           >
-            {item.label}
+            <ChevronLeft size={18} />
           </button>
-        ))}
-        <button
-          type="button"
-          className="mii-maker-tab mii-maker-shuffle"
-          onClick={() => setConfig({ ...randomGuestConfig(), name: config.name })}
-          aria-label="Randomize this Mii"
-        >
-          <Shuffle size={15} />
-        </button>
-      </div>
+          <div className="mii-maker-heading">
+            <h3>{isNew ? "Create a Character" : "Edit Character"}</h3>
+            <span>Step 2 of 2 — name it</span>
+          </div>
+        </header>
 
-      <div className="mii-maker-body">
-        <div className="mii-maker-preview">
-          <div className="mii-maker-stage">
-            <MiiFigure config={config} size={150 + config.height * 0.9} />
+        <div className="mii-maker-namestep">
+          <div className="mii-maker-stage mii-maker-stage-large">
+            <MiiFigure config={config} size={220 + config.height * 0.9} />
           </div>
           <label className="mii-maker-name">
             <span>Mii name</span>
@@ -933,24 +978,96 @@ function MiiMaker({ onSave, onClose }) {
               placeholder="Type a name"
               value={config.name}
               onChange={(event) => update({ name: event.target.value })}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") handleSave();
+              }}
             />
           </label>
           <div className="mii-maker-actions">
-            <Button variant="outline" onClick={onClose}>Quit</Button>
-            <Button
-              className="mii-maker-save"
-              onClick={() => onSave({
-                ...config,
-                name: config.name.trim() || "Guest Mii",
-                id: `guest-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
-              })}
+            <Button variant="outline" onClick={onBack}>Quit</Button>
+            <Button className="mii-maker-save" onClick={handleSave}>Save Mii</Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mii-maker" role="dialog" aria-modal="true" aria-label={isNew ? "Create a character" : "Edit character"}>
+      <header className="mii-maker-topbar">
+        <button type="button" className="mii-maker-back" onClick={onBack} aria-label="Back to gallery">
+          <ChevronLeft size={18} />
+        </button>
+        <div className="mii-maker-heading">
+          <h3>{isNew ? "Create a Character" : "Edit Character"}</h3>
+          <span>Step 1 of 2 — pick the parts</span>
+        </div>
+        <div className="mii-maker-topbar-actions">
+          <button
+            type="button"
+            className="mii-maker-shuffle-text"
+            onClick={() => setConfig({ ...randomGuestConfig(), name: config.name, id: config.id })}
+          >
+            <Shuffle size={13} />
+            Surprise me
+          </button>
+          <Button className="mii-maker-next" onClick={() => setStep("name")}>Next: Name</Button>
+        </div>
+      </header>
+
+      <div className="mii-maker-layout">
+        <nav className="mii-maker-sidebar" role="tablist" aria-label="Mii features">
+          {MAKER_TABS.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              role="tab"
+              aria-selected={tab === item.id}
+              className={"mii-maker-sidebar-tab" + (tab === item.id ? " is-active" : "")}
+              onClick={() => setTab(item.id)}
             >
-              Save Mii
-            </Button>
+              {item.label}
+            </button>
+          ))}
+        </nav>
+
+        <div className="mii-maker-stagewrap">
+          <div className="mii-maker-stage">
+            <span className="mii-maker-stage-inner" style={{ transform: `scaleX(${facing})` }}>
+              <MiiFigure
+                config={config}
+                size={zoomedToHead ? 220 : 150 + config.height * 0.9}
+                crop={zoomedToHead ? "head" : undefined}
+                view={view}
+              />
+            </span>
+          </div>
+          <div className="mii-maker-turn">
+            <button
+              type="button"
+              className="mii-maker-reset"
+              onClick={() => setTurn(50)}
+              aria-label="Reset rotation"
+            >
+              <RotateCcw size={14} />
+            </button>
+            <span>Turn</span>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={turn}
+              onChange={(event) => setTurn(Number(event.target.value))}
+              aria-label="Turn the Mii"
+            />
           </div>
         </div>
 
         <div className="mii-maker-options">
+          <div className="mii-maker-options-header">
+            <h4>{activeLabel}</h4>
+          </div>
+
           {tab === "body" ? (
             <div className="mii-slider-stack">
               <label>
@@ -999,24 +1116,25 @@ function MiiMaker({ onSave, onClose }) {
           ) : null}
 
           {tab === "hair" ? (
-            <>
-              <PartPicker
-                label="Hair style"
-                options={HAIR_STYLE_IDS}
-                labels={HAIR_LABELS}
-                value={config.hair}
-                onChange={(hair) => update({ hair })}
-                renderOption={(hair) => (
-                  <MiiFigure config={{ ...config, hair }} size={54} crop="head" />
-                )}
-              />
-              <SwatchGrid
-                label="Hair color"
-                colors={HAIR_COLORS}
-                value={config.hairColor}
-                onChange={(hairColor) => update({ hairColor })}
-              />
-            </>
+            <PartPicker
+              label="Hair style"
+              options={HAIR_STYLE_IDS}
+              labels={HAIR_LABELS}
+              value={config.hair}
+              onChange={(hair) => update({ hair })}
+              renderOption={(hair) => (
+                <MiiFigure config={{ ...config, hair }} size={54} crop="head" />
+              )}
+            />
+          ) : null}
+
+          {tab === "hairColor" ? (
+            <SwatchGrid
+              label="Hair color"
+              colors={HAIR_COLORS}
+              value={config.hairColor}
+              onChange={(hairColor) => update({ hairColor })}
+            />
           ) : null}
 
           {tab === "eyes" ? (
@@ -1053,7 +1171,66 @@ function MiiMaker({ onSave, onClose }) {
               onChange={(shirt) => update({ shirt })}
             />
           ) : null}
+
+          <p className="mii-maker-hint">Nothing here is permanent — you can change any part later.</p>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function CharacterGallery({ guests, onSelectGuest, onCreateNew, onClose }) {
+  const usedSlots = guests.length;
+  const canCreate = usedSlots < GALLERY_MAX_SLOTS;
+  const emptyCount = Math.max(0, GALLERY_MAX_SLOTS - usedSlots - (canCreate ? 1 : 0));
+
+  return (
+    <div className="mii-gallery" role="dialog" aria-modal="true" aria-label="Character gallery">
+      <header className="mii-gallery-header">
+        <div>
+          <h3>Character Gallery</h3>
+          <span>{usedSlots} of {GALLERY_MAX_SLOTS} slots used</span>
+        </div>
+        <button type="button" className="mii-gallery-close" onClick={onClose} aria-label="Close character gallery">
+          <X size={16} />
+        </button>
+      </header>
+
+      <div className="mii-gallery-grid">
+        {guests.map((guest) => (
+          <button
+            key={guest.id}
+            type="button"
+            className="mii-gallery-slot mii-gallery-slot-filled"
+            onClick={() => onSelectGuest(guest)}
+            aria-label={`Edit ${guest.name || "Guest"}`}
+          >
+            <span className="mii-gallery-slot-portrait">
+              <MiiFigure config={guest} size={64} crop="head" />
+            </span>
+            <span className="mii-gallery-slot-label">{guest.name || "Guest"}</span>
+          </button>
+        ))}
+
+        {canCreate ? (
+          <button
+            type="button"
+            className="mii-gallery-slot mii-gallery-slot-new"
+            onClick={onCreateNew}
+            aria-label="Create a new Mii"
+          >
+            <span className="mii-gallery-slot-portrait mii-gallery-slot-add">
+              <PixelAddPersonIcon />
+            </span>
+            <span className="mii-gallery-slot-label">New</span>
+          </button>
+        ) : null}
+
+        {Array.from({ length: emptyCount }).map((_, index) => (
+          <span key={index} className="mii-gallery-slot mii-gallery-slot-empty" aria-hidden="true">
+            <span className="mii-gallery-slot-label">Empty</span>
+          </span>
+        ))}
       </div>
     </div>
   );
@@ -1063,7 +1240,9 @@ export default function MiiPlaza() {
   const reduceMotion = useReducedMotion();
   const [guests, setGuests] = useState([]);
   const [selected, setSelected] = useState(null);
-  const [makerOpen, setMakerOpen] = useState(false);
+  const [flowStep, setFlowStep] = useState(null); // null | "gallery" | "maker"
+  const [editingGuestId, setEditingGuestId] = useState(null);
+  const [draftConfig, setDraftConfig] = useState(null);
 
   useEffect(() => {
     try {
@@ -1101,12 +1280,48 @@ export default function MiiPlaza() {
     setSelected(null);
   };
 
+  const openGallery = () => {
+    setSelected(null);
+    setFlowStep("gallery");
+  };
+
+  const startCreate = () => {
+    setEditingGuestId(null);
+    setDraftConfig(randomGuestConfig());
+    setFlowStep("maker");
+  };
+
+  const startEdit = (guest) => {
+    setEditingGuestId(guest.id);
+    setDraftConfig(null);
+    setFlowStep("maker");
+  };
+
+  const backToGallery = () => setFlowStep("gallery");
+
+  const closeFlow = () => {
+    setFlowStep(null);
+    setEditingGuestId(null);
+    setDraftConfig(null);
+  };
+
+  const saveMii = (guest) => {
+    if (editingGuestId) {
+      persistGuests(guests.map((existing) => (existing.id === editingGuestId ? guest : existing)));
+    } else {
+      persistGuests([...guests, guest]);
+    }
+    closeFlow();
+  };
+
+  const editingGuest = editingGuestId ? guests.find((guest) => guest.id === editingGuestId) : null;
+
   return (
     <div className="mii-plaza-shell">
       <div className="mii-plaza-heading">
-        <Badge variant="outline">Mii Channel · Plaza</Badge>
+        <Badge variant="outline">Mii Channel</Badge>
         <h2>Welcome to the plaza.</h2>
-        <p>Select Nikhil&apos;s Mii to meet him — or make a Mii of your own and let it wander.</p>
+        <p>Select My Mii to meet and learn about him, or make a Mii of your own and let it become friends with mine!</p>
       </div>
 
       <div className="mii-plaza">
@@ -1115,7 +1330,7 @@ export default function MiiPlaza() {
             key={mii.id}
             mii={mii}
             initial={initialSpots[mii.id] || { x: 50, y: 50 }}
-            paused={makerOpen || selected?.id === mii.id}
+            paused={flowStep !== null || selected?.id === mii.id}
             reduceMotion={reduceMotion}
             onSelect={(next) => setSelected((current) => (
               current?.id === next.id ? null : next
@@ -1126,14 +1341,11 @@ export default function MiiPlaza() {
         <button
           type="button"
           className="mii-plaza-make"
-          onClick={() => {
-            setSelected(null);
-            setMakerOpen(true);
-          }}
-          aria-label="Make a Mii"
+          onClick={openGallery}
+          aria-label="Manage your Miis"
         >
           <span className="mii-plaza-make-icon"><PixelAddPersonIcon /></span>
-          <span className="mii-plaza-make-label">Make a Mii</span>
+          <span className="mii-plaza-make-label">My Miis</span>
         </button>
 
         <span className="mii-plaza-count">{miis.length} {miis.length === 1 ? "Mii" : "Miis"} in the plaza</span>
@@ -1194,13 +1406,22 @@ export default function MiiPlaza() {
           </aside>
         ) : null}
 
-        {makerOpen ? (
+        {flowStep === "gallery" ? (
+          <CharacterGallery
+            guests={guests}
+            onSelectGuest={startEdit}
+            onCreateNew={startCreate}
+            onClose={closeFlow}
+          />
+        ) : null}
+
+        {flowStep === "maker" ? (
           <MiiMaker
-            onClose={() => setMakerOpen(false)}
-            onSave={(guest) => {
-              persistGuests([...guests, guest]);
-              setMakerOpen(false);
-            }}
+            key={editingGuestId || "new"}
+            initialConfig={editingGuest || draftConfig}
+            isNew={!editingGuestId}
+            onBack={backToGallery}
+            onSave={saveMii}
           />
         ) : null}
       </div>

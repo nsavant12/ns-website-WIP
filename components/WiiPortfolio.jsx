@@ -95,7 +95,6 @@ const CHANNELS = [
     number: "01",
     title: "Mii Channel",
     eyebrow: "Mii",
-    description: "A quick introduction",
     icon: CircleUserRound,
   },
   {
@@ -103,31 +102,27 @@ const CHANNELS = [
     number: "02",
     title: "Discovery Channel",
     eyebrow: "Discovery",
-    description: "Scenes worth keeping",
     icon: Camera,
   },
   {
     id: "skills",
     number: "03",
     title: "Skills Channel",
-    eyebrow: "Toolkit",
-    description: "Play skill-stack 2048",
+    eyebrow: "Tech Stack",
     icon: Wrench,
   },
   {
     id: "links",
     number: "04",
-    title: "Internet Channel",
-    eyebrow: "Find me",
-    description: "A few useful links",
+    title: "Social Channel",
+    eyebrow: "Socials",
     icon: Link2,
   },
   {
     id: "resume",
     number: "05",
     title: "Resume Channel",
-    eyebrow: "Resume",
-    description: "The condensed version",
+    eyebrow: "Resume",  
     icon: FileText,
   },
 ];
@@ -136,6 +131,13 @@ const VALID_CHANNEL_IDS = new Set(CHANNELS.map((channel) => channel.id));
 
 function BootScreen({ onContinue, onResume }) {
   const reduceMotion = useReducedMotion();
+  const [resumeDomain, setResumeDomain] = useState("nikhilsav.xyz");
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.location.host) {
+      setResumeDomain(window.location.host);
+    }
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -172,7 +174,7 @@ function BootScreen({ onContinue, onResume }) {
         </div>
 
         <p className="boot-primary">
-          Before playing, read my resume
+          Before viewing, read my resume
           <br />
           for important information.
         </p>
@@ -186,7 +188,7 @@ function BootScreen({ onContinue, onResume }) {
             onResume();
           }}
         >
-          nikhilsav.xyz/#resume
+          {resumeDomain}/#resume
         </a>
 
         <button
@@ -198,7 +200,7 @@ function BootScreen({ onContinue, onResume }) {
           }}
         >
           Press <kbd>SPACE</kbd> to continue.
-          <span>Tap anywhere on touch screens</span>
+          <span>Or tap anywhere</span>
         </button>
       </motion.section>
     </motion.main>
@@ -352,9 +354,8 @@ function LinksContent() {
   return (
     <div>
       <div className="content-heading">
-        <Badge variant="outline">Internet settings</Badge>
+        <Badge variant="outline">My Socials</Badge>
         <h2>Three good ways to find me.</h2>
-        <p>Code, career, and photographs—each has its own corner.</p>
       </div>
 
       <div className="link-grid">
@@ -636,18 +637,18 @@ function HomeMenu({ activeChannel, onOpen, onClose }) {
           ))}
           {[0, 1, 2, 3, 4, 5, 6].map((index) => <EmptyChannel key={index} index={index} />)}
         </div>
-        <p className="channel-help">Point and click a channel</p>
+        <p className="channel-help">Click a channel</p>
       </section>
 
       <footer className="wii-dock" aria-hidden={activeChannel ? "true" : undefined}>
         <svg
           className="dock-wave"
-          viewBox="0 0 1000 26"
+          viewBox="0 0 1000 42"
           preserveAspectRatio="none"
           aria-hidden="true"
         >
           <defs>
-            <linearGradient id="dockShadeGrad" x1="0" y1="0" x2="0" y2="26" gradientUnits="userSpaceOnUse">
+            <linearGradient id="dockShadeGrad" x1="0" y1="0" x2="0" y2="30" gradientUnits="userSpaceOnUse">
               <stop offset="0%" stopColor="#c4cbcf" />
               <stop offset="60%" stopColor="#eef0f1" />
               <stop offset="100%" stopColor="#ffffff" />
@@ -655,11 +656,11 @@ function HomeMenu({ activeChannel, onOpen, onClose }) {
           </defs>
           <path
             className="dock-wave-fill"
-            d="M0,5 L165,5 Q190,5 214.8,8.3 L285.2,17.7 Q310,21 335,21 L665,21 Q690,21 714.8,17.7 L785.2,8.3 Q810,5 835,5 L1000,5 L1000,26 L0,26 Z"
+            d="M0,5 L165,5 Q190,5 214.8,8.9 L285.2,23.1 Q310,27 335,27 L665,27 Q690,27 714.8,23.1 L785.2,8.9 Q810,5 835,5 L1000,5 L1000,30 L0,30 Z"
           />
           <path
             className="dock-wave-line"
-            d="M0,5 L165,5 Q190,5 214.8,8.3 L285.2,17.7 Q310,21 335,21 L665,21 Q690,21 714.8,17.7 L785.2,8.3 Q810,5 835,5 L1000,5"
+            d="M0,5 L165,5 Q190,5 214.8,8.9 L285.2,23.1 Q310,27 335,27 L665,27 Q690,27 714.8,23.1 L785.2,8.9 Q810,5 835,5 L1000,5"
             vectorEffect="non-scaling-stroke"
           />
         </svg>

@@ -454,11 +454,11 @@ export default function Skills2048() {
     <div className="skills-game">
       <div className="skills-game-heading">
         <div>
-          <Badge variant="outline">Toolkit · 2048</Badge>
+          <Badge variant="outline">Tech Stack · 2048</Badge>
           <h2>Merge the stack.</h2>
           <p>
-            Match identical skill logos to unlock the next technology.
-            Reach <strong>Docker</strong> to win—or keep going.
+            Its exactly like 2048 except with my technical skills.
+            Reach <strong>Docker</strong> to win, or keep going to flex your score.
           </p>
         </div>
 
@@ -622,7 +622,7 @@ export default function Skills2048() {
             <div className="skills-catalog-header">
               <div>
                 <p className="mini-label">FULL UNLOCK PATH</p>
-                <h3 id="skills-catalog-title">Every skill in the game</h3>
+                <h3 id="skills-catalog-title">All my skills</h3>
                 <p>Matching a logo unlocks the next technology in this order.</p>
               </div>
               <Button
