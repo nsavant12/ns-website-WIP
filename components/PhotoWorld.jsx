@@ -25,53 +25,86 @@ const PHOTOS = [
   {
     src: "/desert.jpg",
     title: "Nevada",
-    alt: "Desert path and mountains under a deep blue sky.",
+    alt: "Desert",
   },
   {
     src: "/summer.jpg",
     title: "Belmont Redline Station",
-    alt: "A summer scene photographed by Nikhil.",
+    alt: "The Chicago Redline",
   },
   {
     src: "/IMG_20210707_170928.jpg",
     title: "Nobu, Miami",
-    alt: "A bright interior with wood columns and colorful artwork.",
+    alt: "Hotel in Miami",
   },
   {
     src: "/IMG_20210629_202206.jpg",
     title: "View from room pt. 2, 2020",
-    alt: "An evening city view photographed by Nikhil.",
+    alt: "City view",
   },
   {
     src: "/sunset.jpg",
     title: "View from my room, 2020",
-    alt: "A sunset from Nikhil's photo archive.",
+    alt: "Shoutout to this pandemic apartment",
   },
   {
     src: "/chicagoSkyline.jpg",
     title: "A tourist's view of Chicago",
-    alt: "The Chicago skyline seen across the water.",
+    alt: "Chicago skyline",
   },
   {
     src: "/Miami.jpg",
     title: "Miami",
-    alt: "A wide view of Miami photographed by Nikhil.",
+    alt: "Miami skyline",
   },
   {
     src: "/chicago.jpg",
     title: "Lakefront",
-    alt: "A Chicago lakefront scene photographed by Nikhil.",
+    alt: "Chicago lakefront",
   },
   {
     src: "/southLoopSunset.jpg",
     title: "South Loop",
     alt: "Sunset over Chicago's South Loop.",
   },
+  {
+    src: "/IMG_5660.jpeg",
+    title: "Salesforce Tower",
+    alt: "Above the escalators in Salesforce Tower",
+  },
+  {
+    src: "/IMG_5903.jpeg",
+    title: "Falcon admiring architecture",
+    alt: "The Transamerica pyramid",
+  },
+  {
+    src: "/IMG_5731.jpeg",
+    title: "Sakura - Chris Stussy",
+    alt: "Nob Hill",
+  },
+  {
+    src: "/IMG_5970.jpeg",
+    title: "4th of July @ Lake Tahoe",
+    alt: "Lake Tahoe",
+  },
+  {
+    src: "/IMG_6200.JPG",
+    title: "The shot of the shot of the shot",
+    alt: "Golden Gate Bridge",
+  },
+  {
+    src: "/IMG_6202.JPG",
+    title: "The result",
+    alt: "Cool looking Golden Gate Bridge",
+  },
 ];
 
 const ROOM_WALLS = ["back", "left", "right", "front"];
 
-const PHOTO_PLACEMENTS = [
+// Used for the very first paint (server-rendered, before the client has had
+// a chance to roll a fresh layout) so hydration always starts from the same
+// markup on both sides.
+const DEFAULT_PHOTO_PLACEMENTS = [
   { wall: "back", x: 21, y: 53, tilt: -2.5, scale: 1.04 },
   { wall: "front", x: 50, y: 46, tilt: 1.5, scale: 0.92 },
   { wall: "back", x: 79, y: 53, tilt: 2, scale: 1 },
@@ -81,6 +114,12 @@ const PHOTO_PLACEMENTS = [
   { wall: "right", x: 38, y: 68, tilt: -2, scale: 0.8 },
   { wall: "right", x: 68, y: 42, tilt: -1.5, scale: 0.76 },
   { wall: "front", x: 76, y: 52, tilt: -2, scale: 0.94 },
+  { wall: "left", x: 50, y: 20, tilt: 1, scale: 0.7 },
+  { wall: "back", x: 15, y: 26, tilt: -2, scale: 0.72 },
+  { wall: "back", x: 85, y: 26, tilt: 2.2, scale: 0.72 },
+  { wall: "front", x: 50, y: 20, tilt: -1, scale: 0.95 },
+  { wall: "left", x: 15, y: 58, tilt: -2.5, scale: 0.68 },
+  { wall: "right", x: 85, y: 58, tilt: 2.5, scale: 0.68 },
 ];
 
 const VINYL_LIBRARY = [
@@ -119,27 +158,26 @@ const MOVIE_POSTERS = [
   {
     title: "Memento",
     year: "2000",
-    wall: "back",
-    x: 50,
-    y: 16,
     src: "https://upload.wikimedia.org/wikipedia/en/c/c7/Memento_poster.jpg",
   },
   {
     title: "Memories of Murder",
     year: "2003",
-    wall: "left",
-    x: 84,
-    y: 14,
     src: "https://upload.wikimedia.org/wikipedia/en/0/01/Salinui-chueok-south-korean-movie-poster-md.jpg",
   },
   {
     title: "Nausicaä of the Valley of the Wind",
     year: "1984",
-    wall: "right",
-    x: 16,
-    y: 15,
     src: "https://upload.wikimedia.org/wikipedia/en/b/bc/Nausicaaposter.jpg",
   },
+];
+
+// The server-rendered default placement for each poster, indexed to match
+// MOVIE_POSTERS above.
+const DEFAULT_MOVIE_PLACEMENTS = [
+  { wall: "back", x: 50, y: 16 },
+  { wall: "left", x: 84, y: 14 },
+  { wall: "right", x: 16, y: 15 },
 ];
 
 const ROOM_PITCH_LIMIT = 14;
@@ -149,6 +187,144 @@ const ROOM_ZOOM_LEVELS = [1, 1.4, 1.9, 2.5];
 const clamp = (value, minimum, maximum) => (
   Math.min(maximum, Math.max(minimum, value))
 );
+
+// Pixel footprint of each wall (back/front use the room's width; left/right
+// are slightly wider since they run the depth-plus-front span instead).
+const WALL_DIMENSIONS = {
+  back: { width: 1200, height: 720 },
+  front: { width: 1200, height: 720 },
+  left: { width: 1230, height: 720 },
+  right: { width: 1230, height: 720 },
+};
+
+const PHOTO_BASE_WIDTH = 300;
+const PHOTO_ASPECT_RATIO = 3 / 4;
+const PHOTO_SCALE_RANGE = [0.7, 1.05];
+const PHOTO_TILT_RANGE = [-3, 3];
+const POSTER_WIDTH = 118;
+const POSTER_HEIGHT = 175;
+const POSTER_CAPTION_HEIGHT = 46;
+
+// Five non-overlapping slots per wall (a row of three up top, two below),
+// each with a size budget (in percent of the wall) that an item is placed
+// within — so overlap is impossible by construction, no rejection sampling
+// or retry limit required. When a wall draws fewer than five items, a
+// random subset of its slots is used, so which slot goes empty varies too.
+// The back wall's lower two slots are pushed to the far sides and narrowed
+// so they clear the TV mounted at its center (x 30-70%, y 46-100%).
+const SLOT_LAYOUTS = {
+  open: [
+    { x: 17, y: 24, halfW: 15, aboveH: 17, belowH: 20 },
+    { x: 50, y: 24, halfW: 15, aboveH: 17, belowH: 20 },
+    { x: 83, y: 24, halfW: 15, aboveH: 17, belowH: 20 },
+    { x: 25, y: 68, halfW: 20, aboveH: 20, belowH: 22 },
+    { x: 75, y: 68, halfW: 20, aboveH: 20, belowH: 22 },
+  ],
+  back: [
+    { x: 17, y: 24, halfW: 15, aboveH: 17, belowH: 20 },
+    { x: 50, y: 24, halfW: 15, aboveH: 17, belowH: 20 },
+    { x: 83, y: 24, halfW: 15, aboveH: 17, belowH: 20 },
+    { x: 15, y: 68, halfW: 13, aboveH: 20, belowH: 22 },
+    { x: 85, y: 68, halfW: 13, aboveH: 20, belowH: 22 },
+  ],
+};
+
+const WALL_SLOT_LAYOUT = { back: "back", front: "open", left: "open", right: "open" };
+
+const randomBetween = (min, max) => min + Math.random() * (max - min);
+
+function shuffle(list) {
+  const result = list.slice();
+  for (let i = result.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+// Rolls a fresh layout for every framed photo and movie poster: items are
+// dealt across the four walls as evenly as their count allows, then each
+// wall's items are dropped into a random subset of its five fixed slots.
+// Because slots never overlap each other or the back wall's TV, and every
+// item is shrunk (if needed) to fit inside whichever slot it lands in,
+// nothing can ever collide — the room just looks different every visit.
+function generateRoomLayout() {
+  const photoItems = PHOTOS.map((_, index) => ({
+    kind: "photo",
+    index,
+    scale: randomBetween(...PHOTO_SCALE_RANGE),
+    tilt: randomBetween(...PHOTO_TILT_RANGE),
+  }));
+
+  const posterItems = MOVIE_POSTERS.map((_, index) => ({
+    kind: "poster",
+    index,
+  }));
+
+  const items = shuffle([...photoItems, ...posterItems]);
+
+  // Deal off a shuffled wall order so any remainder (the counts rarely
+  // divide evenly by four) lands on a different wall each time instead of
+  // always favoring the same one.
+  const wallOrder = shuffle(ROOM_WALLS);
+  const itemsByWall = { back: [], left: [], right: [], front: [] };
+  items.forEach((item, i) => {
+    itemsByWall[wallOrder[i % wallOrder.length]].push(item);
+  });
+
+  const photoPlacements = new Array(PHOTOS.length);
+  const moviePlacements = new Array(MOVIE_POSTERS.length);
+
+  ROOM_WALLS.forEach((wall) => {
+    const { width, height } = WALL_DIMENSIONS[wall];
+    const slots = shuffle(SLOT_LAYOUTS[WALL_SLOT_LAYOUT[wall]]);
+
+    itemsByWall[wall].forEach((item, slotIndex) => {
+      const slot = slots[slotIndex];
+
+      const naturalWidthPx = item.kind === "photo"
+        ? PHOTO_BASE_WIDTH * item.scale
+        : POSTER_WIDTH;
+      const naturalHeightPx = item.kind === "photo"
+        ? naturalWidthPx * PHOTO_ASPECT_RATIO
+        : POSTER_HEIGHT;
+      const naturalHalfW = (naturalWidthPx / width) * 50;
+      const naturalAbove = (naturalHeightPx / height) * 50;
+      const naturalBelow = item.kind === "photo"
+        ? naturalAbove
+        : naturalAbove + (POSTER_CAPTION_HEIGHT / height) * 100;
+
+      // Shrink (never grow) the item so it fits inside the slot's budget.
+      const fitFactor = Math.min(
+        1,
+        slot.halfW / naturalHalfW,
+        slot.aboveH / naturalAbove,
+        slot.belowH / naturalBelow,
+      );
+      const halfW = naturalHalfW * fitFactor;
+      const above = naturalAbove * fitFactor;
+      const below = naturalBelow * fitFactor;
+
+      // Jitter within whatever slack the shrunk item leaves in its slot.
+      const x = randomBetween(slot.x - (slot.halfW - halfW), slot.x + (slot.halfW - halfW));
+      const y = randomBetween(slot.y - (slot.aboveH - above), slot.y + (slot.belowH - below));
+
+      if (item.kind === "photo") {
+        photoPlacements[item.index] = {
+          wall,
+          x,
+          y,
+          tilt: item.tilt,
+          scale: item.scale * fitFactor,
+        };
+      } else {
+        moviePlacements[item.index] = { wall, x, y };
+      }
+    });
+  });
+
+  return { photoPlacements, moviePlacements };
+}
 
 function playShutterSound(audioContextRef) {
   const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -539,6 +715,7 @@ export default function PhotoWorld() {
     damping: 24,
     mass: 0.72,
   });
+  const [roomLayout, setRoomLayout] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [zoomIndex, setZoomIndex] = useState(0);
   const [capturePhase, setCapturePhase] = useState(null);
@@ -556,6 +733,16 @@ export default function PhotoWorld() {
   const openingPhotoIndex = useRef(null);
   const restorePhotoFocus = useRef(null);
   const isCameraOpen = selectedIndex !== null;
+
+  // Rolled once per mount, client-side only, so the room starts from the
+  // same server-rendered layout on both sides and then settles into a fresh
+  // shuffle right after hydration.
+  useEffect(() => {
+    setRoomLayout(generateRoomLayout());
+  }, []);
+
+  const photoPlacements = roomLayout ? roomLayout.photoPlacements : DEFAULT_PHOTO_PLACEMENTS;
+  const moviePlacements = roomLayout ? roomLayout.moviePlacements : DEFAULT_MOVIE_PLACEMENTS;
 
   const clearCaptureTimers = useCallback(() => {
     captureTimers.current.forEach((timer) => window.clearTimeout(timer));
@@ -782,7 +969,7 @@ export default function PhotoWorld() {
                         className={"photo-room-wall photo-room-wall-" + wall}
                       >
                         {PHOTOS.map((photo, index) => {
-                          const placement = PHOTO_PLACEMENTS[index];
+                          const placement = photoPlacements[index];
                           if (placement.wall !== wall) return null;
 
                           return (
@@ -820,14 +1007,17 @@ export default function PhotoWorld() {
                           );
                         })}
 
-                        {MOVIE_POSTERS.map((movie) => (
-                          movie.wall === wall ? (
+                        {MOVIE_POSTERS.map((movie, movieIndex) => {
+                          const placement = moviePlacements[movieIndex];
+                          if (placement.wall !== wall) return null;
+
+                          return (
                             <figure
                               key={movie.title}
                               className="pixel-album-cover movie-poster"
                               style={{
-                                left: movie.x + "%",
-                                top: movie.y + "%",
+                                left: placement.x + "%",
+                                top: placement.y + "%",
                               }}
                             >
                               <img
@@ -841,8 +1031,8 @@ export default function PhotoWorld() {
                                 <span>{movie.year}</span>
                               </figcaption>
                             </figure>
-                          ) : null
-                        ))}
+                          );
+                        })}
                       </div>
                     ))}
 

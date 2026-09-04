@@ -3,46 +3,17 @@
 @tailwind utilities;
 
 /*
- * Wii-style rounded gothic typeface. FOT-RodinBokutoh Pro / FOT-NewRodin Pro
- * (the fonts actually used on Wii system menus) are paid commercial fonts
- * with no free-to-use distribution, so this self-hosts M PLUS Rounded 1c —
- * the standard open-license (SIL OFL) lookalike for the Rodin family, sharing
- * the same rounded Japanese-gothic letterforms.
+ * Wii-style rounded gothic typeface, self-hosted from the site owner's
+ * licensed copy of FOT-NewRodin Pro EB (single Extra Bold cut, mapped
+ * across the 400-900 weight range so every existing font-weight usage
+ * resolves to this one face without synthetic bolding).
  */
 @font-face {
   font-family: "Wii Rodin";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 400 900;
   font-display: swap;
-  src: url("/fonts/mplus-rounded-400.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Wii Rodin";
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("/fonts/mplus-rounded-500.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Wii Rodin";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("/fonts/mplus-rounded-700.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Wii Rodin";
-  font-style: normal;
-  font-weight: 800;
-  font-display: swap;
-  src: url("/fonts/mplus-rounded-800.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Wii Rodin";
-  font-style: normal;
-  font-weight: 900;
-  font-display: swap;
-  src: url("/fonts/mplus-rounded-900.woff2") format("woff2");
+  src: url("/fonts/newrodin-pro-eb.woff2") format("woff2");
 }
 
 :root {
@@ -820,10 +791,7 @@ button {
   align-items: center;
   height: 144px;
   padding: 16px clamp(22px, 4vw, 58px);
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.75), transparent 18%),
-    #e4e8ea;
-  box-shadow: inset 0 3px 8px rgba(255,255,255,.9);
+  background: #ffffff;
 }
 
 .dock-wave {
@@ -836,8 +804,13 @@ button {
   overflow: visible;
 }
 
-.dock-wave path {
-  fill: #e4e8ea;
+.dock-wave-fill {
+  fill: url(#dockShadeGrad);
+  stroke: none;
+}
+
+.dock-wave-line {
+  fill: none;
   stroke: #5cc9ef;
   stroke-width: 2.5px;
 }

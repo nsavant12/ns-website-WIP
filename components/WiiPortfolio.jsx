@@ -646,8 +646,20 @@ function HomeMenu({ activeChannel, onOpen, onClose }) {
           preserveAspectRatio="none"
           aria-hidden="true"
         >
+          <defs>
+            <linearGradient id="dockShadeGrad" x1="0" y1="0" x2="0" y2="26" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stopColor="#c4cbcf" />
+              <stop offset="60%" stopColor="#eef0f1" />
+              <stop offset="100%" stopColor="#ffffff" />
+            </linearGradient>
+          </defs>
           <path
-            d="M0,16 C40,16 90,19 150,20 C210,21 350,2 500,2 C650,2 790,21 850,20 C910,19 960,16 1000,16 L1000,26 L0,26 Z"
+            className="dock-wave-fill"
+            d="M0,5 L165,5 Q190,5 214.8,8.3 L285.2,17.7 Q310,21 335,21 L665,21 Q690,21 714.8,17.7 L785.2,8.3 Q810,5 835,5 L1000,5 L1000,26 L0,26 Z"
+          />
+          <path
+            className="dock-wave-line"
+            d="M0,5 L165,5 Q190,5 214.8,8.3 L285.2,17.7 Q310,21 335,21 L665,21 Q690,21 714.8,17.7 L785.2,8.3 Q810,5 835,5 L1000,5"
             vectorEffect="non-scaling-stroke"
           />
         </svg>
