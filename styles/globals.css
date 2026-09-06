@@ -1310,6 +1310,19 @@ button {
   --room-front: 470px;
   --room-span: calc(var(--room-depth) + var(--room-front));
   --room-photo-width: 300px;
+  /* Two panels sharing a mathematically exact edge (a wall's corner with its
+     neighbor, or its top/bottom meeting the ceiling/floor) still render a
+     hairline gap at grazing viewing angles - each panel is rasterized
+     independently, and their projected edges can land fractions of a pixel
+     apart, which perspective stretches into a visible sliver of the sky
+     backdrop behind the room. This overshoot is applied to the back/left/
+     right walls' own edges (away from the camera) so they cover that sliver
+     with real wall surface. It's deliberately NOT applied to the front wall
+     (which sits close to the perspective plane at rest - growing it risks
+     pushing part of it past the near-clip boundary and having it disappear
+     entirely, worse than the seam it would fix) - the sky-color match above
+     is what covers the seams on that side instead. */
+  --room-seam-overlap: 40px;
   position: relative;
   height: clamp(540px, 69vh, 720px);
   overflow: hidden;
@@ -1345,9 +1358,16 @@ button {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  /* Sits directly behind the 3D room and is what shows through at the
+     wall/ceiling corner seams - two panels sharing a mathematically exact
+     edge still render a hairline rounding gap at grazing viewing angles,
+     which a near-edge-on camera angle can stretch into a visible sliver.
+     Keeping this close to the walls' own off-white tone (rather than the
+     cooler teal it used to be) means that sliver blends in instead of
+     reading as a gray flash when the room is rotated. */
   background:
-    radial-gradient(circle at 50% 52%, rgba(127, 202, 214, .18), transparent 42%),
-    linear-gradient(180deg, #e5f2f0, #d4e2e0);
+    radial-gradient(circle at 50% 52%, rgba(255, 255, 255, .4), transparent 42%),
+    linear-gradient(180deg, #f8faf4, #ecefe6);
 }
 
 .photo-room-stage {
@@ -1424,9 +1444,22 @@ button {
   content: "";
 }
 
+/* Overshoot the top/bottom edge of every wall except the front one (see the
+   --room-seam-overlap note above for why front is excluded), so they cover
+   the wall-to-ceiling and wall-to-floor seams with real surface. */
+.photo-room-wall-back,
+.photo-room-wall-left,
+.photo-room-wall-right {
+  top: calc(0px - var(--room-seam-overlap));
+  height: calc(100% + var(--room-seam-overlap) * 2);
+}
+
 .photo-room-wall-back {
-  right: 0;
-  left: 0;
+  /* Also overshoot sideways, into the left/right walls' planes, to cover
+     the vertical corner seams - safe here since the back wall sits
+     furthest from the camera regardless of yaw. */
+  right: calc(0px - var(--room-seam-overlap));
+  left: calc(0px - var(--room-seam-overlap));
   transform: translateZ(calc(0px - var(--room-depth)));
 }
 
@@ -1441,7 +1474,13 @@ button {
 
 .photo-room-wall-left,
 .photo-room-wall-right {
-  width: var(--room-span);
+  /* Widening (without moving the hinge, which stays pinned by
+     transform-origin) only extends the far edge - the one that meets the
+     back wall, safely away from the camera. The near edge, hinged at the
+     front wall, is intentionally left alone; pushing it forward risks the
+     same near-camera clipping the top/bottom overshoot avoids by excluding
+     the front wall. */
+  width: calc(var(--room-span) + var(--room-seam-overlap));
 }
 
 .photo-room-wall-left {

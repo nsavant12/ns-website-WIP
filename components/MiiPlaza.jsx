@@ -1172,7 +1172,7 @@ function MiiMaker({ initialConfig, isNew, onBack, onSave }) {
             />
           ) : null}
 
-          <p className="mii-maker-hint">Nothing here is permanent — you can change any part later.</p>
+          <p className="mii-maker-hint">You can always alter the appearance of your Mii later.</p>
         </div>
       </div>
     </div>
@@ -1321,7 +1321,7 @@ export default function MiiPlaza() {
       <div className="mii-plaza-heading">
         <Badge variant="outline">Mii Channel</Badge>
         <h2>Welcome to the plaza.</h2>
-        <p>Select My Mii to meet and learn about him, or make a Mii of your own and let it become friends with mine!</p>
+        <p>Select my Mii to meet and learn about him, or make your own Mii and let it become friends with mine!</p>
       </div>
 
       <div className="mii-plaza">
@@ -1364,7 +1364,7 @@ export default function MiiPlaza() {
               </button>
             </div>
             <p>
-              Hi, I&apos;m Nikhil — a sophomore at UIUC majoring in Computer Science and
+              Hi, I&apos;m Nikhil, a Junior at UIUC majoring in Computer Science and
               Economics. I enjoy finding practical solutions where software meets the
               things I care about.
             </p>
@@ -1372,7 +1372,7 @@ export default function MiiPlaza() {
               <span><GraduationCap size={16} /> Computer Science + Economics</span>
               <span><MapPin size={16} /> University of Illinois Urbana-Champaign</span>
             </div>
-            <p className="mii-about-label">OFF THE CLOCK</p>
+            <p className="mii-about-label">INTERESTS</p>
             <div className="mii-about-interests">
               {INTERESTS.map((interest) => (
                 <Badge key={interest} variant="secondary">{interest}</Badge>
@@ -1394,7 +1394,7 @@ export default function MiiPlaza() {
                 <X size={15} />
               </button>
             </div>
-            <p>A Mii made by a visitor. It lives in the plaza now.</p>
+            <p>A Mii made by a visitor. It lives in the plaza now. It has developed a parasocial relationship and thinks Nikhil is the coolest person ever!</p>
             <Button
               variant="outline"
               className="mii-about-remove"

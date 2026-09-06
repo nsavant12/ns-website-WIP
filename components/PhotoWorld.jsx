@@ -963,6 +963,11 @@ export default function PhotoWorld() {
                     <div className="photo-room-ceiling" aria-hidden="true" />
                     <div className="photo-room-rug" aria-hidden="true" />
 
+                    {/* Every wall's photos and posters are always mounted, just rotated
+                        out of the frustum via CSS 3D transforms. The room never scrolls,
+                        so the browser's lazy-load IntersectionObserver never gets a signal
+                        to re-check an off-angle wall, and images can sit as blank frames
+                        until something else nudges it — loading them eagerly avoids that. */}
                     {ROOM_WALLS.map((wall) => (
                       <div
                         key={wall}
@@ -1000,6 +1005,7 @@ export default function PhotoWorld() {
                                 fill
                                 sizes="(max-width: 760px) 190px, 280px"
                                 priority={index === 0}
+                                loading={index === 0 ? undefined : "eager"}
                                 draggable={false}
                               />
                               <span><Camera size={14} /> {photo.title}</span>
@@ -1023,7 +1029,6 @@ export default function PhotoWorld() {
                               <img
                                 src={movie.src}
                                 alt={movie.title + " movie poster"}
-                                loading="lazy"
                                 draggable={false}
                               />
                               <figcaption>
