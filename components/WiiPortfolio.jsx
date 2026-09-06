@@ -178,7 +178,7 @@ function BootScreen({ onContinue, onResume }) {
           for important information.
         </p>
 
-        <p className="boot-online">Also online at</p>
+        <p className="boot-online">Also available online at</p>
         <a
           href="#resume"
           onClick={(event) => {
