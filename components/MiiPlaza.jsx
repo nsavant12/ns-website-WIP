@@ -846,7 +846,7 @@ const MAKER_TABS = [
   { id: "skin", label: "Skin Tone" },
   { id: "face", label: "Face Shape" },
   { id: "hair", label: "Hair" },
-  { id: "hairColor", label: "Hair Colour" },
+  { id: "hairColor", label: "Hair Color" },
   { id: "eyes", label: "Eyes" },
   { id: "mouth", label: "Mouth" },
   { id: "shirt", label: "Shirt" },
