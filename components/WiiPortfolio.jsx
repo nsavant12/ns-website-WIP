@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Image from "next/image";
 import {
   AnimatePresence,
   motion,
@@ -211,11 +210,7 @@ function ChannelArtwork({ channelId }) {
   if (channelId === "profile") {
     return (
       <div className="channel-art channel-art-profile">
-        <Image src="/me_2.jpg" alt="" fill sizes="(max-width: 700px) 50vw, 260px" priority />
-        <div className="profile-tile-copy">
-          <strong>Nikhil</strong>
-          <span>Player 01</span>
-        </div>
+        <img src="/mii-channel-8bit.jpg" alt="" loading="eager" decoding="async" />
       </div>
     );
   }
@@ -223,13 +218,8 @@ function ChannelArtwork({ channelId }) {
   if (channelId === "photos") {
     return (
       <div className="channel-art channel-art-photos">
-        <div className="photo-slice">
-          <Image src="/desert.jpg" alt="" fill sizes="140px" />
-        </div>
-        <div className="photo-slice">
-          <Image src="/summer.jpg" alt="" fill sizes="140px" />
-        </div>
-        <div className="photo-badge"><Camera size={18} /> Photo</div>
+        <img src="/discovery-room.jpg" alt="" loading="eager" decoding="async" />
+        <div className="photo-badge"><Camera size={18} /> Discovery</div>
       </div>
     );
   }
@@ -249,10 +239,7 @@ function ChannelArtwork({ channelId }) {
   if (channelId === "links") {
     return (
       <div className="channel-art channel-art-links">
-        <div className="link-orbit link-orbit-one" />
-        <div className="link-orbit link-orbit-two" />
-        <div className="link-globe"><Link2 size={31} /></div>
-        <span>WWW</span>
+        <img src="/socials-map.jpg" alt="" loading="eager" decoding="async" />
       </div>
     );
   }

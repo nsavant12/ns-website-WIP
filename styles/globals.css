@@ -436,46 +436,18 @@ button {
   text-transform: uppercase;
 }
 
+/* The 8-bit Mii Channel splash. */
 .channel-art-profile {
-  background: #dbeaf4;
+  background: #e7ecef;
 }
 
 .channel-art-profile img {
-  object-fit: cover;
-  object-position: center 34%;
-  filter: saturate(0.82) contrast(1.02);
-}
-
-.channel-art-profile::after {
   position: absolute;
   inset: 0;
-  content: "";
-  background: linear-gradient(90deg, transparent 40%, rgba(8, 74, 111, 0.66));
-}
-
-.profile-tile-copy {
-  position: absolute;
-  z-index: 1;
-  top: 50%;
-  right: 14px;
-  display: flex;
-  flex-direction: column;
-  color: #fff;
-  text-align: right;
-  transform: translateY(-50%);
-}
-
-.profile-tile-copy strong {
-  font-size: clamp(0.9rem, 1.45vw, 1.3rem);
-  letter-spacing: 0.02em;
-}
-
-.profile-tile-copy span {
-  margin-top: 3px;
-  font-size: 0.58rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 44%;
 }
 
 .channel-art-news {
@@ -530,25 +502,18 @@ button {
   white-space: nowrap;
 }
 
+/* A front-on shot of the Discovery Channel room. */
 .channel-art-photos {
-  display: flex;
-  gap: 3px;
-  padding: 3px;
-  background: #23272a;
+  background: #eef0ec;
 }
 
-.photo-slice {
-  position: relative;
-  flex: 1;
-  overflow: hidden;
-}
-
-.photo-slice img {
+.channel-art-photos img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-}
-
-.photo-slice:first-child img {
-  object-position: 58% center;
+  object-position: center 62%;
 }
 
 .photo-badge {
@@ -691,45 +656,18 @@ button {
   font-size: 0.46rem;
 }
 
+/* An 8-bit world map with a paper airplane crossing it. */
 .channel-art-links {
-  display: grid;
-  place-items: center;
-  color: #fff;
-  background: #e46a35;
+  background: #1c2f6b;
 }
 
-.link-globe {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  width: 62px;
-  height: 62px;
-  place-items: center;
-  border: 2px solid rgba(255,255,255,.9);
-  border-radius: 50%;
-  background: rgba(128, 40, 16, .17);
-}
-
-.link-orbit {
+.channel-art-links img {
   position: absolute;
-  width: 120px;
-  height: 43px;
-  border: 1px solid rgba(255,255,255,.55);
-  border-radius: 50%;
-  transform: rotate(24deg);
-}
-
-.link-orbit-two {
-  transform: rotate(-28deg);
-}
-
-.channel-art-links > span {
-  position: absolute;
-  right: 11px;
-  bottom: 7px;
-  font-size: 0.48rem;
-  font-weight: 800;
-  letter-spacing: 0.18em;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 38%;
 }
 
 .channel-art-resume {
@@ -2673,7 +2611,7 @@ button {
   width: 76px;
   height: 76px;
   background: #46281a;
-  transform: translateZ(38px) rotateX(90deg);
+  transform: translateZ(38px) rotateX(-90deg);
   transform-origin: center top;
 }
 
@@ -5796,10 +5734,6 @@ button {
 
   .channel-tile-label {
     height: 34px;
-  }
-
-  .profile-tile-copy {
-    right: 8px;
   }
 
   .news-kicker,
