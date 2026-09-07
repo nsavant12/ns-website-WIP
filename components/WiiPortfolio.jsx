@@ -15,7 +15,6 @@ import {
   Linkedin,
   Link2,
   Mail,
-  Printer,
   TriangleAlert,
   Wrench,
 } from "lucide-react";
@@ -41,21 +40,23 @@ const WORK_EXPERIENCES = [
     company: "Cisco",
     role: "Software Engineering Intern",
     dates: "May – Aug 2026",
-    technologies: ["MCP", "API Gateway", "JSON Schema"],
+    technologies: ["AI Agents", "RAG", "RBAC"],
     points: [
-      "Designed MCP tools for inventory lookup, fault analysis, object search, and account-aware summaries, targeting a 40% cut in time spent navigating operational data.",
-      "Built MCP server registration and catalog workflows supporting 50+ tools, with a gateway entry point handling 10K+ projected daily AI-assisted requests.",
-      "Designed a centralized MCP integration layer aggregating tool discovery and execution across 8+ downstream MCP servers.",
+      "Built an AI Agent that connects users' natural language questions with results from 9+ live infrastructure tools, securing AI-initiated workflows with an authorization model that enforces caller-scoped delegated identity and least-privilege RBAC at the controller level.",
+      "Engineered a repeatable RAG ingestion pipeline, processing 13,000+ documents and 2,300+ text chunks into an embedded vector database to enable fast, semantic retrieval and deterministic source citation.",
+      "Created a typed AI-agent harness and evaluation framework across 5 bounded planning stages, hardening the model against prompt brittleness using paraphrase regression suites and fail-closed result verifiers across our infrastructure tools.",
+      "Developed reliability controls and a verifier-gated conversation-state cache, implementing end-to-end trace propagation and automated release quality gates to accelerate incident diagnosis.",
     ],
   },
   {
     company: "Algo Analytics",
     role: "Full Stack Engineer Intern",
     dates: "Jun – Oct 2025",
-    technologies: ["TypeScript", "React Native", "Node.js"],
+    technologies: ["TypeScript", "React Native", "REST APIs"],
     points: [
-      "Developed a TypeScript backend integration layer aggregating real-time stock data, cutting client-side parsing times by 30%.",
-      "Implemented RESTful controllers processing 100,000+ data points daily at 300ms response times, with JWT authentication and zero-downtime token refresh.",
+      "Developed a TypeScript based backend integration layer to connect the React Native client with financial APIs, aggregating real-time stock data and reducing client-side parsing times by 30%.",
+      "Implemented RESTful API controllers to serialize and sanitize high-throughput financial data streams, successfully processing 100,000+ data points daily while achieving a 300ms API response time.",
+      "Developed scalable backend services that utilized JWT authentication and Axios interceptors for secure session management, optimizing JSON payload sizes by 20% and ensuring zero-downtime token refresh cycles.",
     ],
   },
   {
@@ -64,8 +65,10 @@ const WORK_EXPERIENCES = [
     dates: "Jun – Aug 2025",
     technologies: ["TypeScript", "Node.js", "AWS", "Pinecone"],
     points: [
-      "Built a GPT-powered financial assistant in TypeScript/Node.js on a retrieval-augmented generation pipeline, improving retrieval precision by 40% with AWS Textract, OpenAI embeddings, and Pinecone.",
-      "Implemented end-to-end security across AWS with IAM role-based access, KMS-encrypted storage, and JWT-authorized API Gateway layers.",
+      "Built a GPT-powered financial assistant in TypeScript/Node.js, leveraging a Retrieval-Augmented Generation (RAG) system with engineered prompts to deliver precise, context-aware insights.",
+      "Refactored front-end codebase and components improving component reusability and load times, reducing code duplication by 25% and load times by 20%.",
+      "Enhanced retrieval precision by 40% using AWS Textract for document ingestion and OpenAI Embeddings with Pinecone for high-performance semantic search.",
+      "Implemented end-to-end security protocols across AWS services, including IAM role-based access control, encrypted storage with AWS KMS (AES-256), and API Gateway authorization layers using JWTs.",
     ],
   },
 ];
@@ -74,19 +77,26 @@ const RESUME_PROJECTS = [
   {
     name: "Custom Git Server",
     technologies: ["Go", "SSH", "JWT"],
-    summary: "Git server in Go speaking Smart HTTP and SSH, with EdDSA key validation, JWT auth, and a streaming pack parser that caps buffer memory under 30MB on large transfers.",
+    summary: "Custom Git server in Go supporting remote clone, fetch, and push over the Smart HTTP and SSH protocols with direct TCP/IP socket handling, a secure auth pipeline using EdDSA SSH key validation and JWTs with strict process isolation, and a streaming pack parser that reads raw Git object packs while capping buffer memory under 30MB on large transfers.",
   },
   {
     name: "Container Runtime",
-    technologies: ["Go", "Linux", "OverlayFS"],
-    summary: "Go container runtime isolating workloads with Linux namespaces and cgroups — 50+ concurrent workloads, sub-100ms startups via shared OverlayFS image layers.",
+    technologies: ["Go", "Linux", "seccomp", "OverlayFS"],
+    summary: "Go container runtime isolating workloads with Linux namespaces (PID, NET, MOUNT), capability restrictions, seccomp filtering, and cgroup v2 limits — 64 concurrent workloads across 1,280 test requests at 2.06 ms p95 latency, with shared OverlayFS image layers giving 5.16 ms p95 warm starts and 98.3% less layer storage.",
   },
 ];
 
 const RESUME_SKILLS = {
-  Languages: ["Java", "Python", "C++", "C", "Go", "TypeScript", "JavaScript", "R", "Swift", "SQL"],
-  "Frameworks & tools": ["React", "Next.js", "Node.js", "Spring Boot", "Angular", "React Native", "AWS", "Docker", "MongoDB", "Linux"],
+  Languages: ["Java", "Python", "C++", "C", "Go", "TypeScript", "JavaScript", "R", "HTML/CSS", "Swift", "SQL"],
+  Frameworks: ["LitJS", "Node.js", "Spring Boot", "Next.js", "React", "Angular", "React Native", "LangChain"],
+  "Developer tools": ["Linux", "CoreML", "AWS", "Jupyter", "Git", "MongoDB", "Docker", "Figma", "Nginx", "Kubernetes"],
+  Libraries: ["Pandas", "NumPy", "OpenCV", "Tkinter", "SK-Learn", "TensorFlow"],
 };
+
+const RESUME_CLUBS = [
+  "UIUC ACM Math & Algorithms — Member",
+  "UIUC Engineering Council — Activities Coordinator",
+];
 
 const CHANNELS = [
   {
@@ -377,14 +387,10 @@ function ResumeContent() {
         </div>
         <div className="resume-actions">
           <Button variant="outline" asChild>
-            <a href="/resume.pdf" target="_blank" rel="noreferrer">
+            <a href="/resume.pdf" download="Nikhil_Savant_Resume.pdf">
               <FileText size={16} />
               Download PDF
             </a>
-          </Button>
-          <Button variant="outline" onClick={() => window.print()}>
-            <Printer size={16} />
-            Print / save
           </Button>
         </div>
       </div>
@@ -413,6 +419,12 @@ function ResumeContent() {
               </div>
             </section>
           ))}
+          <section>
+            <p className="mini-label">CLUBS</p>
+            {RESUME_CLUBS.map((club) => (
+              <p key={club}>{club}</p>
+            ))}
+          </section>
           <section>
             <p className="mini-label">ONLINE</p>
             <a href="https://github.com/nsavant12" target="_blank" rel="noreferrer">github.com/nsavant12</a>
