@@ -4968,12 +4968,14 @@ button {
   display: grid;
   width: 100%;
   max-width: 230px;
+  margin: 0 auto;
   gap: 4px;
   color: #7c888e;
   font-size: .66rem;
   font-weight: 800;
   letter-spacing: .1em;
   text-transform: uppercase;
+  text-align: center;
 }
 
 .mii-maker-name input {
@@ -4985,6 +4987,7 @@ button {
   outline: none;
   font-size: .9rem;
   font-weight: 600;
+  text-align: center;
 }
 
 .mii-maker-name input:focus {
