@@ -1,9 +1,9 @@
 import { motion, useReducedMotion } from "framer-motion";
 import {
   ChevronLeft,
+  ChevronRight,
   GraduationCap,
   MapPin,
-  RotateCcw,
   Shuffle,
   Trash2,
   X,
@@ -842,9 +842,9 @@ function randomGuestConfig() {
 }
 
 const MAKER_TABS = [
+  { id: "face", label: "Face Shape" },
   { id: "body", label: "Body" },
   { id: "skin", label: "Skin Tone" },
-  { id: "face", label: "Face Shape" },
   { id: "hair", label: "Hair" },
   { id: "hairColor", label: "Hair Color" },
   { id: "eyes", label: "Eyes" },
@@ -896,11 +896,15 @@ function PartPicker({ label, options, labels, value, onChange, renderOption }) {
   );
 }
 
-// Slider position (0-100) for the "Turn" control maps to a view + facing:
-// the middle third stays front-on, the outer thirds turn the Mii to profile.
-function turnToView(turn) {
-  if (turn <= 32) return { view: "side", facing: -1 };
-  if (turn >= 68) return { view: "side", facing: 1 };
+// "facing" state maps to a view + horizontal flip. The arrows step through
+// these in order (right arrow moves forward, left arrow moves backward),
+// so repeated presses cycle front -> right -> back -> left -> front.
+const FACING_ORDER = ["front", "right", "back", "left"];
+
+function facingToView(facingState) {
+  if (facingState === "left") return { view: "side", facing: -1 };
+  if (facingState === "right") return { view: "side", facing: 1 };
+  if (facingState === "back") return { view: "back", facing: 1 };
   return { view: "front", facing: 1 };
 }
 
@@ -908,17 +912,24 @@ function MiiMaker({ initialConfig, isNew, onBack, onSave }) {
   const [config, setConfig] = useState(initialConfig);
   const [tab, setTab] = useState("face");
   const [step, setStep] = useState("parts");
-  const [turn, setTurn] = useState(50);
+  const [facingState, setFacingState] = useState("front");
   const nameInputRef = useRef(null);
 
   const update = (patch) => setConfig((current) => ({ ...current, ...patch }));
+
+  const cycleFacing = (direction) => {
+    setFacingState((current) => {
+      const nextIndex = (FACING_ORDER.indexOf(current) + direction + FACING_ORDER.length) % FACING_ORDER.length;
+      return FACING_ORDER[nextIndex];
+    });
+  };
 
   useEffect(() => {
     if (step === "name") nameInputRef.current?.focus();
   }, [step]);
 
   const zoomedToHead = ZOOM_HEAD_TABS.has(tab);
-  const { view, facing } = turnToView(turn);
+  const { view, facing } = facingToView(facingState);
   const activeLabel = MAKER_TABS.find((item) => item.id === tab)?.label || "";
 
   const handleSave = () => {
@@ -1014,34 +1025,33 @@ function MiiMaker({ initialConfig, isNew, onBack, onSave }) {
         </nav>
 
         <div className="mii-maker-stagewrap">
-          <div className="mii-maker-stage">
-            <span className="mii-maker-stage-inner" style={{ transform: `scaleX(${facing})` }}>
-              <MiiFigure
-                config={config}
-                size={zoomedToHead ? 220 : 150 + config.height * 0.9}
-                crop={zoomedToHead ? "head" : undefined}
-                view={view}
-              />
-            </span>
-          </div>
-          <div className="mii-maker-turn">
+          <div className="mii-maker-stagerow">
             <button
               type="button"
-              className="mii-maker-reset"
-              onClick={() => setTurn(50)}
-              aria-label="Reset rotation"
+              className="mii-maker-turn-btn"
+              aria-label="Turn Mii left"
+              onClick={() => cycleFacing(-1)}
             >
-              <RotateCcw size={14} />
+              <ChevronLeft size={18} />
             </button>
-            <span>Turn</span>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={turn}
-              onChange={(event) => setTurn(Number(event.target.value))}
-              aria-label="Turn the Mii"
-            />
+            <div className="mii-maker-stage">
+              <span className="mii-maker-stage-inner" style={{ transform: `scaleX(${facing})` }}>
+                <MiiFigure
+                  config={config}
+                  size={zoomedToHead ? 220 : 150 + config.height * 0.9}
+                  crop={zoomedToHead ? "head" : undefined}
+                  view={view}
+                />
+              </span>
+            </div>
+            <button
+              type="button"
+              className="mii-maker-turn-btn"
+              aria-label="Turn Mii right"
+              onClick={() => cycleFacing(1)}
+            >
+              <ChevronRight size={18} />
+            </button>
           </div>
         </div>
 

@@ -4911,33 +4911,22 @@ button {
   min-height: 260px;
 }
 
-.mii-maker-turn {
+.mii-maker-stagerow {
   display: flex;
+  flex: 1;
+  min-height: 0;
   align-items: center;
   gap: 10px;
-  padding: 10px 14px;
-  border: 2px solid #ccd5d6;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, .9);
 }
 
-.mii-maker-turn span {
-  color: #7c888e;
-  font-size: .68rem;
-  font-weight: 800;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-}
-
-.mii-maker-turn input[type="range"] {
+.mii-maker-stagerow .mii-maker-stage {
   flex: 1;
-  accent-color: var(--wii-blue);
 }
 
-.mii-maker-reset {
+.mii-maker-turn-btn {
   display: grid;
-  width: 26px;
-  height: 26px;
+  width: 36px;
+  height: 36px;
   flex: 0 0 auto;
   place-items: center;
   color: #55646b;
@@ -4946,8 +4935,8 @@ button {
   background: #fff;
 }
 
-.mii-maker-reset:hover,
-.mii-maker-reset:focus-visible {
+.mii-maker-turn-btn:hover,
+.mii-maker-turn-btn:focus-visible {
   border-color: var(--wii-blue);
   outline: none;
 }
