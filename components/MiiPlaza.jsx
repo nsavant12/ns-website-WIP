@@ -316,7 +316,10 @@ function applyHairStyle(grid, style, view, offset) {
   }
   if (style === "long") {
     if (view === "back") {
-      for (let r = offset + 9; r <= offset + 12; r += 1) {
+      // Starts on the head's last row (the skin-colored neck strip in the
+      // rear template) so the hair runs unbroken instead of leaving a band
+      // of skin between the crown and the hanging strands.
+      for (let r = offset + 8; r <= offset + 12; r += 1) {
         for (let c = 4; c <= 11; c += 1) setCell(grid, r, c, "H");
       }
     } else {
