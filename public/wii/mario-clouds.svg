@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="240" viewBox="0 0 640 240" shape-rendering="crispEdges">
+  <defs><g id="cloud">
+    <path fill="#fff" d="M0 24H8V16H16V8H24V0H48V8H56V16H64V24H72V40H64V48H8V40H0Z"/>
+    <path fill="#b8e8ff" d="M0 32H8V40H64V32H72V40H64V48H8V40H0ZM16 24H24V16H32V24H40V32H32V24H24V32H16ZM48 24H56V32H48Z"/>
+  </g></defs>
+  <use href="#cloud" x="40" y="80"/>
+  <use href="#cloud" x="298" y="22"/>
+  <use href="#cloud" x="338" y="22"/>
+  <use href="#cloud" x="534" y="162"/>
+</svg>

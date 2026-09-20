@@ -14,12 +14,13 @@ import {
   Instagram,
   Linkedin,
   Link2,
-  Mail,
+  Power,
   TriangleAlert,
   Wrench,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { Envelope, MessageBoard, HomebrewChannel, ThemeEditor, useWiiMods } from "@/components/WiiModding";
 import WiiCursor from "@/components/WiiCursor";
 import Skills2048 from "@/components/Skills2048";
 import PhotoWorld from "@/components/PhotoWorld";
@@ -136,7 +137,10 @@ const CHANNELS = [
   },
 ];
 
-const VALID_CHANNEL_IDS = new Set(CHANNELS.map((channel) => channel.id));
+const HOMEBREW = { id: "homebrew", number: "06", title: "Homebrew Channel", eyebrow: "Homebrew" };
+const MESSAGES = { id: "messages", number: "✉", title: "Wii Message Board", eyebrow: "Message Board" };
+const THEME_EDITOR = { id: "themes", number: "NS", title: "Appearance Settings", eyebrow: "Theme Editor" };
+const VALID_CHANNEL_IDS = new Set([...CHANNELS.map((channel) => channel.id), "homebrew", "messages", "themes"]);
 
 function BootScreen({ onContinue, onResume }) {
   const reduceMotion = useReducedMotion();
@@ -217,6 +221,13 @@ function BootScreen({ onContinue, onResume }) {
 }
 
 function ChannelArtwork({ channelId }) {
+  if (channelId === "homebrew") {
+    return (
+      <div className="channel-art channel-art-homebrew">
+        <img src="/wii/homebrew-channel.jpg" alt="" loading="eager" decoding="async" />
+      </div>
+    );
+  }
   if (channelId === "profile") {
     return (
       <div className="channel-art channel-art-profile">
@@ -471,7 +482,10 @@ function ResumeContent() {
   );
 }
 
-function ChannelContent({ channelId }) {
+function ChannelContent({ channelId, mods, onOpen, onPrintingChange }) {
+  if (channelId === "themes") return <ThemeEditor mods={mods} onHomebrew={() => onOpen("homebrew")} />;
+  if (channelId === "messages") return <MessageBoard onPrintingChange={onPrintingChange} mods={mods} channels={mods.unlocked ? [...CHANNELS, HOMEBREW] : CHANNELS} onHomebrew={() => onOpen("homebrew")} />;
+  if (channelId === "homebrew") return <HomebrewChannel mods={mods} />;
   if (channelId === "profile") return <ProfileContent />;
   if (channelId === "photos") return <PhotosContent />;
   if (channelId === "skills") return <SkillsContent />;
@@ -479,10 +493,11 @@ function ChannelContent({ channelId }) {
   return <ResumeContent />;
 }
 
-function ChannelWindow({ channel, onClose }) {
+function ChannelWindow({ channel, onClose, mods, onOpen }) {
   const reduceMotion = useReducedMotion();
   const dialogRef = useRef(null);
   const closeButtonRef = useRef(null);
+  const [faxPrinting, setFaxPrinting] = useState(false);
 
   useEffect(() => {
     const previouslyFocused = document.activeElement;
@@ -495,7 +510,7 @@ function ChannelWindow({ channel, onClose }) {
       if (event.key === "Tab") {
         const focusableElements = Array.from(
           dialogRef.current?.querySelectorAll(
-            'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+            'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
           ) || [],
         );
         if (!focusableElements.length) return;
@@ -531,28 +546,46 @@ function ChannelWindow({ channel, onClose }) {
       exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.97, y: 10 }}
       transition={{ duration: reduceMotion ? 0.1 : 0.32, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className="channel-window">
-        <header className="channel-window-header">
-          <Button ref={closeButtonRef} variant="outline" onClick={onClose}>
-            <ChevronLeft size={18} />
-            Wii Menu
+      <div className={`channel-window window-${channel.id}`}>
+        <header className={`channel-window-header ${channel.id === "messages" ? `fax-banner ${faxPrinting ? "is-printing" : ""}` : ""}`}>
+          <Button
+            ref={closeButtonRef}
+            variant="outline"
+            onClick={onClose}
+            className={channel.id === "messages" ? "fax-power-button" : undefined}
+            aria-label={channel.id === "messages" ? "Back to Wii Menu" : undefined}
+          >
+            {channel.id === "messages" ? <>
+              <Power size={24} aria-hidden="true" />
+              <span className="fax-power-tooltip" aria-hidden="true">Back to Wii Menu</span>
+            </> : <><ChevronLeft size={18} />Wii Menu</>}
           </Button>
+          {channel.id === "messages" ? <>
+            <div className="fax-brand"><span>Wii · MESSAGE CENTER</span><h1 id="channel-window-title">Message Center Fax Machine</h1></div>
+            <div className={`fax-display ${mods.faxJammed && !faxPrinting ? "is-jammed" : ""}`} role="status" aria-live="polite">
+              <span className="fax-status-light" aria-hidden="true" />
+              {faxPrinting ? "Printing…" : mods.faxJammed ? "Fax machine jammed" : "Ready to receive"}
+              <small>{mods.faxPrints.length + 1} {mods.faxPrints.length ? "records" : "record"}</small>
+            </div>
+            <div className="fax-output-slot" aria-hidden="true" />
+          </> : <>
           <div>
             <Badge variant="secondary">CHANNEL {channel.number}</Badge>
             <h1 id="channel-window-title">{channel.eyebrow}</h1>
           </div>
           <span>{channel.title}</span>
+          </>}
         </header>
         <Separator />
         <div className="channel-window-scroll">
           <motion.div
             key={channel.id}
             className="channel-content"
-            initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+            initial={reduceMotion || channel.id === "messages" ? false : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: reduceMotion ? 0 : 0.12, duration: 0.3 }}
           >
-            <ChannelContent channelId={channel.id} />
+            <ChannelContent channelId={channel.id} mods={mods} onOpen={onOpen} onPrintingChange={setFaxPrinting} />
           </motion.div>
         </div>
       </div>
@@ -560,7 +593,8 @@ function ChannelWindow({ channel, onClose }) {
   );
 }
 
-function HomeMenu({ activeChannel, onOpen, onClose }) {
+function HomeMenu({ activeChannel, onOpen, onClose, mods }) {
+  const channels = mods.unlocked ? [...CHANNELS, HOMEBREW] : CHANNELS;
   const reduceMotion = useReducedMotion();
   const buttonRefs = useRef([]);
   const [now, setNow] = useState(() => new Date());
@@ -593,9 +627,9 @@ function HomeMenu({ activeChannel, onOpen, onClose }) {
   const handleGridKeyDown = (event, index) => {
     const columns = window.innerWidth <= 760 ? 2 : 4;
     let nextIndex = index;
-    if (event.key === "ArrowRight") nextIndex = Math.min(CHANNELS.length - 1, index + 1);
+    if (event.key === "ArrowRight") nextIndex = Math.min(channels.length - 1, index + 1);
     if (event.key === "ArrowLeft") nextIndex = Math.max(0, index - 1);
-    if (event.key === "ArrowDown") nextIndex = Math.min(CHANNELS.length - 1, index + columns);
+    if (event.key === "ArrowDown") nextIndex = Math.min(channels.length - 1, index + columns);
     if (event.key === "ArrowUp") nextIndex = Math.max(0, index - columns);
     if (nextIndex !== index) {
       event.preventDefault();
@@ -606,14 +640,23 @@ function HomeMenu({ activeChannel, onOpen, onClose }) {
   return (
     <motion.main
       key="home"
-      className="wii-home"
+      className={`wii-home theme-${mods.theme}`} data-theme={mods.theme}
       initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.99 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: reduceMotion ? 0.1 : 0.5 }}
     >
       <div className="wii-grain" aria-hidden="true" />
+      {mods.theme === "mario" && <div className="mario-landscape" aria-hidden="true" />}
+      {mods.theme === "wario" && <div className="wario-takeover" aria-hidden="true"><img src="/wii/wario.png" alt="" /><span>WARIOWARE<span>INC.</span></span></div>}
       <h1 className="sr-only">Nikhil Savant portfolio channels</h1>
-      <header className="wii-topbar" aria-hidden={activeChannel ? "true" : undefined} />
+      <header className="wii-topbar" aria-hidden={activeChannel ? "true" : undefined}>
+        {mods.theme === "mario" && <div className="mario-hud" aria-hidden="true">
+          <span>MARIO<small>000000</small></span>
+          <span><i /> × {String(channels.length).padStart(2, "0")}<small>CHANNELS</small></span>
+          <span>WORLD<small>1-1</small></span>
+          <span>WII<small>MENU</small></span>
+        </div>}
+      </header>
 
 
       <section
@@ -622,7 +665,7 @@ function HomeMenu({ activeChannel, onOpen, onClose }) {
         aria-hidden={activeChannel ? "true" : undefined}
       >
         <div className="channel-grid">
-          {CHANNELS.map((channel, index) => (
+          {channels.map((channel, index) => (
             <ChannelTile
               key={channel.id}
               channel={channel}
@@ -634,9 +677,8 @@ function HomeMenu({ activeChannel, onOpen, onClose }) {
               onGridKeyDown={handleGridKeyDown}
             />
           ))}
-          {[0, 1, 2, 3, 4, 5, 6].map((index) => <EmptyChannel key={index} index={index} />)}
+          {Array.from({ length: 12 - channels.length }, (_, index) => index).map((index) => <EmptyChannel key={index} index={index} />)}
         </div>
-        <p className="channel-help">Click a channel</p>
       </section>
 
       <footer className="wii-dock" aria-hidden={activeChannel ? "true" : undefined}>
@@ -666,8 +708,8 @@ function HomeMenu({ activeChannel, onOpen, onClose }) {
         <Button
           variant="outline"
           className="dock-round dock-profile"
-          onClick={() => onOpen("profile")}
-          aria-label="Open profile"
+          onClick={() => onOpen("themes")}
+          aria-label="Open theme editor"
         >
           NS
         </Button>
@@ -680,18 +722,19 @@ function HomeMenu({ activeChannel, onOpen, onClose }) {
         <Button
           variant="outline"
           className="dock-round dock-links"
-          onClick={() => onOpen("links")}
-          aria-label="Open links"
+          onClick={() => onOpen("messages")}
+          aria-label="Open Wii Message Board"
         >
-          <Mail />
+          <Envelope />
+          {!mods.unlocked && <span className="message-unread">2</span>}
         </Button>
       </footer>
 
       <WiiCursor />
 
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {activeChannel ? (
-          <ChannelWindow channel={activeChannel} onClose={onClose} />
+          <ChannelWindow key={activeChannel.id} channel={activeChannel} onClose={onClose} mods={mods} onOpen={onOpen} />
         ) : null}
       </AnimatePresence>
     </motion.main>
@@ -702,11 +745,12 @@ export default function WiiPortfolio() {
   const [booted, setBooted] = useState(false);
   const [activeChannelId, setActiveChannelId] = useState(null);
   const pendingChannelRef = useRef(null);
+  const mods = useWiiMods(activeChannelId);
 
   useEffect(() => {
     const syncChannelFromUrl = () => {
       const hash = window.location.hash.replace("#", "");
-      const nextChannel = VALID_CHANNEL_IDS.has(hash) ? hash : null;
+      const nextChannel = VALID_CHANNEL_IDS.has(hash) && (hash !== "homebrew" || mods.unlocked) ? hash : null;
       if (!booted) {
         pendingChannelRef.current = nextChannel;
         return;
@@ -721,16 +765,16 @@ export default function WiiPortfolio() {
       window.removeEventListener("popstate", syncChannelFromUrl);
       window.removeEventListener("hashchange", syncChannelFromUrl);
     };
-  }, [booted]);
+  }, [booted, mods.unlocked]);
 
   const openChannel = useCallback((channelId) => {
-    if (!VALID_CHANNEL_IDS.has(channelId)) return;
+    if (!VALID_CHANNEL_IDS.has(channelId) || (channelId === "homebrew" && !mods.unlocked)) return;
     setActiveChannelId(channelId);
     const nextHash = "#" + channelId;
     if (window.location.hash !== nextHash) {
       window.history.pushState({ portfolioChannel: true }, "", nextHash);
     }
-  }, []);
+  }, [mods.unlocked]);
 
   const continueBoot = useCallback(() => {
     setBooted(true);
@@ -750,19 +794,11 @@ export default function WiiPortfolio() {
   const closeChannel = useCallback(() => {
     setActiveChannelId(null);
     if (window.location.hash) {
-      if (window.history.state?.portfolioChannel) {
-        window.history.back();
-      } else {
-        window.history.replaceState(
-          null,
-          "",
-          window.location.pathname + window.location.search,
-        );
-      }
+      window.history.pushState(null, "", window.location.pathname + window.location.search);
     }
   }, []);
 
-  const activeChannel = CHANNELS.find((channel) => channel.id === activeChannelId) || null;
+  const activeChannel = [...CHANNELS, MESSAGES, THEME_EDITOR, ...(mods.unlocked ? [HOMEBREW] : [])].find((channel) => channel.id === activeChannelId) || null;
 
   return (
     <>
@@ -790,6 +826,7 @@ export default function WiiPortfolio() {
             activeChannel={activeChannel}
             onOpen={openChannel}
             onClose={closeChannel}
+            mods={mods}
           />
         )}
       </AnimatePresence>

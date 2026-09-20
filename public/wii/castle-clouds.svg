@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600">
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#fff"/>
+      <stop offset=".5" stop-color="#fff"/>
+      <stop offset=".83" stop-color="#edf4fb"/>
+      <stop offset="1" stop-color="#cfdfef" stop-opacity=".35"/>
+    </linearGradient>
+    <radialGradient id="light" cx=".4" cy=".3" r=".65">
+      <stop offset=".25" stop-color="#fff" stop-opacity=".95"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="billows" x="-20%" y="-40%" width="140%" height="180%">
+      <feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="3" seed="12" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/>
+      <feGaussianBlur stdDeviation="2.5"/>
+    </filter>
+    <filter id="wisps" x="-30%" y="-70%" width="160%" height="240%">
+      <feGaussianBlur stdDeviation="9 5"/>
+    </filter>
+  </defs>
+  <!-- Asymmetric cumulus banks with diffuse bases and overlapping sunlit lobes. -->
+  <g transform="translate(55 54)">
+    <path fill="#fff" opacity=".45" filter="url(#wisps)" d="M0 113Q56 93 130 102Q228 86 312 111Q246 133 136 125Q44 130 0 113Z"/>
+    <path fill="url(#body)" filter="url(#billows)" d="M20 106Q10 82 43 77Q37 47 68 44Q72 20 101 25Q126-5 152 24Q174 15 188 40Q222 32 231 66Q258 58 270 83Q302 82 294 106Q260 125 216 119Q157 135 108 121Q53 128 20 106Z"/>
+    <ellipse cx="121" cy="53" rx="59" ry="44" fill="url(#light)"/>
+    <ellipse cx="200" cy="77" rx="44" ry="35" fill="url(#light)"/>
+  </g>
+  <g transform="translate(526 179)">
+    <path fill="#fff" opacity=".4" filter="url(#wisps)" d="M-12 98Q90  80 230 96L261 113Q112 127-12 98Z"/>
+    <path fill="url(#body)" filter="url(#billows)" d="M9 97Q-3 77 26 72Q21 53 48 50Q58 25 84 38Q93 11 124 23Q149 20 161 49Q182 36 198 60Q227 56 232 79Q258 82 247 100Q207 119 165 107Q121 121 76 110Q34 119 9 97Z"/>
+    <ellipse cx="120" cy="48" rx="45" ry="34" fill="url(#light)"/>
+  </g>
+  <g transform="translate(259 399)">
+    <path fill="#fff" opacity=".5" filter="url(#wisps)" d="M-15 93Q79 79 182 85Q260 76 345 103Q257 122 164 111Q40 118-15 93Z"/>
+    <path fill="url(#body)" filter="url(#billows)" d="M10 88Q6 66 40 65Q48 41 74 50Q87 14 121 31Q150 5 176 32Q205 24 216 56Q239 45 254 67Q283 59 295 84Q324 85 317 102Q270 120 220 108Q164 122 111 109Q49 119 10 88Z"/>
+    <ellipse cx="145" cy="50" rx="66" ry="39" fill="url(#light)"/>
+    <ellipse cx="247" cy="80" rx="42" ry="26" fill="url(#light)"/>
+  </g>
+</svg>

@@ -16,7 +16,7 @@ import {
   Pause,
   Play,
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -312,13 +312,15 @@ function generateRoomLayout() {
       if (item.kind === "photo") {
         photoPlacements[item.index] = {
           wall,
+          slotX: slot.x,
+          slotY: slot.y,
           x,
           y,
           tilt: item.tilt,
           scale: item.scale * fitFactor,
         };
       } else {
-        moviePlacements[item.index] = { wall, x, y };
+        moviePlacements[item.index] = { wall, x, y, slotX: slot.x, slotY: slot.y };
       }
     });
   });
@@ -743,6 +745,11 @@ export default function PhotoWorld() {
 
   const photoPlacements = roomLayout ? roomLayout.photoPlacements : DEFAULT_PHOTO_PLACEMENTS;
   const moviePlacements = roomLayout ? roomLayout.moviePlacements : DEFAULT_MOVIE_PLACEMENTS;
+  const peachSlot = ROOM_WALLS.flatMap(wall =>
+    SLOT_LAYOUTS[WALL_SLOT_LAYOUT[wall]].map(slot => ({ ...slot, wall }))
+  ).find(slot => ![...photoPlacements, ...moviePlacements].some(item => item.wall === slot.wall &&
+    (item.slotX !== undefined ? item.slotX === slot.x && item.slotY === slot.y :
+      Math.abs(item.x - slot.x) < slot.halfW && Math.abs(item.y - slot.y) < Math.max(slot.aboveH, slot.belowH))));
 
   const clearCaptureTimers = useCallback(() => {
     captureTimers.current.forEach((timer) => window.clearTimeout(timer));
@@ -973,6 +980,30 @@ export default function PhotoWorld() {
                         key={wall}
                         className={"photo-room-wall photo-room-wall-" + wall}
                       >
+                        {SLOT_LAYOUTS[WALL_SLOT_LAYOUT[wall]].filter(slot =>
+                          ![...photoPlacements, ...moviePlacements].some(item => item.wall === wall &&
+                            (item.slotX !== undefined ? item.slotX === slot.x && item.slotY === slot.y :
+                              Math.abs(item.x - slot.x) < slot.halfW && Math.abs(item.y - slot.y) < Math.max(slot.aboveH, slot.belowH)))
+                        ).map(slot => (
+                          <Fragment key={`wall-art-${slot.x}-${slot.y}`}>
+                          {peachSlot?.wall === wall && peachSlot.x === slot.x && peachSlot.y === slot.y && <figure className="peach-castle-portrait" style={{ left: `${slot.x}%`, top: `${slot.y}%` }}>
+                            <img src="/wii/peach-portrait.png" alt="Princess Peach in a pink gown, depicted in stained glass" loading="eager" />
+                            <figcaption>Princess Peach</figcaption>
+                          </figure>}
+                          <svg key={`doodle-${slot.x}-${slot.y}`} className="wario-wall-doodle" viewBox="0 0 160 160" aria-hidden="true"
+                            style={{ left: `${slot.x}%`, top: `${slot.y}%`, width: `${Math.min(slot.halfW * 1.5, 20)}%`, color: ["#3485a2", "#c57498", "#b7aa47", "#56a383"][ROOM_WALLS.indexOf(wall)] }}>
+                            {wall === "right" ? <g stroke="none">
+                              <path fill="#151515" d="M8 62L34 72L43 59L57 77L68 69L80 91L93 70L105 77L117 59L125 72L153 60L134 88L122 81L111 102L99 91L90 109L80 99L70 109L58 92L47 103L36 82L25 89Z" />
+                              <path fill="#df79b5" d="M59 55Q61 43 70 42Q79 30 90 43Q102 42 104 55Q116 61 108 73L99 86Q81 96 64 84L54 71Q49 62 59 55Z" />
+                            </g> : <path d={[
+                              "M39 55Q24 50 26 30L29 16Q50 26 53 44M105 43Q118 25 134 16L140 44Q138 51 130 55M39 55L57 47Q78 40 102 47L126 55Q143 64 143 85L138 108Q124 130 96 136Q61 143 34 122Q18 109 20 89L29 73ZM51 77L52 82M117 72L119 77M64 94Q83 82 105 89Q118 99 106 110Q88 122 68 116Q53 108 64 94ZM75 101L76 105M96 98L97 102M92 126Q118 122 125 110",
+                              "M42 39Q74 5 104 38Q135 66 115 112Q95 151 55 125Q20 104 30 67L42 39ZM44 49Q73 39 77 69Q72 98 44 88Q27 71 44 49ZM99 91Q124 86 113 112Q94 143 75 126Q74 107 99 91Z",
+                              "M31 66L24 28L62 49L80 16L96 49L137 29L125 72M32 81Q46 55 70 82L80 96L93 79Q120 54 137 81L126 104L110 95L95 117L80 104L63 118L48 96L34 107ZM66 132L98 133",
+                              "M42 39Q74 5 104 38Q135 66 115 112Q95 151 55 125Q20 104 30 67L42 39ZM44 49Q73 39 77 69Q72 98 44 88Q27 71 44 49ZM99 91Q124 86 113 112Q94 143 75 126Q74 107 99 91Z"
+                            ][ROOM_WALLS.indexOf(wall)]} />}
+                          </svg>
+                          </Fragment>
+                        ))}
                         {PHOTOS.map((photo, index) => {
                           const placement = photoPlacements[index];
                           if (placement.wall !== wall) return null;

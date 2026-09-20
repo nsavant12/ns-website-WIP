@@ -1,0 +1,1789 @@
+/* Message Board: stationery, rounded controls and the daily play history. */
+.wii-envelope {
+  display: inline-block;
+  position: relative;
+  width: 45px;
+  height: 30px;
+  border: 2px solid #939b9e;
+  border-radius: 3px;
+  background: linear-gradient(145deg,#fffef0,#eee5b4);
+  box-shadow: 0 2px 3px #0002;
+}
+.wii-envelope:before,.wii-envelope:after {
+  content:"";
+  position:absolute;
+  inset:0;
+  clip-path:polygon(0 0,50% 65%,100% 0);
+  background:#a8a590;
+}
+.wii-envelope:after {
+  inset:0 2px 2px;
+  background:linear-gradient(#fffdf1,#eee8c9);
+}
+.wii-envelope.is-open:before {
+  inset:-28px -2px auto;
+  height:34px;
+  clip-path:polygon(0 100%,50% 0,100% 100%);
+  background:linear-gradient(#bab9ac,#85857d);
+}
+.wii-envelope.is-open:after {
+  clip-path:polygon(0 0,50% 50%,100% 0,100% 100%,0 100%);
+}
+.dock-links {
+  position:relative;
+}
+
+.message-unread {
+  position:absolute;
+  top:4px;
+  right:3px;
+  background:#29b6df;
+  color:white;
+  border:2px solid white;
+  border-radius:50%;
+  min-width:23px;
+  font:700 13px/20px sans-serif;
+}
+.window-messages .channel-content,.window-homebrew .channel-content {
+  padding:0;
+  max-width:none;
+}
+.window-messages .channel-content {
+  width:100%;
+}
+.message-board {
+  position:relative;
+  min-height:570px;
+  padding:24px clamp(12px,3vw,36px);
+  color:#626966;
+  background:#e8e7d9;
+}
+.board-date {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:35px;
+  text-align:center;
+}
+
+.board-date h2 {
+  font-size:30px;
+  color:#5c645f;
+}
+
+.board-date span {
+  text-transform:uppercase;
+  letter-spacing:.2em;
+  font-size:10px;
+}
+
+.board-date p {
+  font-size:14px;
+}
+
+.board-letters {
+  display:flex;
+  justify-content:center;
+  gap:60px;
+  padding:65px 0 40px;
+  flex-wrap:wrap;
+}
+
+.board-letter {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:12px;
+  width:265px;
+  min-height:225px;
+  padding:30px 20px 20px;
+  border:0;
+  background:transparent;
+  box-shadow:none;
+  color:inherit;
+  transition:transform .2s;
+}
+
+.board-letter:hover {
+  transform:translateY(-7px) rotate(-2deg);
+}
+
+.board-letter strong {
+  font-size:17px;
+}
+
+.board-letter-art {
+  display:grid;
+  place-items:center;
+  width:180px;
+  height:140px;
+}
+
+.board-letter .wii-envelope {
+  margin-top:0;
+  width:144px;
+  height:96px;
+}
+
+.bomb-envelope img {
+  width:100%;
+  height:100%;
+  image-rendering:auto;
+}
+
+.board-hint {
+  text-align:center;
+  font-size:13px;
+  margin-top:25px;
+}
+.opened-letter {
+  max-width:640px;
+  margin:30px auto 0;
+  padding:26px clamp(20px,4vw,45px);
+  background:repeating-linear-gradient(transparent 0 31px,#b3ac8917 31px 32px),#fffcee;
+  box-shadow:2px 5px 12px #67654933;
+  border:1px solid #d0ccb8;
+}
+
+.opened-letter h2 {
+  font-size:25px;
+  text-align:center;
+  margin:20px 0 5px;
+}
+
+.letter-back {
+  color:#188dab;
+  font-size:13px;
+}
+
+.letter-date {
+  text-align:center;
+  font-size:12px;
+}
+
+.activity-total {
+  display:flex;
+  justify-content:space-between;
+  border-block:2px solid #c9c4a8;
+  margin-top:25px;
+  padding:15px 0;
+}
+
+.activity-list {
+  list-style:none;
+  padding:0;
+}
+
+.activity-list li {
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  padding:12px 0;
+  border-bottom:1px dotted #c4bda3;
+  font-size:14px;
+}
+
+.activity-list time {
+  white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+
+.letter-footnote {
+  font-size:12px;
+  line-height:1.8;
+  margin-top:22px;
+}
+
+.bomb-letter {
+  text-align:center;
+  overflow:hidden;
+}
+
+.bomb-letter .letter-back {
+  display:block;
+}
+
+.letter-wario {
+  height:170px;
+  width:100%;
+  object-fit:contain;
+  margin:12px auto;
+}
+
+.bomb-letter h2 {
+  font-size:36px;
+  font-weight:900;
+  line-height:1.05;
+  color:#251932;
+}
+
+.mod-button {
+  margin-top:20px;
+  padding:12px 24px;
+  border:3px solid #201525;
+  border-radius:8px;
+  background:#fff245;
+  color:#201525;
+  font-weight:800;
+  box-shadow:4px 4px #201525;
+}
+
+/* The Homebrew Channel's underwater blue and a keyboard-operable package shell. */
+/* User-provided Homebrew artwork, sized without stretching. */
+.channel-art-homebrew {
+  position: absolute;
+  overflow: hidden;
+  background: #087e9f;
+}
+
+.channel-art-homebrew img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 65%;
+}
+
+.homebrew-channel {
+  position:relative;
+  isolation:isolate;
+  padding:32px clamp(16px,4vw,45px);
+  background:linear-gradient(150deg,#073659,#087fa9 60%,#7ddde4);
+  color:white;
+  overflow:hidden;
+}
+
+.brew-heading {
+  margin-bottom:24px;
+}
+
+.brew-heading>span {
+  font-size:14px;
+  letter-spacing:.08em;
+  color:#b8efff;
+}
+
+.brew-heading h2 {
+  font-size:clamp(26px,4vw,40px);
+  margin:5px 0;
+  font-weight:400;
+  letter-spacing:-1px;
+}
+
+.brew-heading p {
+  font-size:14px;
+  color:#caedf5;
+}
+
+.brew-bubbles {
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+}
+
+.brew-bubbles i {
+  position:absolute;
+  border:2px solid #ffffff26;
+  box-shadow:inset 6px 6px 20px #ffffff22;
+  border-radius:50%;
+  width:170px;
+  height:170px;
+  right:4%;
+  top:5%;
+}
+
+.brew-bubbles i:nth-child(2) {
+  right:35%;
+  top:60%;
+  width:90px;
+  height:90px;
+}
+
+.brew-bubbles i:nth-child(3) {
+  right:-50px;
+  top:65%;
+  width:240px;
+  height:240px;
+}
+.brew-terminal {
+  border:1px solid #a2e9fc88;
+  border-radius:12px;
+  background:#021d2eed;
+  box-shadow:0 12px 30px #00294055;
+  overflow:hidden;
+  font:13px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace;
+}
+
+.terminal-bar {
+  display:flex;
+  gap:20px;
+  padding:10px 16px;
+  background:#c9ecf11a;
+  color:#c6e8ee;
+}
+
+.terminal-bar>span {
+  color:#73b8c9;
+}
+
+.terminal-bar small {
+  margin-left:auto;
+}
+
+.brew-terminal pre {
+  height:145px;
+  overflow:auto;
+  white-space:pre-wrap;
+  padding:14px 18px;
+  color:#a7f3e7;
+}
+
+.brew-terminal form {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 18px;
+  border-top:1px solid #c9ecf126;
+}
+
+.brew-terminal label {
+  color:#56d4f1;
+  white-space:nowrap;
+}
+
+.brew-terminal input {
+  min-width:0;
+  flex:1;
+  background:transparent;
+  color:white;
+  outline:none;
+  cursor:text;
+}
+
+.brew-terminal input:focus-visible {
+  box-shadow:0 2px #56d4f1;
+}
+
+.brew-terminal form button {
+  padding:0 8px;
+  color:#82dcf3;
+}
+.theme-packages {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:24px;
+}
+
+.theme-package {
+  display:grid;
+  grid-template-columns:48px 1fr auto;
+  align-items:center;
+  gap:12px;
+  padding:14px;
+  border:1px solid #a9ebf77a;
+  border-radius:10px;
+  background:#ecfcfff0;
+  color:#224a5c;
+  box-shadow:0 4px 10px #064d6d26;
+}
+
+.theme-package h3 {
+  font-size:14px;
+  font-weight:750;
+}
+
+.theme-package p {
+  font-size:10px;
+  margin-top:4px;
+  line-height:1.6;
+}
+
+.theme-mark {
+  display:grid;
+  place-items:center;
+  width:46px;
+  height:46px;
+  border-radius:10px;
+  font-weight:900;
+  font-size:27px;
+  background:#eee;
+  border:2px solid #bbb;
+  color:#888;
+}
+
+.preview-wario .theme-mark {
+  background:#ffea20;
+  color:#7529b0;
+  border:3px solid #18121e;
+  transform:rotate(-7deg);
+}
+
+.preview-mario .theme-mark {
+  background:#e7322e;
+  color:white;
+  border-color:#a62220;
+  border-radius:50%;
+}
+
+.theme-package button {
+  font-size:12px;
+  padding:8px 12px;
+  border:1px solid #91c0d0;
+  border-radius:20px;
+  background:linear-gradient(white,#d9edf5);
+}
+
+.theme-package button:disabled {
+  opacity:.55;
+}
+
+.brew-note {
+  text-align:center;
+  font-size:11px;
+  margin-top:22px;
+  color:#e3fbff;
+}
+
+/* WarioWare: flat, loud, asymmetric microgame graphics, using official series art. */
+.theme-wario.wii-home {
+  --wii-blue:#7926ae;
+  background:repeating-conic-gradient(from 15deg at 50% 45%,#fff33d 0deg 15deg,#efce27 15deg 30deg);
+  color:#211128;
+}
+
+.wario-takeover {
+  position:absolute;
+  left:2%;
+  top:1%;
+  width:230px;
+  height:140px;
+  display:flex;
+  align-items:center;
+  transform:rotate(-8deg);
+  pointer-events:none;
+}
+
+.wario-takeover img {
+  width:120px;
+  height:140px;
+  object-fit:contain;
+}
+
+.wario-takeover>span {
+  position:absolute;
+  left:85px;
+  color:#fff;
+  font:900 27px/.95 "Arial Black",sans-serif;
+  -webkit-text-stroke:1px #211128;
+  filter:drop-shadow(3px 3px #211128);
+  transform:rotate(4deg);
+}
+
+.wario-takeover>span>span {
+  display:block;
+  color:#f14ca8;
+  font-size:42px;
+}
+
+.theme-wario .channel-tile {
+  border:5px solid #211128;
+  border-radius:18px 8px 22px 10px;
+  box-shadow:7px 7px 0 #211128;
+  background:#fff8b9;
+}
+
+.theme-wario .channel-tile-wrap:nth-child(3n+1) {
+  rotate:-2deg;
+}
+
+.theme-wario .channel-tile-wrap:nth-child(3n+2) {
+  rotate:2deg;
+}
+
+.theme-wario .channel-tile-label {
+  background:#a83bc3;
+  color:white;
+  border-top:4px solid #211128;
+}
+
+.theme-wario .channel-tile-label>span {
+  color:white;
+  font-weight:900;
+  text-transform:uppercase;
+}
+
+.theme-wario .empty-channel {
+  border:3px dashed #70279680;
+  background:#9637b21a;
+  box-shadow:none;
+}
+
+.theme-wario .channel-help {
+  color:#211128;
+  font-weight:900;
+  letter-spacing:.12em;
+}
+
+.theme-wario .wii-dock {
+  background:#8d36bb;
+  border-top:5px solid #211128;
+}
+
+.theme-wario .dock-wave {
+  display:none;
+}
+
+.theme-wario .dock-clock strong,.theme-wario .dock-clock p,.theme-wario .dock-clock span {
+  color:#fff54b;
+  text-shadow:3px 3px #211128;
+}
+
+.theme-wario .dock-round {
+  background:#fff54b;
+  border:4px solid #211128;
+  box-shadow:4px 4px #211128;
+  color:#6c2996;
+}
+
+.theme-wario .channel-window:where(:not(.window-skills, .window-skills *)) {
+  border:5px solid #211128;
+  box-shadow:10px 10px #211128;
+  background:#fffbd8;
+}
+
+.theme-wario .channel-window-header {
+  background:#ffea32;
+  border-bottom:4px solid #211128;
+}
+
+.theme-wario .channel-window-header h1 {
+  color:#70229d;
+  text-transform:uppercase;
+  font-weight:900;
+}
+
+.theme-wario .channel-window-header>span {
+  color:#522560;
+}
+
+.theme-wario .board-date h2,.theme-wario .board-date p,.theme-wario .board-date span,.theme-wario .board-hint {
+  color:#24132c;
+}
+
+.theme-wario .opened-letter {
+  border:4px solid #211128;
+  box-shadow:7px 7px #211128;
+  background:#fff6b5;
+}
+
+.theme-wario .bomb-letter h2 {
+  color:#7c249c;
+  font-weight:1000;
+  transform:rotate(-3deg);
+}
+
+/* Alternate installed skins change the menu, dock and channel window chrome. */
+/* NES Super Mario Bros. overworld: hard pixel edges and the original palette. */
+@font-face {
+  font-family:'Mario Pixel';
+  src:url('/fonts/press-start-2p.ttf') format('truetype');
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+.theme-mario.wii-home {
+  --wii-blue:#f8b800;
+  --wii-blue-dark:#a84400;
+  background:#5c94fc url('/wii/mario-clouds.svg') repeat top left / 960px 360px;
+}
+.theme-mario > .wii-grain { display:none; }
+.mario-hud {
+  display:flex;
+  justify-content:space-between;
+  width:min(1120px,100%);
+  margin:auto;
+  color:#fff;
+  font-family:'Courier New',monospace;
+  font-size:clamp(12px,1.5vw,20px);
+  font-weight:900;
+  line-height:1.15;
+  letter-spacing:2px;
+  text-shadow:2px 2px #182878;
+}
+.mario-hud span { text-align:center; }
+.mario-hud span:first-child { text-align:left; }
+.mario-hud small { display:block; font:inherit; }
+.mario-hud i {
+  display:inline-block;
+  width:9px;
+  height:15px;
+  vertical-align:-2px;
+  background:#f8b800;
+  border-left:3px solid #ffe8a0;
+  box-shadow:3px 0 #a84400;
+}
+.mario-landscape {
+  position:absolute;
+  z-index:1;
+  bottom:144px;
+  left:0;
+  right:0;
+  height:144px;
+  background:url('/wii/mario-overworld.svg?v=2') repeat-x bottom left / 1152px 144px;
+  image-rendering:pixelated;
+  pointer-events:none;
+}
+.theme-mario .channel-stage { padding-bottom:80px; }
+.theme-mario .channel-tile {
+  border:4px solid #181008;
+  border-radius:0;
+  box-shadow:inset 3px 3px #ffe0a8,4px 4px #a84400;
+}
+.theme-mario .channel-tile-label {
+  background:#f8b800;
+  border-top:3px solid #181008;
+  box-shadow:inset 0 2px #ffe8a0;
+}
+.theme-mario .channel-tile-label>span { color:#281800; }
+.theme-mario .channel-tile-label small { color:#583000; }
+.theme-mario .empty-channel {
+  opacity:1;
+  border:4px solid #181008;
+  border-radius:0;
+  background:
+    linear-gradient(#181008,#181008) 8px 8px / 4px 4px no-repeat,
+    linear-gradient(#181008,#181008) calc(100% - 8px) 8px / 4px 4px no-repeat,
+    linear-gradient(#181008,#181008) 8px calc(100% - 8px) / 4px 4px no-repeat,
+    linear-gradient(#181008,#181008) calc(100% - 8px) calc(100% - 8px) / 4px 4px no-repeat,
+    #f8b800;
+  box-shadow:inset 4px 4px #ffe8a0,inset -4px -4px #a84400,4px 4px #a84400;
+}
+.theme-mario .empty-channel span {
+  inset:50% auto auto 50%;
+  width:36px;
+  height:48px;
+  border:0;
+  border-radius:0;
+  transform:translate(-50%,-50%);
+  background:#fff0bc;
+  filter:drop-shadow(4px 4px 0 #a84400);
+  clip-path:polygon(17% 0,83% 0,83% 12.5%,100% 12.5%,100% 50%,67% 50%,67% 62.5%,50% 62.5%,50% 75%,33% 75%,33% 50%,67% 50%,67% 25%,33% 25%,33% 37.5%,0 37.5%,0 12.5%,17% 12.5%);
+}
+.theme-mario .empty-channel::after {
+  content:'';
+  position:absolute;
+  left:calc(50% - 6px);
+  top:calc(50% + 18px);
+  width:8px;
+  height:8px;
+  background:#fff0bc;
+  box-shadow:4px 4px #a84400;
+}
+.theme-mario .channel-window-header { background:#f44a37; }
+.theme-mario .channel-window-header h1 { color:white; }
+.theme-mario .wii-dock {
+  border-top:4px solid #181008;
+  background:
+    linear-gradient(90deg,#181008 3px,transparent 3px) 0 0 / 64px 32px,
+    linear-gradient(90deg,transparent 32px,#181008 32px 35px,transparent 35px) 0 32px / 64px 64px,
+    repeating-linear-gradient(0deg,#181008 0 3px,#ffb890 3px 5px,#c84c0c 5px 32px);
+  box-shadow:inset 0 4px #ffb890;
+}
+.theme-mario .dock-wave { display:none; }
+.theme-mario .dock-round {
+  border:3px solid #181008;
+  border-radius:0;
+  color:#281800;
+  background:#f8b800;
+  box-shadow:inset 3px 3px #ffe8a0,inset -3px -3px #a84400,4px 4px #181008;
+}
+.theme-mario .dock-round:hover { background:#ffe8a0; }
+.theme-mario .dock-clock {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  min-width:240px;
+  padding:12px 18px;
+  background:#181008;
+  border:3px solid #ffb890;
+  box-shadow:3px 3px #181008;
+}
+.theme-mario .dock-clock strong,
+.theme-mario .dock-clock span,
+.theme-mario .dock-clock p {
+  color:white;
+  text-shadow:none;
+  font-family:'Mario Pixel',monospace;
+  font-weight:400;
+  letter-spacing:0;
+  line-height:1.25;
+}
+.theme-mario .dock-clock > div { align-items:center; gap:10px; }
+.theme-mario .dock-clock strong { font-size:24px; }
+.theme-mario .dock-clock span { font-size:10px; }
+.theme-mario .dock-clock p { margin:0; font-size:12px; }
+@media(max-width:900px) {
+  .mario-landscape { bottom:124px; }
+}
+@media(max-width:760px) {
+  .mario-hud { font-size:11px; letter-spacing:1px; }
+  .mario-landscape { position:fixed; bottom:calc(92px + env(safe-area-inset-bottom)); height:96px; background-size:768px 96px; }
+  .theme-mario .channel-stage { padding-bottom:100px; }
+  .theme-mario .dock-clock { min-width:0; padding:8px 10px; gap:8px; }
+  .theme-mario .dock-clock strong { font-size:16px; }
+  .theme-mario .dock-clock span { font-size:8px; }
+  .theme-mario .dock-clock p { font-size:8px; }
+  .theme-mario .dock-clock > div { gap:6px; }
+}
+@media(max-width:760px) {
+  .theme-packages {
+  grid-template-columns:1fr;
+}
+
+.board-letters {
+  gap:15px;
+  padding:40px 0 15px;
+}
+
+.board-letter {
+  width:220px;
+}
+
+.wario-takeover {
+  width:150px;
+  height:75px;
+  top:6px;
+}
+
+.wario-takeover img {
+  width:65px;
+  height:75px;
+}
+
+.wario-takeover>span {
+  left:50px;
+  font-size:17px;
+}
+
+.wario-takeover>span>span {
+  font-size:25px;
+}
+
+.board-date {
+  gap:15px;
+}
+
+.theme-wario .channel-tile {
+  border-width:3px;
+  box-shadow:4px 4px #211128;
+}
+
+.terminal-bar {
+  gap:10px;
+}
+
+.brew-terminal form {
+  gap:6px;
+  font-size:11px;
+  padding-inline:10px;
+}
+}
+@media(prefers-reduced-motion:reduce) {
+  .board-letter {
+  transition:none;
+}
+}
+
+/* Shared channel tokens inherit from the same root as the saved menu theme.
+   Keep Wii Classic on the original channel styles. */
+.theme-wario {
+  --channel-surface: #fff9c9;
+  --channel-panel: #fff5a0;
+  --channel-soft: #ead1f3;
+  --channel-ink: #291332;
+  --channel-muted: #65436e;
+  --channel-accent: #7926a5;
+  --channel-on-accent: #ffffff;
+  --channel-border: #291332;
+  --channel-width: 3px;
+  --channel-radius: 12px;
+  --channel-shadow: 5px 5px 0 #291332;
+  --channel-pattern: repeating-conic-gradient(from 15deg at 50% 40%, #fff33d 0deg 15deg, #efce27 15deg 30deg);
+  --channel-terminal: #271232;
+  --channel-code: #fff35f;
+}
+.theme-mario {
+  --channel-surface: #eff9ff;
+  --channel-panel: #ffffff;
+  --channel-soft: #cdeaff;
+  --channel-ink: #263d55;
+  --channel-muted: #4e6278;
+  --channel-accent: #ba2923;
+  --channel-on-accent: #ffffff;
+  --channel-border: #a73426;
+  --channel-width: 3px;
+  --channel-radius: 16px;
+  --channel-shadow: 4px 4px 0 #a73426;
+  --channel-pattern: radial-gradient(ellipse at 20% 18%, #ffffff 0 7%, transparent 7.3%), linear-gradient(#73ceff, #cfefff);
+  --channel-terminal: #172f4c;
+  --channel-code: #fff29d;
+}
+
+.wii-home:not(.theme-wii) .channel-window:where(:not(.window-skills, .window-skills *)) {
+  color: var(--channel-ink);
+  background: var(--channel-surface);
+  border-color: var(--channel-border);
+}
+.wii-home:not(.theme-wii) .channel-window-scroll:where(:not(.window-skills, .window-skills *)) {
+  background: var(--channel-surface);
+  scrollbar-color: var(--channel-accent) var(--channel-soft);
+}
+.wii-home:not(.theme-wii) :is(
+  .content-heading, .mii-plaza-heading, .photo-world-heading, .skills-game-heading,
+  .skills-catalog-header, .resume-sheet, .mii-about, .mii-maker, .mii-gallery
+) :is(h2, h3, h4, strong):where(:not(.window-skills, .window-skills *)) {
+  color: var(--channel-ink);
+}
+.wii-home:not(.theme-wii) :is(
+  .content-heading, .mii-plaza-heading, .photo-world-heading, .skills-game-heading,
+  .skills-catalog-header, .resume-sheet, .mii-about, .mii-maker, .mii-gallery
+) :is(p, small):where(:not(.window-skills, .window-skills *)),
+.wii-home:not(.theme-wii) :is(
+  .mini-label, .link-card span, .link-card a > svg, .skills-game-hint,
+  .skills-game-current small, .mii-about-meta span, .mii-maker-heading span,
+  .mii-gallery-header span, .resume-experience > section > div:first-child span
+):where(:not(.window-skills, .window-skills *)) {
+  color: var(--channel-muted);
+}
+.wii-home:not(.theme-wii) :is(
+  .link-card, .skills-game-status, .skills-catalog, .skills-catalog-item,
+  .mii-about, .mii-gallery, .mii-maker, .mii-maker-options, .opened-letter,
+  .theme-package, .skill-game-over
+):where(:not(.window-skills, .window-skills *)) {
+  color: var(--channel-ink);
+  background: var(--channel-panel);
+  border-color: var(--channel-border);
+  border-width: var(--channel-width);
+  border-radius: var(--channel-radius);
+  box-shadow: var(--channel-shadow);
+}
+.wii-home:not(.theme-wii) :is(
+  .channel-window-header > button, .skills-new-game, .skills-catalog-toggle,
+  .skill-direction-pad button, .skill-game-over button, .resume-actions a,
+  .mii-maker-back, .mii-maker-next, .mii-maker-save, .mii-maker-actions button,
+  .mii-maker-turn-btn, .mii-gallery-close, .mii-about-plate button,
+  .board-date button, .mod-button, .theme-package button
+):where(:not(.window-skills, .window-skills *)) {
+  color: var(--channel-ink);
+  background: var(--channel-soft);
+  border-color: var(--channel-border);
+  border-width: var(--channel-width);
+}
+.wii-home:not(.theme-wii) .channel-window :is(button, a, input):focus-visible:where(:not(.window-skills, .window-skills *)) {
+  outline: 3px solid var(--channel-accent);
+  outline-offset: 3px;
+}
+.wii-home:not(.theme-wii) :is(
+  .link-icon, .link-card:nth-child(2) .link-icon, .link-card:nth-child(3) .link-icon,
+  .skills-game-score, .mii-gallery-slot-label, .mii-actor-tag,
+  .mii-maker-sidebar-tab.is-active
+):where(:not(.window-skills, .window-skills *)) {
+  color: var(--channel-on-accent);
+  background: var(--channel-accent);
+  border-color: var(--channel-border);
+  box-shadow: none;
+}
+.wii-home:not(.theme-wii) .skills-game-score strong:where(:not(.window-skills, .window-skills *)) {
+  color: var(--channel-on-accent);
+}
+.wii-home:not(.theme-wii) :is(.resume-columns aside a, .letter-back, .skills-game-heading p strong):where(:not(.window-skills, .window-skills *)) {
+  color: var(--channel-accent);
+}
+.wii-home:not(.theme-wii) :is(.interest-list, .tech-list) > div:where(:not(.window-skills, .window-skills *)),
+.wii-home:not(.theme-wii) .channel-content .rounded-full:where(:not(.window-skills, .window-skills *)) {
+  color: var(--channel-ink);
+  background: var(--channel-soft);
+  border-color: var(--channel-border);
+}
+.wii-home:not(.theme-wii) :is(.resume-experience > section, .activity-total, .activity-list li) {
+  border-color: var(--channel-border);
+}
+.wii-home:not(.theme-wii) .resume-sheet > .h-px {
+  background: var(--channel-border);
+}
+
+/* Keep the original plaza artwork, character colors and color-picker swatches. */
+.wii-home:not(.theme-wii) :is(.mii-plaza, .photo-world, .skill-2048-board):where(:not(.window-skills, .window-skills *)) {
+  border: var(--channel-width) solid var(--channel-border);
+  border-radius: var(--channel-radius);
+  box-shadow: var(--channel-shadow);
+  outline-color: var(--channel-border);
+}
+.wii-home:not(.theme-wii) :is(.photo-world, .skill-2048-board):where(:not(.window-skills, .window-skills *)) {
+  background: var(--channel-pattern);
+}
+.wii-home:not(.theme-wii) :is(
+  .mii-about-plate, .mii-plaza-count, .mii-maker-topbar, .mii-maker-sidebar,
+  .mii-maker-stagewrap, .mii-maker-options-header, .mii-gallery-slot,
+  .mii-part-option, .skills-game-current > span, .skill-2048-cell
+):where(:not(.window-skills, .window-skills *)) {
+  color: var(--channel-ink);
+  background: var(--channel-soft);
+  border-color: var(--channel-border);
+}
+.wii-home:not(.theme-wii) :is(.mii-maker-sidebar-tab, .mii-maker-shuffle-text, .mii-maker-hint) {
+  color: var(--channel-ink);
+}
+.wii-home:not(.theme-wii) .mii-maker-sidebar-tab.is-active {
+  color: var(--channel-on-accent);
+}
+.wii-home:not(.theme-wii) .mii-maker-name input {
+  color: var(--channel-ink);
+  background: var(--channel-panel);
+  border-color: var(--channel-accent);
+}
+.wii-home:not(.theme-wii) .mii-part-option.is-selected {
+  background: var(--channel-panel);
+  border-color: var(--channel-accent);
+  box-shadow: 0 0 0 2px var(--channel-accent);
+}
+.wii-home:not(.theme-wii) .mii-slider-stack input {
+  accent-color: var(--channel-accent);
+}
+.wii-home:not(.theme-wii) .skill-2048-tile:where(:not(.window-skills, .window-skills *)) {
+  border-color: var(--channel-border);
+  border-width: var(--channel-width);
+}
+
+/* Discovery: theme the room and playback furniture, preserve the photographs. */
+.wii-home:not(.theme-wii) :is(.photo-room-wall, .photo-room-ceiling, .photo-world-sky) {
+  background: var(--channel-surface);
+  border-color: var(--channel-border);
+}
+.wii-home:not(.theme-wii) .photo-room-floor {
+  background: repeating-conic-gradient(var(--channel-soft) 0 25%, var(--channel-panel) 0 50%) 0 0 / 120px 120px;
+}
+.wii-home:not(.theme-wii) .photo-room-wall::after {
+  background: var(--channel-accent);
+}
+.wii-home:not(.theme-wii) :is(.photo-room-frame, .digital-camera) {
+  border-color: var(--channel-border);
+  background: var(--channel-soft);
+}
+.wii-home:not(.theme-wii) :is(.vinyl-crate-view, .vinyl-sidebar, .vinyl-crate-header) {
+  background: var(--channel-terminal);
+  border-color: var(--channel-accent);
+}
+.wii-home:not(.theme-wii) .vinyl-crate-view :is(h2, p, button, strong, small) {
+  color: var(--channel-code);
+}
+
+/* Message Board follows the active palette. Homebrew keeps its terminal palette. */
+.wii-home:not(.theme-wii) .message-board {
+  background: var(--channel-surface);
+  color: var(--channel-ink);
+}
+
+.wii-home:not(.theme-wii) .brew-heading {
+  padding: 18px;
+  border-radius: var(--channel-radius);
+  border: var(--channel-width) solid var(--channel-border);
+  background: var(--channel-panel);
+  box-shadow: var(--channel-shadow);
+}
+.wii-home:not(.theme-wii) :is(.board-date, .brew-heading) :is(h2, p, span):where(:not(.window-skills, .window-skills *)),
+.wii-home:not(.theme-wii) :is(.opened-letter h2, .skills-game-current strong):where(:not(.window-skills, .window-skills *)) {
+  color: var(--channel-ink);
+}
+.wii-home:not(.theme-wii) .brew-note {
+  padding: 12px;
+  color: var(--channel-ink);
+  background: var(--channel-panel);
+  border-radius: var(--channel-radius);
+}
+
+
+
+
+
+.wii-home:not(.theme-wii) .brew-bubbles i {
+  border-color: var(--channel-accent);
+}
+.theme-wario .brew-bubbles i {
+  border-radius: 10%;
+  rotate: 20deg;
+  border-width: 5px;
+}
+
+/* NS is the appearance editor; Homebrew remains an installation terminal. */
+.theme-editor .theme-packages {
+  margin-top: 28px;
+}
+.theme-editor-help {
+  margin-top: 28px;
+  line-height: 1.7;
+}
+.theme-editor .theme-package button[aria-pressed="true"] {
+  box-shadow: 0 0 0 2px var(--channel-accent, #149ec6);
+  font-weight: 800;
+}
+.preview-dark .theme-mark {
+  background: #202b3b;
+  color: #b5dfff;
+  border-color: #536983;
+}
+.homebrew-installer {
+  padding:0;
+  background:#021d2e;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.homebrew-installer .brew-terminal {
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  background:#021d2e;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.homebrew-installer .brew-terminal pre {
+  flex: 1;
+  height: clamp(250px, 50dvh, 560px);
+  min-height: 250px;
+}
+.window-homebrew .channel-content {
+  display: flex;
+  flex-direction: column;
+}
+.window-homebrew .homebrew-installer {
+  flex: 1;
+}
+
+.theme-dark {
+  --wii-blue: #87caff;
+  --channel-surface: #171d27;
+  --channel-panel: #232d3a;
+  --channel-soft: #303d4e;
+  --channel-ink: #ecf2fa;
+  --channel-muted: #b1bfd0;
+  --channel-accent: #9bd4ff;
+  --channel-on-accent: #122337;
+  --channel-border: #52657b;
+  --channel-width: 1px;
+  --channel-radius: 16px;
+  --channel-shadow: 0 8px 24px #0005;
+  --channel-pattern: radial-gradient(ellipse at top, #2b4058, #111923 75%);
+  --channel-terminal: #0d131c;
+  --channel-code: #c2e4ff;
+}
+.theme-dark.wii-home {
+  color: var(--channel-ink);
+  background: var(--channel-pattern);
+}
+.theme-dark .channel-tile {
+  border-color: var(--channel-border);
+  background: var(--channel-panel);
+  box-shadow: var(--channel-shadow);
+}
+.theme-dark :is(.channel-tile-label, .channel-window-header) {
+  background: var(--channel-panel);
+}
+.theme-dark :is(.channel-tile-label > span, .channel-window-header h1, .dock-clock strong) {
+  color: var(--channel-ink);
+}
+.theme-dark :is(.channel-window-header > span, .channel-help, .dock-clock p, .dock-clock span) {
+  color: var(--channel-muted);
+}
+.theme-dark .channel-window-header .rounded-full {
+  color: var(--channel-ink);
+  background: var(--channel-soft);
+}
+.theme-dark .empty-channel {
+  background: #25324566;
+  border-color: #52657b80;
+  box-shadow: inset 0 1px 8px #0003;
+}
+.theme-dark .wii-dock {
+  background: #1a2330;
+  border-top: 2px solid #52657b;
+}
+.theme-dark .dock-wave {
+  display: none;
+}
+.theme-dark .dock-round {
+  color: var(--channel-ink);
+  border-color: var(--channel-border);
+  background: linear-gradient(#3a4c62, #253245);
+  box-shadow: 0 4px 12px #0005;
+}
+.theme-dark :is(.skills-game-score strong, .mii-gallery-slot-label):where(:not(.window-skills, .window-skills *)) {
+  color: var(--channel-on-accent);
+}
+.wii-home :is(.mii-gallery-slot-new, .mii-gallery-slot-empty) .mii-gallery-slot-label {
+  color:var(--channel-ink, #55646b);
+  background:transparent;
+  border:0;
+  box-shadow:none;
+}
+/* The plaza artwork remains unchanged; its overlaid controls use readable panels. */
+.theme-dark :is(.mii-plaza-make-label, .mii-about-interests, .skill-game-over span):where(:not(.window-skills, .window-skills *)) {
+  color: var(--channel-ink);
+}
+.theme-dark .theme-editor-help {
+  color: var(--channel-muted);
+}
+.theme-dark .photo-world-controls > span {
+  color: var(--channel-ink);
+  background: var(--channel-panel);
+}
+@media (max-width: 480px) {
+  .theme-editor .theme-package {
+    grid-template-columns: 42px minmax(0, 1fr);
+  }
+  .theme-editor .theme-package button {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
+
+/* A single wide-ruled sheet holds the date, letters and reading hint. */
+.board-paper {
+  --paper-line: #82afd145;
+  --paper-margin: #d8737970;
+  position: relative;
+  min-height: 520px;
+  padding: 32px clamp(20px, 5vw, 64px);
+  border: 1px solid var(--channel-border, #d1cbb8);
+  border-radius: 3px;
+  color: var(--channel-ink, #535d61);
+  background:
+    linear-gradient(90deg, transparent 0 28px, var(--paper-margin) 28px 30px, transparent 30px),
+    repeating-linear-gradient(transparent 0 35px, var(--paper-line) 35px 36px),
+    var(--channel-panel, #fffdf2);
+  box-shadow: 0 6px 18px #0002, 3px 3px 0 var(--channel-surface, #f4f0e4);
+}
+.board-paper .board-date,
+.board-paper .board-hint {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.board-paper .board-letters {
+  align-items: flex-start;
+  padding: 36px 0 20px;
+  gap: clamp(12px, 4vw, 60px);
+}
+.board-letter-art {
+  flex-shrink: 0;
+}
+.board-letter .wii-envelope {
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 2px;
+  box-shadow: 0 4px 7px #0003;
+}
+.board-letter .wii-envelope::before {
+  z-index: 0;
+}
+.board-letter .wii-envelope::after {
+  z-index: 2;
+}
+.board-letter .wii-envelope i {
+  display: none;
+}
+.board-letter .wii-envelope.is-open::before {
+  inset: -38px 0 auto;
+  height: 40px;
+}
+.board-letter .wii-envelope.is-open i {
+  display: block;
+  position: absolute;
+  z-index: 1;
+  inset: -22px 12px 9px;
+  border: 1px solid #c8c3b1;
+  border-radius: 2px;
+  background: repeating-linear-gradient(#fffef5 0 13px, #bdd0dd 13px 14px);
+  box-shadow: 0 -2px 4px #0001;
+}
+.board-letter .wii-envelope.is-bomb {
+  background: #429f7c;
+}
+.board-letter .wii-envelope.is-bomb::before {
+  background: linear-gradient(#73d4a3, #368b70);
+}
+.board-letter .wii-envelope.is-bomb::after {
+  background: #62bd92;
+}
+.board-letter .wii-envelope.is-bomb img {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+.board-letter[aria-expanded="true"] strong {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.theme-dark .board-paper {
+  --paper-line: #83b7df30;
+  --paper-margin: #d7808660;
+}
+@media (max-width: 480px) {
+  .board-paper {
+    padding-inline: 22px;
+    background:
+      repeating-linear-gradient(transparent 0 35px, var(--paper-line) 35px 36px),
+      var(--channel-panel, #fffdf2);
+  }
+}
+
+/* The opened LetterBomb shares the activity envelope's geometry. Its character
+   flips with the flap and peeks out from behind it: feet and a sliver of red. */
+.board-letter .wii-envelope.is-bomb.is-open {
+  background: linear-gradient(145deg, #70cda3, #429f7c);
+}
+.board-letter .wii-envelope.is-bomb.is-open::before {
+  z-index: 1;
+  background: linear-gradient(#70cda3, #368b70);
+}
+.board-letter .wii-envelope.is-bomb.is-open i {
+  z-index: 2;
+}
+.board-letter .wii-envelope.is-bomb.is-open::after {
+  z-index: 3;
+  background: linear-gradient(145deg, #78d6ad, #4bac87);
+}
+.board-letter .wii-envelope.is-bomb.is-open .bomb-flap-character {
+  z-index: 0;
+  top: -48px;
+  bottom: auto;
+  transform: scaleY(-1);
+  clip-path: polygon(
+    36% 69%, 62% 69%, 59% 76%, 60% 80%, 64% 82%,
+    65% 88%, 63% 93%, 53% 93%, 49% 89%, 46% 92%,
+    36% 93%, 32% 90%, 33% 83%, 35% 79%, 40% 78%
+  );
+}
+
+/* Continuous fax feed: new records grow at the top, moving older ink downward. */
+.fax-board {
+  padding: 0 clamp(10px, 3vw, 36px) 48px;
+  overflow-anchor: none;
+}
+.fax-machine {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  padding-top: 18px;
+  background: var(--channel-surface, #e8e7d9);
+}
+.fax-machine-face {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 106px;
+  padding: 22px clamp(18px, 3vw, 38px) 26px;
+  border: 2px solid var(--channel-border, #aab3b6);
+  border-radius: 22px 22px 9px 9px;
+  background: linear-gradient(#ffffff55, #0000000a), var(--channel-soft, #dce2e4);
+  box-shadow: inset 0 2px 0 #ffffff80, 0 7px 0 var(--channel-border, #aab3b6), 0 10px 14px #0003;
+}
+.fax-brand {
+  display: flex;
+  flex-direction: column;
+  color: var(--channel-ink, #69787f);
+}
+.fax-brand > span {
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: -.08em;
+}
+.fax-brand small {
+  margin-top: 8px;
+  font-size: 8px;
+  letter-spacing: .15em;
+}
+.fax-display {
+  display: grid;
+  grid-template-columns: 8px 1fr;
+  align-items: center;
+  gap: 5px 10px;
+  padding: 10px 16px;
+  border: 2px solid var(--channel-border, #8faaa4);
+  border-radius: 5px;
+  background: var(--channel-terminal, #d1e6dc);
+  color: var(--channel-code, #365e50);
+  box-shadow: inset 0 2px 5px #0002;
+  font: 12px/1.4 ui-monospace, SFMono-Regular, monospace;
+}
+.fax-display small {
+  grid-column: 2;
+  opacity: .75;
+  font-size: 10px;
+}
+.fax-status-light {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #5aa976;
+}
+.is-printing .fax-status-light {
+  background: #e7b744;
+  animation: fax-pulse .5s steps(2, end) infinite;
+}
+.fax-vents {
+  width: 42px;
+  height: 30px;
+  background: repeating-linear-gradient(0deg, transparent 0 5px, var(--channel-border, #aab3b6) 5px 7px);
+}
+.fax-output-slot {
+  position: relative;
+  z-index: 1;
+  height: 12px;
+  margin: -8px 18px 0;
+  border: 2px solid var(--channel-border, #aab3b6);
+  border-radius: 6px;
+  background: #18222a;
+  box-shadow: inset 0 3px 4px #000;
+}
+.board-paper.fax-paper {
+  min-height: 0;
+  margin: -4px 24px 0;
+  padding: 0;
+  border-top: 0;
+  border-radius: 0;
+  overflow-anchor: none;
+}
+.fax-feed {
+  overflow: hidden;
+}
+.fax-record,
+.fax-board-record {
+  padding: 32px clamp(20px, 5vw, 64px) 40px;
+  scroll-margin-top: 150px;
+}
+.fax-record {
+  border-bottom: 2px dashed var(--channel-border, #b3b5a8);
+  color: var(--channel-ink, #535d61);
+}
+.fax-record:focus-visible {
+  outline: 2px solid var(--channel-accent, #149ec6);
+  outline-offset: -4px;
+}
+.fax-record-meta {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-bottom: 28px;
+  color: var(--channel-muted, #718079);
+  font: 10px/1.6 ui-monospace, SFMono-Regular, monospace;
+}
+.fax-record h2 {
+  margin: 14px 0;
+  font-size: clamp(24px, 3vw, 36px);
+  line-height: 1.2;
+}
+.fax-bomb-record {
+  text-align: center;
+}
+.fax-record .fax-back {
+  display: block;
+  margin: 24px auto 0;
+  color: var(--channel-accent, #188dab);
+}
+@keyframes fax-pulse {
+  50% { opacity: .35; }
+}
+@media (max-width: 600px) {
+  .fax-machine-face { gap: 12px; padding-inline: 14px; }
+  .fax-vents { display: none; }
+  .fax-display { padding-inline: 10px; font-size: 11px; }
+  .fax-output-slot { margin-inline: 8px; }
+  .board-paper.fax-paper { margin-inline: 12px; }
+  .fax-record, .fax-board-record { padding-inline: 18px; }
+  .fax-board .board-letter { width: 100%; padding-inline: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-printing .fax-status-light { animation: none; }
+}
+
+/* The channel banner is the printer housing; the page exits its lower edge. */
+.window-messages {
+  --fax-gutter: clamp(18px, 5vw, 64px);
+}
+.channel-window-header.fax-banner {
+  position: relative;
+  z-index: 6;
+  min-height: 144px;
+  padding-bottom: 30px;
+  border-bottom: 0;
+  background: linear-gradient(#ffffff22, #0000000c), var(--channel-soft, #dce2e4);
+  box-shadow: inset 0 -7px 0 #00000012, 0 5px 10px #0002;
+}
+.theme-wario .channel-window-header.fax-banner {
+  background: #ffea32;
+}
+.channel-window-header.fax-banner > button {
+  position: relative;
+  z-index: 2;
+}
+.channel-window-header.fax-banner .fax-brand {
+  min-width: 0;
+  text-align: center;
+}
+.channel-window-header.fax-banner .fax-brand > span {
+  font: 700 10px/1.4 ui-monospace, SFMono-Regular, monospace;
+  letter-spacing: .12em;
+  color: var(--channel-muted, #65767b);
+}
+.channel-window-header.fax-banner .fax-display {
+  display: grid;
+  justify-self: end;
+  width: 190px;
+  height: 64px;
+  min-width: 0;
+  align-items: center;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.channel-window-header.fax-banner .fax-output-slot {
+  position: absolute;
+  inset: auto var(--fax-gutter) -5px;
+  height: 12px;
+  margin: 0;
+  min-width: 0;
+  border-radius: 4px;
+  border-color: var(--channel-border, #819093);
+  background: linear-gradient(#080f15, #354149 70%, #101a20);
+}
+.fax-output-slot::after {
+  content: "";
+  position: absolute;
+  inset: 2px 8px;
+  opacity: .35;
+  background: repeating-linear-gradient(90deg, transparent 0 12px, #b1c1ca 12px 14px);
+}
+.is-printing .fax-output-slot::after {
+  animation: fax-rollers .35s linear infinite;
+}
+.window-messages > .h-px {
+  display: none;
+}
+.fax-board {
+  padding: 0 var(--fax-gutter) 48px;
+}
+.fax-paper-viewport {
+  overflow: hidden;
+  overflow-anchor: none;
+}
+.board-paper.fax-paper {
+  margin: 0;
+  border-radius: 0;
+  transform-origin: top center;
+}
+.fax-record {
+  border-bottom: 0;
+}
+.fax-record::after {
+  content: "•  •  •";
+  display: block;
+  margin-top: 28px;
+  text-align: center;
+  color: var(--channel-muted, #718079);
+  letter-spacing: .5em;
+}
+.fax-feed {
+  overflow: visible;
+}
+.fax-record,
+.fax-board-record {
+  scroll-margin-top: 18px;
+}
+@keyframes fax-rollers {
+  to { background-position: 14px 0; }
+}
+@media (max-width: 760px) {
+  .channel-window-header.fax-banner {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 12px;
+    min-height: 154px;
+  }
+  .channel-window-header.fax-banner .fax-brand {
+    align-items: flex-end;
+    text-align: right;
+  }
+  .channel-window-header.fax-banner h1 {
+    font-size: clamp(16px, 3.5vw, 24px);
+  }
+  .channel-window-header.fax-banner .fax-display {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    width: 100%;
+    height: 38px;
+    grid-template-columns: 8px 1fr auto;
+    padding: 6px 12px;
+  }
+  .channel-window-header.fax-banner .fax-display small {
+    grid-column: 3;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-printing .fax-output-slot::after { animation: none; }
+}
+
+.channel-window-header.fax-banner > .fax-power-button {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border-radius: 50%;
+  overflow: visible;
+}
+.fax-power-button .fax-power-tooltip {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  z-index: 10;
+  padding: 8px 12px;
+  border: 1px solid var(--channel-border, #aab3b6);
+  border-radius: 8px;
+  background: var(--channel-panel, #fff);
+  color: var(--channel-ink, #354047);
+  box-shadow: 0 4px 12px #0002;
+  font: 600 12px/1.4 sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+}
+.fax-power-button:hover .fax-power-tooltip,
+.fax-power-button:focus-visible .fax-power-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Low-contrast CRT texture and a slow phosphor refresh line. */
+.fax-display {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  text-shadow: 0 0 3px currentColor;
+  animation: fax-screen-flicker 9s linear infinite;
+}
+.fax-display::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  background: repeating-linear-gradient(transparent 0 2px, #0002 2px 3px);
+  box-shadow: inset 0 0 12px #0004;
+}
+.fax-display::after {
+  content: "";
+  position: absolute;
+  inset: -5px 0 auto;
+  height: 3px;
+  z-index: 2;
+  pointer-events: none;
+  background: #ffffff40;
+  box-shadow: 0 0 6px #ffffff25;
+  animation: fax-screen-scan 6s linear infinite;
+}
+.fax-display.is-jammed .fax-status-light {
+  background: #ec8466;
+  box-shadow: 0 0 5px #ec846680;
+}
+.fax-waste-warning {
+  margin: 12px 0;
+  font: 16px/1.8 ui-monospace, SFMono-Regular, monospace;
+}
+.board-letter:disabled {
+  cursor: default;
+}
+.board-letter:disabled:hover {
+  transform: none;
+}
+@keyframes fax-screen-scan {
+  to { top: 110%; }
+}
+@keyframes fax-screen-flicker {
+  0%, 43%, 46%, 79%, 82%, 100% { opacity: 1; }
+  44%, 80% { opacity: .94; }
+  45%, 81% { opacity: .98; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fax-display { animation: none; }
+  .fax-display::after { animation: none; display: none; }
+}
+
+/* The terminal fills Homebrew regardless of the installed menu theme. */
+.wii-home .window-homebrew .channel-window-scroll:where(:not(.window-skills, .window-skills *)) {
+  background:#021d2e;
+  scrollbar-color:#73b8c9 #021d2e;
+}
+
+/* WarioWare's sketch-room walls; artwork occupies unused display slots. */
+.wario-wall-doodle { display:none; }
+.wii-home.theme-wario :is(.photo-room-wall, .photo-room-ceiling, .photo-world-sky) {
+  background:#333;
+  border-color:#747470;
+  box-shadow:inset 0 0 0 5px #666663;
+}
+.wii-home.theme-wario .photo-room-wall::after {
+  background:#747470;
+  box-shadow:none;
+}
+.theme-wario .wario-wall-doodle {
+  display:block;
+  position:absolute;
+  height:auto;
+  max-height:30%;
+  transform:translate(-50%,-50%) rotate(-4deg);
+  fill:none;
+  stroke:currentColor;
+  stroke-width:6;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  pointer-events:none;
+}
+
+/* Peach's Castle: light-blue cloud murals and a red carpet runner. */
+.peach-castle-portrait { display:none; }
+.wii-home.theme-mario :is(.photo-room-wall, .photo-room-ceiling) {
+  background:#b9dcf5 url('/wii/castle-clouds.svg?v=2') repeat 0 0 / 900px 600px;
+  border-color:#b9dcf5;
+  box-shadow:none;
+}
+.wii-home.theme-mario .photo-room-wall::after {
+  display:none;
+}
+.wii-home.theme-mario .photo-room-floor {
+  background:
+    linear-gradient(90deg,transparent 34%,#bd9344 34% 35%,#9d1233 35%,#ce2146 50%,#9d1233 65%,#bd9344 65% 66%,transparent 66%),
+    repeating-conic-gradient(#f4f1ec 0 25%,#57616b 0 50%) 0 0 / 120px 120px;
+  box-shadow:inset 0 0 70px #30394c66;
+}
+.wii-home.theme-mario .photo-room-rug {
+  border:8px solid #dab34b;
+  outline:3px solid #8c6829;
+  border-radius:50%;
+  background:radial-gradient(circle,#f9ca39 0 24%,transparent 25%),repeating-conic-gradient(#db438c 0 15deg,#7445a4 15deg 30deg);
+  box-shadow:0 0 0 5px #593968;
+}
+.wii-home.theme-mario .photo-room-frame {
+  border-color:#bda071;
+  background:#fff1d6;
+  box-shadow:0 8px 15px #45382755,inset 0 0 0 3px #f9e0a7;
+}
+.theme-mario .peach-castle-portrait {
+  display:block;
+  position:absolute;
+  width:148px;
+  margin:0;
+  padding:7px;
+  transform:translate(-50%,-50%);
+  border:5px ridge #c6a368;
+  border-radius:45% 45% 5px 5px / 12% 12% 5px 5px;
+  background:#eed8a6;
+  box-shadow:0 7px 16px #54402c66;
+  pointer-events:none;
+}
+.peach-castle-portrait img { display:block; width:100%; aspect-ratio:1; object-fit:contain; image-rendering:pixelated; border-radius:inherit; }
+.peach-castle-portrait figcaption { color:#574326; font:12px/1.5 Georgia,serif; text-align:center; padding-top:4px; }
+
+/* Tech Stack uses theme colors only: retain the original geometry and typography. */
+.wii-home:not(.theme-wii) .window-skills {
+  --wii-blue:var(--channel-accent);
+  --wii-blue-dark:var(--channel-accent);
+  color:var(--channel-ink);
+  background:var(--channel-surface);
+  border-color:var(--channel-border);
+}
+.wii-home:not(.theme-wii) .window-skills .channel-window-scroll {
+  background:var(--channel-surface);
+  scrollbar-color:var(--channel-accent) var(--channel-soft);
+}
+
+
+.wii-home:not(.theme-wii) .window-skills :is(
+  .skills-game-status, .skills-catalog, .skills-catalog-item, .skill-game-over
+) {
+  color:var(--channel-ink);
+  background:var(--channel-panel);
+  border-color:var(--channel-border);
+}
+.wii-home:not(.theme-wii) .window-skills :is(
+  .skills-new-game, .skills-catalog-toggle, .skill-direction-pad button,
+  .skill-game-over button, .skills-game-current > span, .skill-2048-cell
+) {
+  color:var(--channel-ink);
+  background:var(--channel-soft);
+  border-color:var(--channel-border);
+}
+.wii-home:not(.theme-wii) .window-skills :is(
+  .skills-game-heading h2, .skills-catalog-header h3, .skills-catalog-item strong,
+  .skills-game-current strong, .skill-game-over strong
+) { color:var(--channel-ink); }
+.wii-home:not(.theme-wii) .window-skills :is(
+  .mini-label, .skills-game-heading p, .skills-game-hint, .skills-game-current small,
+  .skills-catalog-header p, .skills-catalog-item small, .skill-game-over span
+) { color:var(--channel-muted); }
+.wii-home:not(.theme-wii) .window-skills :is(.skills-game-heading p strong, .skills-game-current svg) {
+  color:var(--channel-accent);
+}
+.wii-home:not(.theme-wii) .window-skills .skills-game-score {
+  background:var(--channel-accent);
+  border-color:var(--channel-border);
+  color:var(--channel-on-accent);
+}
+.wii-home:not(.theme-wii) .window-skills .skills-game-score strong {
+  color:var(--channel-on-accent);
+}
+.wii-home:not(.theme-wii) .window-skills .skill-2048-board {
+  background:var(--channel-border);
+  border-color:var(--channel-border);
+}
+.wii-home:not(.theme-wii) .window-skills :is(.skill-2048-tile, .skills-catalog-item > span) {
+  color:var(--channel-ink);
+  background:var(--channel-soft);
+  background:color-mix(in srgb, var(--channel-soft) 75%, var(--skill-tile-surface, var(--channel-panel)));
+  border-color:var(--channel-border);
+}
+.wii-home:not(.theme-wii) .window-skills :is(button, a):hover {
+  border-color:var(--channel-accent);
+}
+.wii-home:not(.theme-wii) .window-skills :is(button, a):focus-visible {
+  outline-color:var(--channel-accent);
+}
+
+/* Tech Stack shares the channel banner; its game content stays color-only. */
+.theme-dark .window-skills .skills-game-heading .rounded-full {
+  color:#fff;
+  border-color:var(--channel-border);
+}
+.wii-home:not(.theme-wii) .window-skills .channel-window-header > button {
+  color:var(--channel-ink);
+  background:var(--channel-soft);
+  border-color:var(--channel-border);
+  border-width:var(--channel-width);
+}
+.theme-wario .window-skills.channel-window {
+  border:5px solid #211128;
+  box-shadow:10px 10px #211128;
+}
