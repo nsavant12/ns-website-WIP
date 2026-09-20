@@ -684,6 +684,7 @@
 }
 .theme-mario .channel-window-header { background:#f44a37; }
 .theme-mario .channel-window-header h1 { color:white; }
+.theme-mario .channel-window-header>span { color:white; }
 .theme-mario .wii-dock {
   border-top:4px solid #181008;
   background:
@@ -890,7 +891,7 @@
 }
 .wii-home:not(.theme-wii) :is(
   .link-icon, .link-card:nth-child(2) .link-icon, .link-card:nth-child(3) .link-icon,
-  .skills-game-score, .mii-gallery-slot-label, .mii-actor-tag,
+  .skills-game-score, .mii-actor-tag,
   .mii-maker-sidebar-tab.is-active
 ):where(:not(.window-skills, .window-skills *)) {
   color: var(--channel-on-accent);
@@ -975,12 +976,124 @@
   border-color: var(--channel-border);
   background: var(--channel-soft);
 }
-.wii-home:not(.theme-wii) :is(.vinyl-crate-view, .vinyl-sidebar, .vinyl-crate-header) {
-  background: var(--channel-terminal);
-  border-color: var(--channel-accent);
+/* Record crate: the whole overlay follows the palette — the wash, both raised
+   panels and every control. Only the records keep their black vinyl and
+   artwork, the same way the room keeps its photographs. */
+.wii-home:not(.theme-wii) .vinyl-crate-view {
+  color: var(--channel-ink);
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, .05) 0,
+      rgba(0, 0, 0, .05) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    var(--channel-surface);
 }
-.wii-home:not(.theme-wii) .vinyl-crate-view :is(h2, p, button, strong, small) {
-  color: var(--channel-code);
+.wii-home:not(.theme-wii) .vinyl-crate-heading strong {
+  color: var(--channel-ink);
+}
+.wii-home:not(.theme-wii) :is(.vinyl-crate-heading span, .vinyl-sidebar-top span, .vinyl-sidebar-text span, .vinyl-hint) {
+  color: var(--channel-muted);
+}
+.wii-home:not(.theme-wii) .vinyl-close-button {
+  color: var(--channel-ink);
+  border-width: var(--channel-width);
+  border-color: var(--channel-border);
+  background: var(--channel-panel);
+}
+.wii-home:not(.theme-wii) .vinyl-close-button:hover {
+  color: var(--channel-on-accent);
+  border-color: var(--channel-border);
+  background: var(--channel-accent);
+}
+
+.wii-home:not(.theme-wii) :is(.vinyl-sidebar, .vinyl-ring-stage) {
+  color: var(--channel-ink);
+  border: var(--channel-width) solid var(--channel-border);
+  border-radius: var(--channel-radius);
+  box-shadow: var(--channel-shadow);
+}
+.wii-home:not(.theme-wii) .vinyl-sidebar {
+  background: var(--channel-panel);
+}
+.wii-home:not(.theme-wii) .vinyl-ring-stage {
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      color-mix(in srgb, var(--channel-panel) 86%, var(--channel-accent)) 0%,
+      var(--channel-panel) 60%,
+      var(--channel-soft) 100%
+    );
+}
+.wii-home:not(.theme-wii) .vinyl-sidebar-top {
+  border-bottom-color: var(--channel-border);
+}
+.wii-home:not(.theme-wii) .vinyl-sidebar-top strong {
+  color: var(--channel-accent);
+}
+
+.wii-home:not(.theme-wii) .vinyl-sidebar-item {
+  color: var(--channel-ink);
+  border: var(--channel-width) solid var(--channel-border);
+  border-radius: var(--channel-radius);
+  background: var(--channel-soft);
+  box-shadow: none;
+}
+.wii-home:not(.theme-wii) .vinyl-sidebar-item:hover {
+  background: color-mix(in srgb, var(--channel-accent) 26%, var(--channel-soft));
+  box-shadow: 0 0 0 1px var(--channel-accent);
+}
+.wii-home:not(.theme-wii) .vinyl-sidebar-item.is-selected {
+  background: color-mix(in srgb, var(--channel-accent) 20%, var(--channel-panel));
+  box-shadow: 0 0 0 2px var(--channel-accent);
+}
+.wii-home:not(.theme-wii) .vinyl-sidebar-item:focus-visible {
+  outline-color: var(--channel-accent);
+}
+.wii-home:not(.theme-wii) .vinyl-sidebar-number {
+  color: var(--channel-muted);
+}
+.wii-home:not(.theme-wii) .vinyl-sidebar-item.is-selected .vinyl-sidebar-number {
+  color: var(--channel-accent);
+}
+.wii-home:not(.theme-wii) .vinyl-sidebar-state {
+  color: var(--channel-muted);
+  border-width: var(--channel-width);
+  border-color: var(--channel-border);
+  background: var(--channel-panel);
+}
+.wii-home:not(.theme-wii) .vinyl-sidebar-item.is-playing .vinyl-sidebar-state {
+  color: var(--channel-on-accent);
+  border-color: var(--channel-border);
+  background: var(--channel-accent);
+}
+
+.wii-home:not(.theme-wii) .vinyl-orbit-disc.is-front .vinyl-disc {
+  box-shadow:
+    inset 0 0 0 2px #05070a,
+    0 0 0 4px var(--channel-panel),
+    0 0 0 7px var(--channel-accent),
+    0 14px 28px rgba(0, 0, 0, .38);
+}
+.wii-home:not(.theme-wii) .vinyl-orbit-disc:focus-visible {
+  outline-color: var(--channel-accent);
+}
+.wii-home:not(.theme-wii) .vinyl-ring-caption strong {
+  color: var(--channel-ink);
+}
+.wii-home:not(.theme-wii) .vinyl-ring-caption > span {
+  color: var(--channel-muted);
+}
+.wii-home:not(.theme-wii) .vinyl-ring-caption small {
+  color: var(--channel-on-accent);
+  border-color: var(--channel-border);
+  background: var(--channel-accent);
+  box-shadow: none;
+}
+.wii-home:not(.theme-wii) .vinyl-hint {
+  border-top-color: var(--channel-border);
 }
 
 /* Message Board follows the active palette. Homebrew keeps its terminal palette. */
@@ -1131,6 +1244,14 @@
   background:transparent;
   border:0;
   box-shadow:none;
+}
+/* A slot caption is loose text under a portrait, so it takes the accent as its
+   own color instead of wearing it as a highlight behind the letters. */
+.wii-home:not(.theme-wii) .mii-gallery-slot-label {
+  color: var(--channel-accent);
+  background: none;
+  border: 0;
+  box-shadow: none;
 }
 /* The plaza artwork remains unchanged; its overlaid controls use readable panels. */
 .theme-dark :is(.mii-plaza-make-label, .mii-about-interests, .skill-game-over span):where(:not(.window-skills, .window-skills *)) {

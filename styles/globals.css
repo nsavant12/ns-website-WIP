@@ -2959,6 +2959,15 @@ button {
   position: relative;
   flex: 1;
   min-height: calc(var(--vinyl-disc-size) * 2.1);
+  /* The ring answers horizontal drags itself, so the browser must not treat
+     them as a scroll or a back-swipe. */
+  touch-action: none;
+  cursor: grab;
+}
+
+.vinyl-ring-area.is-swiping {
+  cursor: grabbing;
+  user-select: none;
 }
 
 .vinyl-ring-orbit {
@@ -3106,9 +3115,11 @@ button {
     min-height: calc(var(--vinyl-disc-size) * 1.85);
   }
 
-  /* The stacked layout has no room for the caption; the highlighted row in
-     the track list already says which record is up front. */
-  .vinyl-ring-caption {
+  /* The stacked layout has no room for the caption or the hint; the
+     highlighted row in the track list already says which record is up front,
+     and swiping the ring is the obvious gesture on a touch screen. */
+  .vinyl-ring-caption,
+  .vinyl-hint {
     display: none;
   }
 }
@@ -4969,6 +4980,11 @@ button {
 }
 
 .mii-maker-name input {
+  width: 100%;
+  /* Form controls get an automatic minimum size from their intrinsic width,
+     which overflows the grid column and pushes the field off-center from the
+     Mii above it; min-width: 0 lets it shrink to the track instead. */
+  min-width: 0;
   padding: 9px 13px;
   color: #333f45;
   border: 2px solid #c2cccd;

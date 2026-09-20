@@ -525,6 +525,12 @@ function DigitalCameraView({
 }
 
 const VINYL_RING_STEP = 360 / VINYL_LIBRARY.length;
+// Pointer travel before a press on a record counts as a swipe of the ring
+// rather than a tap on that record.
+const VINYL_SWIPE_SLOP = 6;
+// A flick shorter than half a record still swaps, as long as it travels this
+// far; otherwise the ring springs back to the record it started on.
+const VINYL_FLICK_DISTANCE = 34;
 
 // One record floating on the crate's carousel. Its slot on the ellipse, its
 // size and how far back it sits all fall out of the shared rotation value, so
@@ -584,6 +590,12 @@ function VinylCrateView({
   const smoothSpin = useSpring(spin, { stiffness: 68, damping: 17, mass: 0.9 });
   const angleSource = reduceMotion ? spin : smoothSpin;
 
+  // Records can also be flicked through: a horizontal drag spins the crate
+  // under the finger, then settles on whichever record ends up in front.
+  const swipe = useRef(null);
+  const swipeEndedHere = useRef(false);
+  const [isSwiping, setIsSwiping] = useState(false);
+
   const handleKeyDown = (event) => {
     if (event.key === "Escape") {
       event.preventDefault();
@@ -601,6 +613,81 @@ function VinylCrateView({
     spin.set(current + delta);
     setSelectedIndex(index);
     onToggle(album);
+  };
+
+  const startSwipe = (event) => {
+    if (VINYL_LIBRARY.length < 2 || event.button > 0) return;
+
+    // One record per ~40% of the stage, so the gesture feels the same on a
+    // phone as it does across a desktop crate.
+    const span = Math.max(event.currentTarget.clientWidth * 0.4, 90);
+    swipe.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startSpin: spin.get(),
+      startIndex: selectedIndex,
+      degreesPerPixel: VINYL_RING_STEP / span,
+      moved: false,
+    };
+    swipeEndedHere.current = false;
+    setIsSwiping(true);
+  };
+
+  useEffect(() => {
+    if (!isSwiping) return undefined;
+
+    const move = (event) => {
+      const drag = swipe.current;
+      if (!drag || event.pointerId !== drag.pointerId) return;
+
+      const distance = event.clientX - drag.startX;
+      if (!drag.moved && Math.abs(distance) < VINYL_SWIPE_SLOP) return;
+      drag.moved = true;
+      spin.set(drag.startSpin + distance * drag.degreesPerPixel);
+    };
+
+    const end = (event) => {
+      const drag = swipe.current;
+      if (!drag || event.pointerId !== drag.pointerId) return;
+
+      swipe.current = null;
+      setIsSwiping(false);
+      if (!drag.moved) return;
+
+      const distance = event.clientX - drag.startX;
+      const startSlot = Math.round(drag.startSpin / VINYL_RING_STEP);
+      let slot = Math.round(spin.get() / VINYL_RING_STEP);
+      if (slot === startSlot && Math.abs(distance) >= VINYL_FLICK_DISTANCE) {
+        slot = startSlot + (distance < 0 ? -1 : 1);
+      }
+
+      const count = VINYL_LIBRARY.length;
+      const index = (((-slot % count) + count) % count);
+      spin.set(slot * VINYL_RING_STEP);
+      setSelectedIndex(index);
+      // The release lands on a record, not on the disc the drag began on, so
+      // swallow the click that follows.
+      swipeEndedHere.current = true;
+      // A swipe swaps the song mid-preview; with the needle up it only picks
+      // the record, and the front disc drops the needle.
+      if (index !== drag.startIndex && playingAlbum) onToggle(VINYL_LIBRARY[index]);
+    };
+
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", end);
+    window.addEventListener("pointercancel", end);
+    return () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", end);
+      window.removeEventListener("pointercancel", end);
+    };
+  }, [isSwiping, onToggle, playingAlbum, spin]);
+
+  const swallowSwipeClick = (event) => {
+    if (!swipeEndedHere.current) return;
+    swipeEndedHere.current = false;
+    event.preventDefault();
+    event.stopPropagation();
   };
 
   const selectedAlbum = VINYL_LIBRARY[selectedIndex];
@@ -671,11 +758,15 @@ function VinylCrateView({
               );
             })}
           </ul>
-          <p className="vinyl-hint">30-second previews spin on the turntable back in the room.</p>
+          <p className="vinyl-hint">Swipe the records to browse. 30-second previews spin on the turntable back in the room.</p>
         </nav>
 
         <div className="vinyl-ring-stage">
-          <div className="vinyl-ring-area">
+          <div
+            className={"vinyl-ring-area" + (isSwiping ? " is-swiping" : "")}
+            onPointerDown={startSwipe}
+            onClickCapture={swallowSwipeClick}
+          >
             <div className="vinyl-ring-orbit">
               {VINYL_LIBRARY.map((album, index) => (
                 <OrbitVinyl
