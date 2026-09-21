@@ -930,12 +930,15 @@
 }
 .wii-home:not(.theme-wii) :is(
   .mii-about-plate, .mii-plaza-count, .mii-maker-topbar, .mii-maker-sidebar,
-  .mii-maker-stagewrap, .mii-maker-options-header, .mii-gallery-slot,
+  .mii-maker-stagewrap, .mii-gallery-slot,
   .mii-part-option, .skills-game-current > span, .skill-2048-cell
 ):where(:not(.window-skills, .window-skills *)) {
   color: var(--channel-ink);
   background: var(--channel-soft);
   border-color: var(--channel-border);
+}
+.wii-home:not(.theme-wii) .mii-maker-options-header {
+  color: var(--channel-ink);
 }
 .wii-home:not(.theme-wii) :is(.mii-maker-sidebar-tab, .mii-maker-shuffle-text, .mii-maker-hint) {
   color: var(--channel-ink);
