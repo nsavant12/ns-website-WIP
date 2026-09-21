@@ -4737,7 +4737,7 @@ button {
   height: 68px;
   place-items: center;
   border-radius: 14px;
-  background: linear-gradient(#f6f8f8, #e4eaea);
+  background: none;
 }
 
 .mii-gallery-slot-add {

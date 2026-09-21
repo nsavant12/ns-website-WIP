@@ -863,7 +863,7 @@
 }
 .wii-home:not(.theme-wii) :is(
   .link-card, .skills-game-status, .skills-catalog, .skills-catalog-item,
-  .mii-about, .mii-gallery, .mii-maker, .mii-maker-options, .opened-letter,
+  .mii-about, .mii-gallery, .mii-maker, .opened-letter,
   .theme-package, .skill-game-over
 ):where(:not(.window-skills, .window-skills *)) {
   color: var(--channel-ink);
@@ -930,7 +930,7 @@
 }
 .wii-home:not(.theme-wii) :is(
   .mii-about-plate, .mii-plaza-count, .mii-maker-topbar, .mii-maker-sidebar,
-  .mii-maker-stagewrap, .mii-gallery-slot,
+  .mii-maker-stagewrap, .mii-maker-options, .mii-gallery-slot,
   .mii-part-option, .skills-game-current > span, .skill-2048-cell
 ):where(:not(.window-skills, .window-skills *)) {
   color: var(--channel-ink);
