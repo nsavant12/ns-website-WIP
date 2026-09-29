@@ -39,42 +39,48 @@ import { Separator } from "@/components/ui/separator";
 const WORK_EXPERIENCES = [
   {
     company: "Cisco",
-    role: "Software Engineering Intern",
+    role: "Software Engineer Intern",
     dates: "May – Aug 2026",
-    technologies: ["AI Agents", "RAG", "RBAC"],
+    technologies: ["AI Agents", "MCP", "RAG", "RBAC"],
     points: [
-      "Built an AI Agent that connects users' natural language questions with results from 9+ live infrastructure tools, securing AI-initiated workflows with an authorization model that enforces caller-scoped delegated identity and least-privilege RBAC at the controller level.",
-      "Engineered a repeatable RAG ingestion pipeline, processing 13,000+ documents and 2,300+ text chunks into an embedded vector database to enable fast, semantic retrieval and deterministic source citation.",
-      "Created a typed AI-agent harness and evaluation framework across 5 bounded planning stages, hardening the model against prompt brittleness using paraphrase regression suites and fail-closed result verifiers across our infrastructure tools.",
-      "Developed reliability controls and a verifier-gated conversation-state cache, implementing end-to-end trace propagation and automated release quality gates to accelerate incident diagnosis.",
+      "Built an AI Agent that answers users' natural language questions using live infrastructure tools exposed through an MCP gateway, securing every tool call with delegated caller identity and controller-level RBAC, and grounding answers in a RAG pipeline with source citations.",
+      "Built a TypeScript MCP gateway that wraps internal REST APIs as JSON-Schema-validated tools, standardizing tool discovery, argument validation, typed responses, and error handling.",
+      "Implemented delegated authorization using signed JWT claims and controller-level RBAC, validating and propagating caller identity and scopes before each MCP tool execution to prevent privilege escalation.",
+      "Engineered a repeatable RAG ingestion pipeline, embedding 2,300+ documents into 13,000+ vector-indexed chunks to enable semantic retrieval with deterministic source citation.",
+      "Created a 100-case agent evaluation suite measuring tool-selection accuracy, argument validity, retrieval Recall@K, citation correctness, and task success rate, improving the end-to-end pass rate from 74% to 88%.",
     ],
   },
   {
     company: "Algo Analytics",
-    role: "Full Stack Engineer Intern",
+    role: "Full-Stack Engineer Intern",
     dates: "Jun – Oct 2025",
     technologies: ["TypeScript", "React Native", "REST APIs"],
     points: [
-      "Developed a TypeScript based backend integration layer to connect the React Native client with financial APIs, aggregating real-time stock data and reducing client-side parsing times by 30%.",
-      "Implemented RESTful API controllers to serialize and sanitize high-throughput financial data streams, successfully processing 100,000+ data points daily while achieving a 300ms API response time.",
-      "Developed scalable backend services that utilized JWT authentication and Axios interceptors for secure session management, optimizing JSON payload sizes by 20% and ensuring zero-downtime token refresh cycles.",
+      "Developed a TypeScript based backend integration layer connecting the React Native client with financial market APIs, aggregating and serializing real-time stock data behind REST controllers with JWT authentication and silent token refresh.",
+      "Implemented REST API controllers to validate and serialize market data, processing 100,000+ data points daily at a 300ms API response time and trimming JSON payloads by 20% by pruning unused response fields.",
+      "Added JWT authentication with silent token refresh through client-side Axios interceptors, eliminating re-logins during active sessions.",
     ],
   },
   {
     company: "StellarPay",
-    role: "Software Engineering Intern",
+    role: "Software Engineer Intern",
     dates: "Jun – Aug 2025",
     technologies: ["TypeScript", "Node.js", "AWS", "Pinecone"],
     points: [
-      "Built a GPT-powered financial assistant in TypeScript/Node.js, leveraging a Retrieval-Augmented Generation (RAG) system with engineered prompts to deliver precise, context-aware insights.",
-      "Refactored front-end codebase and components improving component reusability and load times, reducing code duplication by 25% and load times by 20%.",
-      "Enhanced retrieval precision by 40% using AWS Textract for document ingestion and OpenAI Embeddings with Pinecone for high-performance semantic search.",
-      "Implemented end-to-end security protocols across AWS services, including IAM role-based access control, encrypted storage with AWS KMS (AES-256), and API Gateway authorization layers using JWTs.",
+      "Built a GPT-powered financial assistant in TypeScript/Node.js, leveraging a Retrieval-Augmented Generation (RAG) system that ingests documents with AWS Textract and searches OpenAI embeddings in Pinecone to deliver precise, context-aware insights.",
+      "Refactored front-end components into shared modules, reducing code duplication by 25% and page load times by 20%.",
+      "Enhanced retrieval precision by 40% using AWS Textract for document ingestion and OpenAI Embeddings with Pinecone for semantic search.",
+      "Secured sensitive user data with IAM role-based access control, encrypted storage with AWS KMS (AES-256), and JWT authorization on API Gateway.",
     ],
   },
 ];
 
 const RESUME_PROJECTS = [
+  {
+    name: "Spotify Music Recommender",
+    technologies: ["Python", "ALS", "ETL", "Spotify API"],
+    summary: "Personalized music recommender trained on 52M public listening events that builds a new Spotify playlist for the user, combining an ETL pipeline over a user-item interaction matrix with ALS matrix factorization ensembled with an item-similarity model — raising top-10 ranking quality from 0.30 to 0.71 and NDCG@100 from 0.05 to 0.11 by weighting recent listening trends against long-term taste.",
+  },
   {
     name: "Custom Git Server",
     technologies: ["Go", "SSH", "JWT"],
@@ -88,10 +94,10 @@ const RESUME_PROJECTS = [
 ];
 
 const RESUME_SKILLS = {
-  Languages: ["Java", "Python", "C++", "C", "Go", "TypeScript", "JavaScript", "R", "HTML/CSS", "Swift", "SQL"],
-  Frameworks: ["LitJS", "Node.js", "Spring Boot", "Next.js", "React", "Angular", "React Native", "LangChain"],
-  "Developer tools": ["Linux", "CoreML", "AWS", "Jupyter", "Git", "MongoDB", "Docker", "Figma", "Nginx", "Kubernetes"],
-  Libraries: ["Pandas", "NumPy", "OpenCV", "Tkinter", "SK-Learn", "TensorFlow"],
+  Languages: ["Java", "Python", "Go", "TypeScript", "C++", "C", "JavaScript", "R", "HTML/CSS", "Swift", "SQL"],
+  Frameworks: ["React", "Node.js", "Lit", "Spring Boot", "Next.js", "React Native", "LangChain"],
+  "Developer tools": ["Linux", "CoreML", "AWS", "Jupyter", "Git", "MongoDB", "Docker", "Figma", "Ansible", "Nginx", "Kubernetes", "ChromaDB"],
+  Libraries: ["PyTorch", "Pandas", "OpenCV", "NumPy", "SK-Learn"],
 };
 
 const RESUME_CLUBS = [
