@@ -91,13 +91,18 @@ const RESUME_PROJECTS = [
     technologies: ["Go", "Linux", "seccomp", "OverlayFS"],
     summary: "Go container runtime isolating workloads with Linux namespaces (PID, NET, MOUNT), capability restrictions, seccomp filtering, and cgroup v2 limits — 64 concurrent workloads across 1,280 test requests at 2.06 ms p95 latency, with shared OverlayFS image layers giving 5.16 ms p95 warm starts and 98.3% less layer storage.",
   },
+  {
+    name: "Local AI Assistant",
+    technologies: ["Python", "PyTorch", "QLoRA", "Ollama", "Open WebUI"],
+    summary: "Built a pipeline that turns 450+ iMessage conversations into privacy-scrubbed training data, then trained a custom BPE tokenizer and a 12M-parameter GPT-style Transformer with validation perplexity of approximately 30. Fine-tuned Qwen2.5-3B-Instruct with QLoRA on 5,000 personal message-reply pairs, training 1% of parameters and cutting held-out perplexity by approximately 45% versus the base model. Deployed on a self-hosted Linux server by merging adapters and quantizing to 4-bit GGUF, serving through Ollama and Open WebUI at 40 tokens/sec with under 0.5s to the first token.",
+  },
 ];
 
 const RESUME_SKILLS = {
   Languages: ["Java", "Python", "Go", "TypeScript", "C++", "C", "JavaScript", "R", "HTML/CSS", "Swift", "SQL"],
   Frameworks: ["React", "Node.js", "Lit", "Spring Boot", "Next.js", "React Native", "LangChain"],
-  "Developer tools": ["Linux", "CoreML", "AWS", "Jupyter", "Git", "MongoDB", "Docker", "Figma", "Ansible", "Nginx", "Kubernetes", "ChromaDB"],
-  Libraries: ["PyTorch", "Pandas", "OpenCV", "NumPy", "SK-Learn"],
+  "Developer tools": ["Linux", "Docker", "Kubernetes", "AWS", "Jupyter", "Git", "MongoDB", "Figma", "Ansible", "Nginx", "Ollama", "ChromaDB"],
+  Libraries: ["PyTorch", "Pandas", "PEFT", "OpenCV", "NumPy", "SK-Learn"],
 };
 
 const RESUME_CLUBS = [
@@ -404,7 +409,7 @@ function ResumeContent() {
         </div>
         <div className="resume-actions">
           <Button variant="outline" asChild>
-            <a href="/resume.pdf" download="Nikhil_Savant_Resume.pdf">
+            <a href="/resume.pdf" download="Nikhil_Work_Resume_6.pdf">
               <FileText size={16} />
               Download PDF
             </a>
