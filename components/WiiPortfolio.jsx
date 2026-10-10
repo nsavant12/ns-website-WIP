@@ -94,7 +94,7 @@ const RESUME_PROJECTS = [
   {
     name: "Local AI Assistant",
     technologies: ["Python", "PyTorch", "QLoRA", "Ollama", "Open WebUI"],
-    summary: "Built a pipeline that turns 450+ iMessage conversations into privacy-scrubbed training data, then trained a custom BPE tokenizer and a 12M-parameter GPT-style Transformer with validation perplexity of approximately 30. Fine-tuned Qwen2.5-3B-Instruct with QLoRA on 5,000 personal message-reply pairs, training 1% of parameters and cutting held-out perplexity by approximately 45% versus the base model. Deployed on a self-hosted Linux server by merging adapters and quantizing to 4-bit GGUF, serving through Ollama and Open WebUI at 40 tokens/sec with under 0.5s to the first token.",
+    summary: "Personal AI assistant built from 450+ privacy-scrubbed iMessage conversations, with a custom tokenizer and 12M-parameter Transformer. Fine-tuned Qwen2.5-3B-Instruct using QLoRA on 5,000 message-reply pairs, cutting held-out perplexity by 45%, then deployed a 4-bit model on a self-hosted Linux server through Ollama and Open WebUI — generating 40 tokens/sec with under 0.5s to the first token.",
   },
 ];
 
