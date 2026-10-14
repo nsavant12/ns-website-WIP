@@ -77,6 +77,11 @@ const WORK_EXPERIENCES = [
 
 const RESUME_PROJECTS = [
   {
+    name: "Personal AI Assistant",
+    technologies: ["Python", "QLoRA", "Qwen2.5", "Ollama"],
+    summary: "Personal AI assistant fine-tuned on my own texting style — a preprocessing pipeline turns 450+ iMessage conversations into 5,000 context–reply examples split by session to prevent train/validation leakage, Qwen2.5-1.5B-Instruct is fine-tuned with QLoRA and reply-only loss for 25% lower held-out reply perplexity than the base model, and the merged 4-bit GGUF model is self-hosted on a Linux server through Ollama and Open WebUI at 25 tokens/sec with under 0.9s to first token.",
+  },
+  {
     name: "Spotify Music Recommender",
     technologies: ["Python", "ALS", "ETL", "Spotify API"],
     summary: "Personalized music recommender trained on 52M public listening events that builds a new Spotify playlist for the user, combining an ETL pipeline over a user-item interaction matrix with ALS matrix factorization ensembled with an item-similarity model — raising top-10 ranking quality from 0.30 to 0.71 and NDCG@100 from 0.05 to 0.11 by weighting recent listening trends against long-term taste.",
