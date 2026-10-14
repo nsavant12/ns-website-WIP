@@ -6,7 +6,8 @@
  * Wii-style rounded gothic typeface, self-hosted from the site owner's
  * licensed copy of FOT-NewRodin Pro EB (single Extra Bold cut, mapped
  * across the 400-900 weight range so every existing font-weight usage
- * resolves to this one face without synthetic bolding).
+ * resolves to this one face without synthetic bolding). Outlines are
+ * converted from CFF to TrueType so small text hints evenly on FreeType.
  */
 @font-face {
   font-family: "Wii Rodin";

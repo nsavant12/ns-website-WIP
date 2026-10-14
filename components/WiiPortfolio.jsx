@@ -96,11 +96,6 @@ const RESUME_PROJECTS = [
     technologies: ["Go", "Linux", "seccomp", "OverlayFS"],
     summary: "Go container runtime isolating workloads with Linux namespaces (PID, NET, MOUNT), capability restrictions, seccomp filtering, and cgroup v2 limits — 64 concurrent workloads across 1,280 test requests at 2.06 ms p95 latency, with shared OverlayFS image layers giving 5.16 ms p95 warm starts and 98.3% less layer storage.",
   },
-  {
-    name: "Local AI Assistant",
-    technologies: ["Python", "PyTorch", "QLoRA", "Ollama", "Open WebUI"],
-    summary: "Personal AI assistant built from 450+ privacy-scrubbed iMessage conversations, with a custom tokenizer and 12M-parameter Transformer. Fine-tuned Qwen2.5-3B-Instruct using QLoRA on 5,000 message-reply pairs, cutting held-out perplexity by 45%, then deployed a 4-bit model on a self-hosted Linux server through Ollama and Open WebUI — generating 40 tokens/sec with under 0.5s to the first token.",
-  },
 ];
 
 const RESUME_SKILLS = {
